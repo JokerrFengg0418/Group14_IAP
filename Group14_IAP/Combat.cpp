@@ -84,4 +84,4 @@ Entity* Combat::FactoryCreateEntity(int CharacterType) {
 }
 
 
-
+
