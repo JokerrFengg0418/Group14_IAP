@@ -3,6 +3,6 @@
 class Player : public Entity
 {
 public:
-	void Move();
+	void move();
 };
 
