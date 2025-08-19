@@ -16,22 +16,22 @@ void Player::move()
 	switch (input) {
 	case 'w':
 	case 'W':
-		newY++;
+		newY--;
 		std::cout << "Move Up \n";
 		break;
 	case 's':
 	case 'S':
-		newY--;
+		newY++;
 		std::cout << "Move Down \n";
 		break;
 	case 'a':
 	case 'A':
-		newX--;
+		newX++;
 		std::cout << "Move Left \n";
 		break;
 	case 'd':
 	case 'D':
-		newX++;
+		newX--;
 		std::cout << "Move Right \n";
 		break;
 	default:
