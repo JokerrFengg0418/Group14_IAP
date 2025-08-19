@@ -8,7 +8,7 @@ private:
 
 public:
 
-	Entity* FactoryCreateEntity(char CharacterType);
+	Entity* FactoryCreateEntity(int CharacterType);
 
 
 };
