@@ -1,5 +1,8 @@
 #pragma once
-class Player
+#include "Entity.h"
+class Player : public Entity
 {
+public:
+	void move();
 };
 
