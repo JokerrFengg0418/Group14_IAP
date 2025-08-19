@@ -3,7 +3,7 @@
 #include <iostream>
 #include "Position.h"
 
-void Player::move()
+void Player::Move()
 {
 	int newX = position.row;
 	int newY = position.col;
@@ -38,5 +38,6 @@ void Player::move()
 		std::cout << "invalid input\n";
 		break;
 	}
+
 }
 
