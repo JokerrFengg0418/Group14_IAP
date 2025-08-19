@@ -35,8 +35,8 @@ void Board::drawBoard()
 void Board::drawDungeon()
 {
 	std::cout << std::endl;
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 5; j++) {
 			std::cout << '|' << Board::board[i][j];
 		}
 		std::cout << '|';
@@ -44,9 +44,9 @@ void Board::drawDungeon()
 	}
 
 
-	for (int row = 0; row < 4; row++)
+	for (int row = 0; row < 5; row++)
 	{
-		for (int col = 0; col < 4; col++)
+		for (int col = 0; col < 5; col++)
 		{
 			board[row][col] = ' ';
 		}

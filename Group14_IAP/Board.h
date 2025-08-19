@@ -16,7 +16,7 @@ public:
 	void drawDungeon();
 private:
 	char board [40][40];
-	char dungeon[4][4];
+	char dungeon[5][5];
 };
 
 
