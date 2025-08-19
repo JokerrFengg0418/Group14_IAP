@@ -33,6 +33,21 @@ EnemyType Enemy::getType() const
 	return type;
 }
 
+char Enemy::getTypeName() const
+{
+	switch (type) {
+	case EnemyType::Monster:   return 'M';
+	case EnemyType::Hellhound: return 'H';
+	case EnemyType::Zombie:    return 'Z';
+	case EnemyType::Goblin:    return 'G';
+	case EnemyType::Bat:       return 'B';
+	case EnemyType::Skeleton:  return 'S';
+	case EnemyType::Gargoyle:  return 'G';
+	case EnemyType::Boss:      return 'B';
+	default:                   return 'U';
+	}
+}
+
 
 // Behaviours 
 void Enemy::takeDamage(int amount)
@@ -77,3 +92,4 @@ void Enemy::printStatus() const
 		<< ", Damage: " << getDamage() << ", Location: ("
 		<< getRow() << ", " << getCol() << ")" << std::endl;
 }
+
