@@ -3,7 +3,7 @@ class Combat
 {
 private:
 
-	Entity* List[20];
+	Entity* List[20] ;
 
 
 public:
