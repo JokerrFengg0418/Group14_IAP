@@ -14,6 +14,10 @@ public:
 
 	Entity* FactoryCreateEntity(int CharacterType);
 
+	Entity* CreatePlayer();
+
+	Entity* CreateEnemy();
+
 	void TurnOrder();
 
 	
