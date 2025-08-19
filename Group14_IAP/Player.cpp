@@ -26,12 +26,12 @@ void Player::move()
 		break;
 	case 'a':
 	case 'A':
-		newX++;
+		newX--;
 		std::cout << "Move Left \n";
 		break;
 	case 'd':
 	case 'D':
-		newX--;
+		newX++;
 		std::cout << "Move Right \n";
 		break;
 	default:
