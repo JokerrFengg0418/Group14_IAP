@@ -13,7 +13,11 @@ private:
 public:
 
 	Entity* FactoryCreateEntity(int CharacterType);
-	void WinCondition();
+
+	Entity* CreatePlayer();
+
+	Entity* CreateEnemy();
+
 	void TurnOrder();
 
 	
