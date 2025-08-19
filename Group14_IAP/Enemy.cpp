@@ -19,7 +19,7 @@ Enemy::Enemy(int r, int c, EnemyType type, int hp, int dmg)
 		<< static_cast<int>(type) << ", health: " << health
 		<< ", damage: " << damage << std::endl;
 }
-
+ 
 // Destructor
 Enemy::~Enemy()
 {

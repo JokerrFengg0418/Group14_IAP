@@ -2,7 +2,7 @@
 #include "Position.h"
 
 class Entity {
-private:
+protected:
 
     Position position; // Stores row & col of Entity
 
