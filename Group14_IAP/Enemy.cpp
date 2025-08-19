@@ -33,8 +33,24 @@ EnemyType Enemy::getType() const
 	return type;
 }
 
+// Returns a character representation of the enemy type defined in Enemy.h as a enum
+char Enemy::getTypeName() const 
+{ 
+	switch (type) {
+	case EnemyType::Monster:   return 'M';
+	case EnemyType::Hellhound: return 'H';
+	case EnemyType::Zombie:    return 'Z';
+	case EnemyType::Goblin:    return 'G';
+	case EnemyType::Bat:       return 'B';
+	case EnemyType::Skeleton:  return 'S';
+	case EnemyType::Gargoyle:  return 'G';
+	case EnemyType::Boss:      return 'B';
+	default:                   return 'U';
+	}
+}
 
-// Behaviours 
+
+// Enemy Behaviours 
 void Enemy::takeDamage(int amount)
 {
 	setHealth(getHealth() - amount);
@@ -71,9 +87,11 @@ void Enemy::moveEnemy()
 	}
 }
 
+// Debug
 void Enemy::printStatus() const
 {
 	std::cout << "Enemy Type: " << getTypeName() << ", Health: " << getHealth()
 		<< ", Damage: " << getDamage() << ", Location: ("
 		<< getRow() << ", " << getCol() << ")" << std::endl;
 }
+

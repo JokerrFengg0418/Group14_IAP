@@ -1,4 +1,8 @@
 #pragma once
+#include "Entity.h"
+#include "Enemy.h"
+#include "Player.h"
+
 class Combat
 {
 private:
@@ -8,8 +12,10 @@ private:
 
 public:
 
-	Entity* FactoryCreateEntity(char CharacterType);
+	Entity* FactoryCreateEntity(int CharacterType);
 
+	void TurnOrder();
 
+	
 };
 
