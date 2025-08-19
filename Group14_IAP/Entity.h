@@ -12,8 +12,6 @@ protected:
 
     int Health;
 
-
-
 public:
 
     // default constructor
@@ -26,9 +24,18 @@ public:
     ~Entity();
 
     // Getter & Setters
+    int getHealth() const;
+    int getDamage() const;
+
     int getRow() const;
-    void setRow(int r);
     int getCol() const;
+    
+
+    // Setters
+    void setHealth(int hp);
+    void setDamage(int dmg);
+
+    void setRow(int r);
     void setCol(int c);
 
     // functions

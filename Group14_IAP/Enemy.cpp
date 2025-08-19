@@ -13,12 +13,13 @@ Enemy::Enemy(int r, int c, EnemyType type, int hp, int dmg)
 	setRow(r);
 	setCol(c);
 	this->type = type;
-	health = hp;
-	damage = dmg;
+	setHealth(hp);   // 
+	setDamage(dmg);  // 
 	std::cout << "Enemy Created at (" << r << ", " << c << ") with type: "
-		<< static_cast<int>(type) << ", health: " << health
-		<< ", damage: " << damage << std::endl;
+		<< static_cast<int>(type) << ", health: " << getHealth()
+		<< ", damage: " << getDamage() << std::endl;
 }
+
  
 // Destructor
 Enemy::~Enemy()
@@ -32,42 +33,23 @@ EnemyType Enemy::getType() const
 	return type;
 }
 
-int Enemy::getHealth() const
-{
-	return health;
-}
-
-int Enemy::getDamage() const
-{
-	return damage;
-}
-
-// Setters
-
-void Enemy::setHealth(int hp)
-{
-	health = hp;
-}
-
-void Enemy::setDamage(int dmg)
-{
-	damage = dmg;
-}
 
 // Behaviours 
-void Enemy::takeDamage(int amount) 
+void Enemy::takeDamage(int amount)
 {
-	health -= amount;
-	if (health < 0) {
-		health = 0; // Ensure health doesn't go below 0
+	setHealth(getHealth() - amount);
+	if (getHealth() <= 0) {
+		setHealth(0);
 		std::cout << getTypeName() << " has been defeated!" << std::endl;
 	}
 }
 
+
 void Enemy::attack() const
 {
-	std::cout << getTypeName() << " attacks for " << damage << " damage!" << std::endl;
+	std::cout << getTypeName() << " attacks for " << getDamage() << " damage!" << std::endl;
 }
+
 
 void Enemy::moveEnemy()
 {
@@ -91,7 +73,7 @@ void Enemy::moveEnemy()
 
 void Enemy::printStatus() const
 {
-	std::cout << "Enemy Type: " << getTypeName() << ", Health: " << health
-		<< ", Damage: " << damage << ", Location: ("
+	std::cout << "Enemy Type: " << getTypeName() << ", Health: " << getHealth()
+		<< ", Damage: " << getDamage() << ", Location: ("
 		<< getRow() << ", " << getCol() << ")" << std::endl;
 }

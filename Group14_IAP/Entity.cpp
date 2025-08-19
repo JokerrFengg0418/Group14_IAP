@@ -39,3 +39,19 @@ void Entity::EntityLocation() const {
         << position.getRow() << ", "
         << position.getCol() << ")" << std::endl;
 }
+
+int Entity::getHealth() const {
+    return Health;
+}
+
+int Entity::getDamage() const {
+    return Damage;
+}
+
+void Entity::setHealth(int hp) {
+    Health = hp;
+}
+
+void Entity::setDamage(int dmg) {
+    Damage = dmg;
+}

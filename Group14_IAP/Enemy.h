@@ -20,9 +20,6 @@ class Enemy : public Entity  // inheritance from Entity
 
 private:
 	EnemyType type; // type of enemy
-	int health; // health of enemy
-	int damage; // damage of enemy
-
 
 public:
 
@@ -37,18 +34,12 @@ public:
 
 	// Getters
 	EnemyType getType() const;
-	std::string getTypeName() const; // get readable name
-	int getDamage() const;
-
-
-	// Setters
-	void setHealth(int hp);
-	void setDamage(int dmg);
+	char getTypeName() const; // get readable name
 
 	// Enemy Behaviour
 	void takeDamage(int amount);
 	void attack() const;
-	void moveEnemy();
+	virtual void moveEnemy();
 
 	// Debug
 	void printStatus() const;
