@@ -33,8 +33,9 @@ EnemyType Enemy::getType() const
 	return type;
 }
 
-char Enemy::getTypeName() const
-{
+// Returns a character representation of the enemy type defined in Enemy.h as a enum
+char Enemy::getTypeName() const 
+{ 
 	switch (type) {
 	case EnemyType::Monster:   return 'M';
 	case EnemyType::Hellhound: return 'H';
@@ -49,7 +50,7 @@ char Enemy::getTypeName() const
 }
 
 
-// Behaviours 
+// Enemy Behaviours 
 void Enemy::takeDamage(int amount)
 {
 	setHealth(getHealth() - amount);
@@ -86,6 +87,7 @@ void Enemy::moveEnemy()
 	}
 }
 
+// Debug
 void Enemy::printStatus() const
 {
 	std::cout << "Enemy Type: " << getTypeName() << ", Health: " << getHealth()
