@@ -3,7 +3,7 @@
 #include "Enemy.h"
 
 
-Entity* Combat::FactoryCreateEntity(int CharacterType){
+Entity* Combat::FactoryCreateEntity(int CharacterType) {
 
 	int RandomTurf = rand() % 40;
 	switch (CharacterType) {
@@ -82,3 +82,6 @@ Entity* Combat::FactoryCreateEntity(int CharacterType){
 		}
 	}
 }
+
+
+
