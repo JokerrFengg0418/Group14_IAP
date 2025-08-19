@@ -13,7 +13,7 @@ private:
 public:
 
 	Entity* FactoryCreateEntity(int CharacterType);
-
+	void WinCondition();
 	void TurnOrder();
 
 	
