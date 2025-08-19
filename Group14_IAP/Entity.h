@@ -3,7 +3,16 @@
 
 class Entity {
 private:
+
     Position position; // Stores row & col of Entity
+
+    int Damage;
+
+    int Range;
+
+    int Health;
+
+
 
 public:
 
