@@ -1,28 +1,52 @@
 #include <iostream>
 #include "Board.h"
-Board::Board()
+#include "Enemy.h"
+Board::Board() : Player(nullptr), enemyCount(0)
 {
+	for (int i = 0; i < enemyCount; i++) 
+	{
+		enemies[i] = nullptr; // Initialize enemy pointers to nullptr
+	}
+
+	for (int r = 0; r < 40; r++)
+	{
+		for (int c = 0; c < 40; c++)
+		{
+			board[r][c] = ' '; // Initialize the board with empty spaces
+		}
+	}
+
 	std::cout << "Map created";
 }
 Board::~Board()
 {
-
+	for (int i = 0; i < enemyCount; i++)
+	{
+		delete enemies[i]; // Delete each enemy entity
+	}
+	delete Player; // Delete the player entity if it exists
 }
+
+void Board::addPlayer(Entity* p)
+{
+	Player = p;
+}
+
+void Board::addEnemy(Entity* e)
+{
+	if (enemyCount < maxEnemies) // Check if there's space for a new enemy
+	{
+		enemies[enemyCount++] = e; // Add the enemy and increment the count
+	}
+	else
+	{
+		std::cout << "Max enemies reached." << std::endl;
+	}
+}
+
 void Board::drawBoard()
 {
-	std::cout << "+---------------------------------------+";
-	std::cout << std::endl;
-	for (int i = 0; i < 40; i++) {
-		for (int j = 0; j < 40; j++) {
-			std::cout << '|' << Board::board[i][j];
-		}
-		std::cout << '|';
-		std::cout << std::endl;
-	}
-	std::cout << "+----------------------------------------+";
-	std::cout << std::endl;
-
-
+	// Clear Board
 	for (int row = 0; row < 40; row++)
 	{
 		for (int col = 0; col < 40; col++)
@@ -30,8 +54,33 @@ void Board::drawBoard()
 			board[row][col] = ' ';
 		}
 	}
+
+	// Place entities on the board using their coordinates
+	if (Player) {
+		board[Player->getRow()][Player->getCol()] = 'P'; // P = Player
+	}
+
+	for (int i = 0; i < enemyCount; ++i) {
+		if (enemies[i]) {
+			board[enemies[i]->getRow()][enemies[i]->getCol()] = static_cast<Enemy*>(enemies[i])->getTypeName();
+		}
+	}
+
+	// Print out Board
+	std::cout << "+---------------------------------------+";
+	std::cout << std::endl;
+	for (int i = 0; i < 40; i++) {
+		for (int j = 0; j < 40; j++) {
+			std::cout << '|' << board[i][j];
+		}
+		std::cout << '|';
+		std::cout << std::endl;
+	}
+	std::cout << "+----------------------------------------+";
+	std::cout << std::endl;
 }
 
+// Function to draw Dungeon Layout
 void Board::drawDungeon()
 {
 	std::cout << std::endl;
