@@ -38,7 +38,6 @@ public:
 	// Getters
 	EnemyType getType() const;
 	std::string getTypeName() const; // get readable name
-	int getHealth() const;
 	int getDamage() const;
 
 
