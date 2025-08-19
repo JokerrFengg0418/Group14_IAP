@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include <string>
 
 // define different types of Enemies with enum
 enum class EnemyType {
