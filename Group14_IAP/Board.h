@@ -9,7 +9,7 @@ public:
 	//Destructors
 	~Board();
 	//Getters//
-
+	char GetBoard() const;
 	//Setters//
 	
 	//Functions

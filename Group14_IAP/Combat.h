@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Enemy.h"
 #include "Player.h"
+#include "Board.h"
 #include <vector>
 #include <string>
 
@@ -13,6 +14,7 @@ private:
 	int firstTurn;
 	bool spawn;
 	bool playerTurn;
+	Board board;
 
 
 public:
@@ -25,6 +27,8 @@ public:
 
 	int WinCondition();
 	void TurnOrder();
+
+	void startCombat(Player& player, Enemy& enemy);
 
 	// Calculates distance between two positions using Chebyshev distance
 	static int calculateDistance(const Position& a, const Position& b);
