@@ -8,7 +8,9 @@ class Combat
 private:
 
 	Entity* List[20] ;
-
+	int firstTurn;
+	bool spawn;
+	bool playerTurn;
 
 
 public:

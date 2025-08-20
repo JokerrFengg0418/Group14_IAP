@@ -172,3 +172,45 @@ int Combat::WinCondition()
 	}
 	return 1;
 }
+
+void Combat::TurnOrder()
+{
+    firstTurn = 1;
+    firstTurn++;
+    playerTurn = false;
+    if (firstTurn == 1)
+    {
+        //check whether player and enemies have spawned & spawn em
+        if (spawn != true)
+        {
+            //spawn
+        }
+        else
+        {
+            //set-up items and turrets -> Get and Set at diff positions
+            //Player turn check
+            if (playerTurn != true)
+            {
+                //monster turn first ->monsterMove, monsterAttack,playerTakeDamage
+                playerTurn = true;
+            }
+            else if (playerTurn == true)
+            {
+                //player attack -> playerMove, playerAttack, monsterTakeDamage
+            }
+        }
+    }
+    while (firstTurn > 1)
+    {
+        if (playerTurn != true)
+        {
+            //monster turn first ->monsterMove, monsterAttack, playerTakeDamage
+            playerTurn = true; 
+        }
+        else if (playerTurn == true)
+        {
+            //player attack -> playerMove, playerAttack, monsterTakeDamage
+        }
+        WinCondition();
+    }
+}
