@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Enemy.h"
 #include "Player.h"
+#include "Inventory.h"
 #include <iostream>
 #include <cmath>
 #include <cstdlib>
@@ -89,13 +90,13 @@ Entity* Combat::FactoryCreateEntity(int CharacterType) {
 	}
 }
 
-// External list of enemies
+// External enemy list if used elsewhere
 extern Entity* List[20];
 
 int Combat::calculateDistance(const Position& a, const Position& b) {
     int dx = abs(a.getRow() - b.getRow());
     int dy = abs(a.getCol() - b.getCol());
-    return max(dx, dy); // Chebyshev distance
+    return max(dx, dy); // Chebyshev distance (tile-based)
 }
 
 void Combat::attack(Player& player, Enemy& enemy) {
@@ -104,10 +105,18 @@ void Combat::attack(Player& player, Enemy& enemy) {
     cout << "\n=== Combat Start ===\n";
     cout << "Distance between you and " << enemy.getTypeName() << ": " << distance << "\n";
 
-    bool attacked = false;
+    // Show player's inventory
+    cout << "Your inventory: ";
+    for (const std::string& item : player.getInventory()) {
+        cout << item << " ";
+    }
+    cout << "\n";
 
-    // Player Turn
-    for (const string& item : player.getInventory()) {
+    // Player's Turn
+    bool attacked = false;
+    const vector<string>& inventory = player.getInventory();
+
+    for (const string& item : inventory) {
         if (item == "Sword" && distance <= 1) {
             cout << "You slash the enemy with your Sword!\n";
             enemy.takeDamage(20);
@@ -120,37 +129,52 @@ void Combat::attack(Player& player, Enemy& enemy) {
             attacked = true;
             break;
         }
+        else if (item == "Bomb" && distance <= 2) {
+            cout << "You throw a bomb at the enemy!\n";
+            enemy.takeDamage(30);
+            attacked = true;
+            break;
+        }
     }
 
     if (!attacked) {
         cout << "You are either unarmed or out of range to attack.\n";
     }
 
+    // Enemy defeated?
     if (!enemy.isAlive()) {
         cout << enemy.getTypeName() << " has been defeated!\n";
         player.earnGold(20);
         return;
     }
 
-    // Enemy Turn
+    // Enemy's Turn
     EnemyType type = enemy.getType();
-    bool enemyCanMelee = (type == EnemyType::Monster || type == EnemyType::Hellhound ||
-        type == EnemyType::Zombie || type == EnemyType::Goblin ||
-        type == EnemyType::Bat || type == EnemyType::Skeleton ||
-        type == EnemyType::Boss);
+    bool enemyCanMelee = (
+        type == EnemyType::Monster ||
+        type == EnemyType::Hellhound ||
+        type == EnemyType::Zombie ||
+        type == EnemyType::Goblin ||
+        type == EnemyType::Bat ||
+        type == EnemyType::Skeleton ||
+        type == EnemyType::Boss
+        );
 
-    bool enemyCanRange = (type == EnemyType::Gargoyle || type == EnemyType::Boss);
+    bool enemyCanRange = (
+        type == EnemyType::Gargoyle ||
+        type == EnemyType::Boss
+        );
 
     bool enemyAttacked = false;
 
     if (enemyCanMelee && distance <= 1) {
         cout << enemy.getTypeName() << " strikes you in close combat!\n";
-        player.setHealth(player.getHealth() - enemy.getDamage());
+        player.takeDamage(enemy.getDamage());
         enemyAttacked = true;
     }
     else if (enemyCanRange && distance <= 5) {
         cout << enemy.getTypeName() << " attacks you from range!\n";
-        player.setHealth(player.getHealth() - (enemy.getDamage() - 2));
+        player.takeDamage(enemy.getDamage() - 2); // range deals less
         enemyAttacked = true;
     }
 
@@ -204,11 +228,17 @@ void Combat::TurnOrder()
     {
         if (playerTurn != true)
         {
+            void Enemy::moveEnemy();
+            void Enemy::attack();
+            void Player::takeDamage();
             //monster turn first ->monsterMove, monsterAttack, playerTakeDamage
             playerTurn = true; 
         }
         else if (playerTurn == true)
         {
+            void Player::Move();
+            void Player::PlayerAttack();
+            void Enemy::takeDamage();
             //player attack -> playerMove, playerAttack, monsterTakeDamage
         }
         WinCondition();

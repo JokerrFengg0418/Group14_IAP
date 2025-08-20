@@ -2,6 +2,8 @@
 #include "Entity.h"
 #include "Enemy.h"
 #include "Player.h"
+#include <vector>
+#include <string>
 
 class Combat
 {
@@ -29,6 +31,16 @@ public:
 
 	// Handles a full turn: player attacks first, enemy retaliates if alive
 	static void attack(Player& player, Enemy& enemy);
+
+	void move();
+
+	// Inventory Functions
+	void addItem(const std::string& item);
+	const std::vector<std::string>& getInventory() const;
+
+	// Reward
+	void earnGold(int amount);
+	int getGold() const;
 
 };
 
