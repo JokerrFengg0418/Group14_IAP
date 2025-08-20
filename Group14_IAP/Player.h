@@ -8,7 +8,6 @@ class Player : public Entity
 public:
 
 
-
 	Player();
 	Player(int r, int c, int hp, int dmg);
 	~Player();
@@ -19,6 +18,13 @@ public:
 
 	void Move();
 
+	// Inventory Functions
+	Inventory& getInventory();
+	const Inventory& getInventory() const;
+
+	// Gold
+	void earnGold(int amount);
+	int getGold() const;
 
 };
 

@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Enemy.h"
+#include "Inventory.h"
 #include <conio.h>
 #include <iostream>
 #include "Position.h"
@@ -79,5 +80,29 @@ void Player::Move()
 	}
 
 }
+
+// ===== Inventory Functions =====
+
+Inventory& Player::getInventory() {
+	return inventory;
+}
+
+const Inventory& Player::getInventory() const {
+	return inventory;
+}
+
+// ===== Gold Functions =====
+
+void Player::earnGold(int amount) {
+	gold += amount;
+	std::cout << "You earned " << amount << " gold! Total gold: " << gold << "\n";
+}
+
+int Player::getGold() const {
+	return gold;
+}
+
+
+
 
 

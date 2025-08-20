@@ -10,7 +10,7 @@ void Inventory::DrawInventory() const{
 }
 
 //Draws Specifications of Inventory Item
-Item* Inventory::GetInventory(std::string Name) const{
+Item* Inventory::getInventory(std::string Name) const{
 
 	for (int i = 0; i < 25; i++) {
 
@@ -27,7 +27,7 @@ Item* Inventory::GetInventory(std::string Name) const{
 }
 
 //Sets Item into Inventory
-void Inventory::SetInventory(std::string ItemName, int Number) {
+void Inventory::setInventory(std::string ItemName, int Number) {
 
 	for (int i = 0; i < 25; i++) {
 
