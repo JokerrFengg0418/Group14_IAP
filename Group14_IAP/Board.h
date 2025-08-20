@@ -20,10 +20,14 @@ public:
 	void addPlayer(Entity* p);
 	void addEnemy(Entity* e);
 
+	void selectEnemy(Entity* e);
+
 private:
 	char board [40][40];
 	char dungeon[5][5];
 	Entity* Player; // Pointer to player entity
+
+	Entity* selectedEnemy;
 
 	static const int maxEnemies = 20; // Maximum number of enemies
 	Entity* enemies[maxEnemies]; // Array of enemy pointers

@@ -1,7 +1,14 @@
 #include <iostream>
 #include "Board.h"
 #include "Enemy.h"
-Board::Board() : Player(nullptr), enemyCount(0)
+#include <Windows.h>
+
+
+#define FOREGROUND_YELLOW (FOREGROUND_RED | FOREGROUND_GREEN)
+#define FOREGROUND_WHITE (FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE)
+
+
+Board::Board() : Player(nullptr), enemyCount(0), selectedEnemy(nullptr)
 {
 	for (int i = 0; i < enemyCount; i++) 
 	{
@@ -25,6 +32,10 @@ Board::~Board()
 		delete enemies[i]; // Delete each enemy entity
 	}
 	delete Player; // Delete the player entity if it exists
+}
+
+void Board::selectEnemy(Entity* e) {
+	selectedEnemy = e;
 }
 
 void Board::addPlayer(Entity* p)
@@ -55,16 +66,26 @@ void Board::drawBoard()
 		}
 	}
 
+	// Get the handle to the console output
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
 	// Place entities on the board using their coordinates
 	if (Player) {
 		board[Player->getRow()][Player->getCol()] = 'P'; // P = Player
 	}
 
 	for (int i = 0; i < enemyCount; ++i) {
-		if (enemies[i]) {
-			board[enemies[i]->getRow()][enemies[i]->getCol()] = static_cast<Enemy*>(enemies[i])->getTypeName();
+		if (enemies[i] == selectedEnemy) {
+			SetConsoleTextAttribute(hConsole, FOREGROUND_YELLOW);
 		}
+		else {
+			SetConsoleTextAttribute(hConsole, FOREGROUND_WHITE); // Set default color for other enemies
+        }
+
+		board[enemies[i]->getRow()][enemies[i]->getCol()] = static_cast<Enemy*>(enemies[i])->getTypeName();
 	}
+
+	SetConsoleTextAttribute(hConsole, FOREGROUND_WHITE);
 
 	// Print out Board
 	std::cout << "+---------------------------------------+";
