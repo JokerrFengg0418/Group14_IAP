@@ -200,13 +200,16 @@ int Combat::WinCondition()
 void Combat::TurnOrder()
 {
     firstTurn = 1;
-	for (int i = 0; i < 20; i++)
-	{
-        board.drawBoard();
-		List[i]->move();
-		List[i]->attack();
-		WinCondition();
-		firstTurn++;
-	}
-	std::cout << "Turn Number: " << firstTurn;
+    while (WinCondition() == 0)
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            board.drawBoard();
+            List[i]->move();
+            List[i]->attack();
+            WinCondition();
+        }
+        firstTurn++;
+        std::cout << "Turn Number: " << firstTurn;
+    }
 }
