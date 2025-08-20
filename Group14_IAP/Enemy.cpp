@@ -60,10 +60,12 @@ void Enemy::takeDamage(int amount)
 	}
 }
 
-
-void Enemy::attack() const
+void Enemy::attack(Player* player)
 {
-	std::cout << getTypeName() << " attacks for " << getDamage() << " damage!" << std::endl;
+	if (player != nullptr) {
+		player->takeDamage(getDamage());
+		std::cout << "Enemy attacks the player, dealing " << getDamage() << " damage." << std::endl;
+	}
 }
 
 

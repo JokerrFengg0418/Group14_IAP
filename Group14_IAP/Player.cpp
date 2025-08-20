@@ -1,7 +1,46 @@
 #include "Player.h"
+#include "Enemy.h"
 #include <conio.h>
 #include <iostream>
 #include "Position.h"
+
+
+Player::Player()
+{
+	Health = 100;
+	std::cout << "Player Created \n";
+}
+
+Player::Player(int r, int c, int hp, int dmg)
+{
+	setRow(r);
+	setCol(c);
+	setHealth(hp);   // 
+	setDamage(dmg);  // 
+	std::cout << "Player Created at (" << r << ", " << c << ")" << ", health: " << getHealth() << ", damage: " << getDamage() << std::endl;
+}
+
+Player::~Player()
+{
+}
+
+
+// Player Behaviours 
+void Player::takeDamage(int amount)
+{
+	setHealth(getHealth() - amount);
+	if (getHealth() <= 0) {
+		setHealth(0);
+		std::cout << " Player has been defeated!" << std::endl;
+	}
+}
+
+void Player::PlayerAttack(Enemy* enemy) {
+	if (enemy != nullptr) {
+		enemy->takeDamage(getDamage());
+		std::cout << "Player attacks the enemy, dealing " << getDamage() << " damage." << std::endl;
+	}
+}
 
 void Player::Move()
 {
@@ -40,4 +79,5 @@ void Player::Move()
 	}
 
 }
+
 
