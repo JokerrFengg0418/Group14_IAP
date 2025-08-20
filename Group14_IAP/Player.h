@@ -1,10 +1,14 @@
 #pragma once
 #include "Entity.h"
 #include <string>
+#include "Enemy.h"
+#include "Inventory.h"
 
 class Player : public Entity
 {
 
+private:
+	Inventory* playerInventory;
 public:
 
 
@@ -22,9 +26,6 @@ public:
 	Inventory& getInventory();
 	const Inventory& getInventory() const;
 
-	// Gold
-	void earnGold(int amount);
-	int getGold() const;
 
 };
 
