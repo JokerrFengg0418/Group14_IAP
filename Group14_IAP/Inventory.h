@@ -13,6 +13,8 @@ private:
 	Item* MonsterItemDatabase[50];
 	Item* WeaponDatabase[10];
 
+	char InventorySlots[4][5];
+
 public:
 
 	void DrawInventory() const;

@@ -4,11 +4,13 @@
 #include <conio.h>
 #include <iostream>
 #include "Position.h"
+#include "Shop.h"
 
 
 Player::Player()
 {
 	Health = 100;
+	playerInventory = new Inventory();
 	std::cout << "Player Created \n";
 }
 
@@ -84,23 +86,13 @@ void Player::Move()
 // ===== Inventory Functions =====
 
 Inventory& Player::getInventory() {
-	return inventory;
+	return *playerInventory;
 }
 
 const Inventory& Player::getInventory() const {
-	return inventory;
+	return *playerInventory;
 }
 
-// ===== Gold Functions =====
-
-void Player::earnGold(int amount) {
-	gold += amount;
-	std::cout << "You earned " << amount << " gold! Total gold: " << gold << "\n";
-}
-
-int Player::getGold() const {
-	return gold;
-}
 
 
 
