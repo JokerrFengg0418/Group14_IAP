@@ -1,4 +1,5 @@
 #pragma once
+#include "Player.h"
 class Board
 {
 public:
@@ -11,12 +12,22 @@ public:
 
 	//Setters//
 	
-	//Functions//
+	//Functions
 	void drawBoard();
 	void drawDungeon();
+
+	// Function to add Entity
+	void addPlayer(Entity* p);
+	void addEnemy(Entity* e);
+
 private:
 	char board [40][40];
 	char dungeon[5][5];
+	Entity* Player; // Pointer to player entity
+
+	static const int maxEnemies = 20; // Maximum number of enemies
+	Entity* enemies[maxEnemies]; // Array of enemy pointers
+	int enemyCount; // Current number of enemies on the board
 };
 
 

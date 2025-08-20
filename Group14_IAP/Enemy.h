@@ -21,6 +21,7 @@ class Enemy : public Entity  // inheritance from Entity
 
 private:
 	EnemyType type; // type of enemy
+	Position pos; // position of the enemy
 
 public:
 
