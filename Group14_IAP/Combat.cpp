@@ -82,3 +82,15 @@ Entity* Combat::FactoryCreateEntity(int CharacterType){
 		}
 	}
 }
+
+int Combat::WinCondition()
+{
+	for (int i = 0; i < 20; i++)
+	{
+		if (List[i] != nullptr)
+		{
+			return 0;
+		}
+	}
+	return 1;
+}

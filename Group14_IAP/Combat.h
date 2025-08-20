@@ -18,6 +18,7 @@ public:
 
 	Entity* CreateEnemy();
 
+	int WinCondition();
 	void TurnOrder();
 
 	
