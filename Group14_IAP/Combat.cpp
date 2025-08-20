@@ -199,10 +199,10 @@ int Combat::WinCondition()
 
 void Combat::TurnOrder()
 {
-    board.drawBoard();
     firstTurn = 1;
 	for (int i = 0; i < 20; i++)
 	{
+        board.drawBoard();
 		List[i]->move();
 		List[i]->attack();
 		WinCondition();
