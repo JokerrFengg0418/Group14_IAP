@@ -41,7 +41,7 @@ public:
 	// Enemy Behaviour
 	void takeDamage(int amount);
 	void attack(Player* player);
-	virtual void moveEnemy();
+	void move();
 
 	// Debug
 	void printStatus() const;

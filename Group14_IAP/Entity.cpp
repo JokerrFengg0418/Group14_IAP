@@ -63,3 +63,13 @@ void Entity::setHealth(int hp) {
 void Entity::setDamage(int dmg) {
     Damage = dmg;
 }
+
+void Entity::attack()
+{
+    return;
+}
+
+void Entity::takeDamage()
+{
+
+}

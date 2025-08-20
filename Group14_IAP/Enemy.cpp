@@ -69,7 +69,7 @@ void Enemy::attack(Player* player)
 }
 
 
-void Enemy::moveEnemy()
+void Enemy::move()
 {
 	// Example: Move randomly in one of the four directions
 	int direction = rand() % 4; // 0: up, 1: down, 2: left, 3: right
