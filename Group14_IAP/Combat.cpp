@@ -199,6 +199,7 @@ int Combat::WinCondition()
 
 void Combat::TurnOrder()
 {
+    drawBoard();
     firstTurn = 1;
 	for (int i = 0; i < 20; i++)
 	{
