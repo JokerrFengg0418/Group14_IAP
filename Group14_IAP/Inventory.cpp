@@ -10,7 +10,7 @@ void Inventory::DrawInventory() const{
 }
 
 //Draws Specifications of Inventory Item
-Item* Inventory::GetInventory(std::string Name) const{
+Item* Inventory::getInventory(std::string Name) const{
 
 	for (int i = 0; i < 25; i++) {
 
@@ -27,7 +27,7 @@ Item* Inventory::GetInventory(std::string Name) const{
 }
 
 //Sets Item into Inventory
-void Inventory::SetInventory(std::string ItemName, int Number) {
+void Inventory::setInventory(std::string ItemName, int Number) {
 
 	for (int i = 0; i < 25; i++) {
 
@@ -121,14 +121,62 @@ void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescript
 
 		for (int i = 0; i < 10; i++) {
 
+			if (WeaponDatabase[i] == nullptr) {
+
+				WeaponDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue);
+
+				return;
+			}
 		}
 
+		break;
+
 	case 'I':
+
+		for (int i = 0; i < 50; i++) {
+
+			if (ItemDatabase[i] == nullptr) {
+
+				ItemDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue);
+
+				return;
+			}
+
+		}
+
+		break;
+
 	case 'M':
+
+		for (int i = 0; i < 50; i++) {
+
+			if (MonsterItemDatabase[i] == nullptr) {
+
+				MonsterItemDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue);
+
+				return;
+			}
+
+		}
+
+		break;
 
 	}
 
 }
+
+void Inventory::DatabaseInitialisation() {
+
+	//Weapon Section here
+
+	//Monster Section here
+
+	//Item Section here
+
+
+}
+
+
 
 
 //Draws Item from Database instead of Inventory//
@@ -179,3 +227,16 @@ Item* Inventory::DrawDatabase(char DatabaseType, std::string ItemName) {
 	}
 	return nullptr;
 }
+
+int Inventory::getCurrency() const {
+
+	return Currency;
+
+}
+
+void Inventory::setCurrency(int NewAmount) {
+
+	Currency = NewAmount;
+}
+
+

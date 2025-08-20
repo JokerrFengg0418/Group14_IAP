@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Item.h"
 
 class Inventory
 {
@@ -29,10 +30,6 @@ public:
 	void setCurrency(int NewAmount);
 
 	Item* DrawDatabase(char DatabaseType, std::string ItemName);
-
-	void UseItem(std::string ItemName);
-
-	void DisplayValues(std::string ItemName);
 
 	void FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, char DatabaseType);
 
