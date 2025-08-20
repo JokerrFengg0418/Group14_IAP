@@ -7,8 +7,6 @@
 class Player : public Entity
 {
 
-private:
-	Inventory* playerInventory;
 public:
 
 

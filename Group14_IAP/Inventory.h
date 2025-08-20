@@ -6,14 +6,13 @@ class Inventory
 {
 private:
 
+	char InventorySlots[4][5];
 	Item* Inventory[25];
-	int Currency;
 	Item* ItemDatabase[50];
 	Item* EquippedItem;
 	Item* MonsterItemDatabase[50];
 	Item* WeaponDatabase[10];
-
-	char InventorySlots[4][5];
+		int Currency;
 
 public:
 

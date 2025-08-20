@@ -10,7 +10,6 @@
 Player::Player()
 {
 	Health = 100;
-	playerInventory = new Inventory();
 	std::cout << "Player Created \n";
 }
 
@@ -83,15 +82,6 @@ void Player::move()
 
 }
 
-// ===== Inventory Functions =====
-
-Inventory& Player::getInventory() {
-	return *playerInventory;
-}
-
-const Inventory& Player::getInventory() const {
-	return *playerInventory;
-}
 
 
 
