@@ -7,7 +7,8 @@ class Combat
 {
 private:
 
-	Entity* List[20];
+	Entity* List[20] ;
+
 
 
 public:
@@ -21,6 +22,11 @@ public:
 	int WinCondition();
 	void TurnOrder();
 
-	
+	// Calculates distance between two positions using Chebyshev distance
+	static int calculateDistance(const Position& a, const Position& b);
+
+	// Handles a full turn: player attacks first, enemy retaliates if alive
+	static void attack(Player& player, Enemy& enemy);
+
 };
 
