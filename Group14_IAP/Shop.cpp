@@ -1,22 +1,39 @@
 #include "Shop.h"
 #include <iostream>
 
-Shop::Shop()
+Shop::Shop(Inventory* inventoryPtr) : gameInventory(inventoryPtr) 
 {
+    if (gameInventory == nullptr) {
+        std::cerr << "Error: Shop was not provided with a valid inventory." << std::endl;
+    }
+    populateShop();
 }
 
 Shop::~Shop()
 {
-    for (Item* item : inventory) {
-        delete item;
-    }
 }
 
 void Shop::populateShop() {
     // Adding some example items to the shop's inventory
-    inventory.push_back(new Item("Health Potion", "Restores health.", 'P', 50, 20, 30));
-    inventory.push_back(new Item("Iron Sword", "A sturdy sword.", 'W', 100, 40, 60));
-    inventory.push_back(new Item("Leather Armor", "Lightweight armor.", 'A', 75, 30, 45));
+    if (gameInventory != nullptr) {
+        // You can now populate the shop with items from your databases.
+        // For example, pulling an item named "Iron Sword" from the 'W'eapon database.
+        Item* ironSword = gameInventory->DrawDatabase('W', "Iron Sword");
+        if (ironSword != nullptr) {
+            inventory.push_back(ironSword);
+        }
+
+        // Add more items as needed, for example, from the 'M'onster or 'I'tem databases.
+        Item* healthPotion = gameInventory->DrawDatabase('I', "Health Potion");
+        if (healthPotion != nullptr) {
+            inventory.push_back(healthPotion);
+        }
+
+        Item* leatherArmor = gameInventory->DrawDatabase('A', "Leather Armor");
+        if (leatherArmor != nullptr) {
+            inventory.push_back(leatherArmor);
+        }
+    }
 }
 
 void Shop::displayItems() {
