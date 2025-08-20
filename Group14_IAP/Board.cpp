@@ -1,12 +1,10 @@
 #include <iostream>
 #include "Board.h"
 #include "Enemy.h"
-#include <Windows.h>
 
-
-#define FOREGROUND_YELLOW (FOREGROUND_RED | FOREGROUND_GREEN)
-#define FOREGROUND_WHITE (FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE)
-
+// Define ANSI color codes
+const char* const YELLOW = "\x1b[33m";
+const char* const RESET = "\x1b[0m";
 
 Board::Board() : Player(nullptr), enemyCount(0), selectedEnemy(nullptr)
 {
@@ -55,6 +53,27 @@ void Board::addEnemy(Entity* e)
 	}
 }
 
+void Board::printBoardCellColor(int row, int col)
+{
+	bool isSelected = false;
+
+	// Check if the current enemy at this position is the one selected
+	for (int k = 0; k < enemyCount; ++k) {
+		if (enemies[k] == selectedEnemy && enemies[k]->getRow() == row && enemies[k]->getCol() == col) {
+			isSelected = true;
+			break;
+		}
+	}
+
+	if (isSelected) {
+		std::cout << YELLOW << board[row][col] << RESET;
+	}
+	else {
+		std::cout << board[row][col];
+	}
+}
+
+
 void Board::drawBoard()
 {
 	// Clear Board
@@ -66,26 +85,16 @@ void Board::drawBoard()
 		}
 	}
 
-	// Get the handle to the console output
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
 	// Place entities on the board using their coordinates
 	if (Player) {
 		board[Player->getRow()][Player->getCol()] = 'P'; // P = Player
 	}
 
 	for (int i = 0; i < enemyCount; ++i) {
-		if (enemies[i] == selectedEnemy) {
-			SetConsoleTextAttribute(hConsole, FOREGROUND_YELLOW);
+		if (enemies[i]) {
+			board[enemies[i]->getRow()][enemies[i]->getCol()] = static_cast<Enemy*>(enemies[i])->getTypeName();
 		}
-		else {
-			SetConsoleTextAttribute(hConsole, FOREGROUND_WHITE); // Set default color for other enemies
-        }
-
-		board[enemies[i]->getRow()][enemies[i]->getCol()] = static_cast<Enemy*>(enemies[i])->getTypeName();
 	}
-
-	SetConsoleTextAttribute(hConsole, FOREGROUND_WHITE);
 
 	// Print out Board
 	std::cout << "+---------------------------------------+";
