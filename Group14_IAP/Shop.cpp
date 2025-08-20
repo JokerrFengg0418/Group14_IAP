@@ -16,7 +16,7 @@ Shop::~Shop()
 void Shop::populateShop() {
     // Adding some example items to the shop's inventory
     if (gameInventory != nullptr) {
-        // You can now populate the shop with items from your databases.
+        // Populate the shop with items from your databases.
         // For example, pulling an item named "Iron Sword" from the 'W'eapon database.
         Item* ironSword = gameInventory->DrawDatabase('W', "Iron Sword");
         if (ironSword != nullptr) {
@@ -63,8 +63,8 @@ void Shop::buyItem(Player* player) {
             // Use the setCurrency() function on the player's Inventory object
             player->getInventory().setCurrency(player->getInventory().getCurrency() - selectedItem->GetItemValue('S'));
 
-            // You'll also need to add the item to the player's inventory here
-            // player->getInventory()->setInventory(selectedItem->GetItemWord('N'), 1);
+            // Add the item to the player's inventory here
+            player->getInventory().setInventory(selectedItem->GetItemWord('N'), 1);
 
 
             std::cout << "You have successfully purchased a " << selectedItem->GetItemWord('N') << "!" << std::endl;
