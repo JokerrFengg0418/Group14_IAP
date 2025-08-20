@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+
 class Inventory
 {
 private:
@@ -14,21 +16,25 @@ public:
 
 	void DrawInventory() const;
 
-	Item* GetInventory(std::string Name) const;
+	Item* getInventory(std::string Name) const;
 
-	void SetInventory(std::string ItemName, int Number);
+	void setInventory(std::string ItemName, int Number);
 
 	void RemoveItemFromInventory(std::string ItemName, int Number);
 
 	void DatabaseInitialisation();
 
-	int GetCurrency() const;
+	int getCurrency() const;
 
-	void SetCurrency(int NewAmount);
+	void setCurrency(int NewAmount);
 
 	Item* DrawDatabase(char DatabaseType, std::string ItemName);
 
 	void UseItem(std::string ItemName);
+
+	void DisplayValues(std::string ItemName);
+
+	void FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, char DatabaseType);
 
 };
 

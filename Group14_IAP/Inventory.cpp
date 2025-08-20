@@ -1,5 +1,6 @@
 #include "Inventory.h"
 #include "Item.h"
+#include <string>
 
 //Drawing Inventory (UI Save Me)
 void Inventory::DrawInventory() const{
@@ -85,15 +86,52 @@ void Inventory::SetInventory(std::string ItemName, int Number) {
 
 }
 
-void RemoveItemFromInventory(std::string ItemName, int Number) {
+void Inventory::RemoveItemFromInventory(std::string ItemName, int Number) {
 
+	for (int i = 0; i < 25; i++) {
 
+		if (Inventory[i]->GetItemWord('N') == ItemName) {
+
+			int CurrentValue = Inventory[i]->GetItemValue('V');
+			CurrentValue - Number;
+
+			if (CurrentValue <= 0) {
+
+				delete Inventory[i];
+				Inventory[i] = nullptr;
+
+			}
+			else {
+
+				Inventory[i]->SetItemValue('V', CurrentValue);
+
+			}
+
+		}
+
+	}
+
+}
+
+void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, char DatabaseType) {
+
+	switch (DatabaseType) {
+
+	case 'W':
+
+		for (int i = 0; i < 10; i++) {
+
+		}
+
+	case 'I':
+	case 'M':
+
+	}
 
 }
 
 
-
-//Draws Item from Database instead of Inventory
+//Draws Item from Database instead of Inventory//
 Item* Inventory::DrawDatabase(char DatabaseType, std::string ItemName) {
 
 	switch (DatabaseType) {
