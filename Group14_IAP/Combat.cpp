@@ -204,11 +204,17 @@ void Combat::TurnOrder()
     {
         if (playerTurn != true)
         {
+            void Enemy::moveEnemy();
+            void Enemy::attack();
+            void Player::takeDamage();
             //monster turn first ->monsterMove, monsterAttack, playerTakeDamage
             playerTurn = true; 
         }
         else if (playerTurn == true)
         {
+            void Player::Move();
+            void Player::PlayerAttack();
+            void Enemy::takeDamage();
             //player attack -> playerMove, playerAttack, monsterTakeDamage
         }
         WinCondition();
