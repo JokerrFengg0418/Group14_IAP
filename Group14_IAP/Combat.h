@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Enemy.h"
 #include "Player.h"
+#include "Board.h"
 #include <vector>
 #include <string>
 
@@ -13,6 +14,7 @@ private:
 	int firstTurn;
 	bool spawn;
 	bool playerTurn;
+	Board board;
 
 
 public:

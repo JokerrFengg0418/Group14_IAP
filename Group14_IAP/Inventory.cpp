@@ -1,12 +1,20 @@
 #include "Inventory.h"
 #include "Item.h"
+#include <iostream>
 #include <string>
 
 //Drawing Inventory (UI Save Me)
 void Inventory::DrawInventory() const{
-
-
-
+	std::cout << "   0 1 2 3 4\n";
+	std::cout << "+-----------+\n";
+	for (int i = 0; i < 4; ++i) {
+		std::cout << i << " ";
+		for (int j = 0; j < 5; ++j) {
+			std::cout << '|' << InventorySlots[i][j] << ' ';
+		}
+		std::cout << '|' << std::endl;
+	}
+	std::cout << "+-----------+\n";
 }
 
 //Draws Specifications of Inventory Item

@@ -1,5 +1,24 @@
 #pragma once
+#include <vector>
+#include "Item.h"
+#include "Player.h"
+#include "Inventory.h"
+
+
 class Shop
 {
+private:
+    std::vector<Item*> inventory;
+    Inventory* gameInventory;
+
+public:
+    // Constructor
+    Shop(Inventory* inventoryPtr);
+    ~Shop();
+
+    // Member functions
+    void populateShop();
+    void displayItems();
+    void buyItem(Player* player);
 };
 

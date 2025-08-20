@@ -101,3 +101,8 @@ void Board::drawDungeon()
 		}
 	}
 }
+
+char Board::GetBoard() const
+{
+	return board[40][40];
+}
