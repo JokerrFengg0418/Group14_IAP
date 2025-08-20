@@ -161,35 +161,6 @@ void Combat::attack(Player& player, Enemy& enemy) {
     cout << "=== Combat End ===\n";
 }
 
-Entity* Combat::FactoryCreateEntity(int CharacterType) {
-    int spawnRow = 39;
-    int spawnCol = rand() % 40;
-
-    EnemyType type;
-    switch (CharacterType) {
-    case 0: type = EnemyType::Monster;   break;
-    case 1: type = EnemyType::Hellhound; break;
-    case 2: type = EnemyType::Zombie;    break;
-    case 3: type = EnemyType::Goblin;    break;
-    case 4: type = EnemyType::Bat;       break;
-    case 5: type = EnemyType::Skeleton;  break;
-    case 6: type = EnemyType::Gargoyle;  break;
-    case 7: type = EnemyType::Boss;      break;
-    default: return nullptr;
-    }
-
-    for (int i = 0; i < 20; ++i) {
-        if (List[i] == nullptr) {
-            Entity* newEnemy = new Enemy(spawnRow, spawnCol, type, 99, 10 + rand() % 5);
-            List[i] = newEnemy;
-            return newEnemy;
-        }
-    }
-
-    return nullptr;
-}
-
-
 int Combat::WinCondition()
 {
 	for (int i = 0; i < 20; i++)
