@@ -40,6 +40,8 @@ public:
     void setCol(int c);
 
     // functions
-    void move();
+    virtual void move();
+    virtual void attack();
+    virtual void takeDamage();
     void EntityLocation() const;
 };

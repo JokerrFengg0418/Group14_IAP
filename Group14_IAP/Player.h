@@ -15,9 +15,9 @@ public:
 
 	void takeDamage(int amount);
 
-	void PlayerAttack(Enemy* enemy);
+	void attack(Enemy* enemy);
 
-	void Move();
+	void move();
 
 
 };

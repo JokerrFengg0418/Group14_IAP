@@ -176,47 +176,12 @@ int Combat::WinCondition()
 void Combat::TurnOrder()
 {
     firstTurn = 1;
-    firstTurn++;
-    playerTurn = false;
-    if (firstTurn == 1)
-    {
-        //check whether player and enemies have spawned & spawn em
-        if (spawn != true)
-        {
-            //spawn
-        }
-        else
-        {
-            //set-up items and turrets -> Get and Set at diff positions
-            //Player turn check
-            if (playerTurn != true)
-            {
-                //monster turn first ->monsterMove, monsterAttack,playerTakeDamage
-                playerTurn = true;
-            }
-            else if (playerTurn == true)
-            {
-                //player attack -> playerMove, playerAttack, monsterTakeDamage
-            }
-        }
-    }
-    while (firstTurn > 1)
-    {
-        if (playerTurn != true)
-        {
-            void Enemy::moveEnemy();
-            void Enemy::attack();
-            void Player::takeDamage();
-            //monster turn first ->monsterMove, monsterAttack, playerTakeDamage
-            playerTurn = true; 
-        }
-        else if (playerTurn == true)
-        {
-            void Player::Move();
-            void Player::PlayerAttack();
-            void Enemy::takeDamage();
-            //player attack -> playerMove, playerAttack, monsterTakeDamage
-        }
-        WinCondition();
-    }
+	for (int i = 0; i < 20; i++)
+	{
+		List[i]->move();
+		List[i]->attack();
+		WinCondition();
+		firstTurn++;
+	}
+	std::cout << "Turn Number: " << firstTurn;
 }
