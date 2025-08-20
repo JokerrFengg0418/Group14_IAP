@@ -87,6 +87,15 @@ Entity* Combat::FactoryCreateEntity(int CharacterType) {
 
 			}
 		}
+	case 8:
+		for (int i = 0; i < 20; i++) {
+
+			if (List[i] == nullptr) {
+
+				return new Player(0, 0, 100, 50);
+
+			}
+		}
 	}
 }
 
@@ -174,11 +183,11 @@ void Combat::attack(Player& player, Enemy& enemy) {
 
 int Combat::WinCondition()
 {
+	bool Wincheck = true;
 	for (int i = 0; i < 20; i++)
 	{
-		if (List[i] != nullptr)
-		{
-			return 0;
+		if (List[i]->getEntityType() == 'E') {
+
 		}
 	}
 	return 1;
@@ -196,4 +205,18 @@ void Combat::TurnOrder()
 		firstTurn++;
 	}
 	std::cout << "Turn Number: " << firstTurn;
+}
+
+void Combat::startCombat(char CombatScenario) {
+
+	switch (CombatScenario) {
+	case 'A':
+		FactoryCreateEntity(8);
+		FactoryCreateEntity(0);
+		FactoryCreateEntity(0);
+		FactoryCreateEntity(0);
+		break;
+	}
+
+
 }

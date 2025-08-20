@@ -21,14 +21,10 @@ public:
 
 	Entity* FactoryCreateEntity(int CharacterType);
 
-	Entity* CreatePlayer();
-
-	Entity* CreateEnemy();
-
 	int WinCondition();
 	void TurnOrder();
 
-	void startCombat(Player& player, Enemy& enemy);
+	void startCombat(char CombatScenario);
 
 	// Calculates distance between two positions using Chebyshev distance
 	static int calculateDistance(const Position& a, const Position& b);

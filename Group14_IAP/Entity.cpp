@@ -64,6 +64,16 @@ void Entity::setDamage(int dmg) {
     Damage = dmg;
 }
 
+char Entity::getEntityType() const{
+    return EntityType;
+}
+
+void Entity::setEntityType(char Type) {
+
+    EntityType = Type;
+
+}
+
 void Entity::attack()
 {
     return;

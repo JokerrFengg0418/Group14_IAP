@@ -6,6 +6,8 @@ protected:
 
     Position position; // Stores row & col of Entity
 
+    char EntityType;
+
     int Damage;
 
     int Range;
@@ -26,6 +28,7 @@ public:
     // Getter & Setters
     int getHealth() const;
     int getDamage() const;
+    char getEntityType() const;
 
     int getRow() const;
     int getCol() const;
@@ -35,6 +38,7 @@ public:
     // Setters
     void setHealth(int hp);
     void setDamage(int dmg);
+    void setEntityType(char Type);
 
     void setRow(int r);
     void setCol(int c);

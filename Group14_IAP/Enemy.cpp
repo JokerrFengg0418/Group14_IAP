@@ -13,6 +13,7 @@ Enemy::Enemy(int r, int c, EnemyType type, int hp, int dmg)
 	setRow(r);
 	setCol(c);
 	this->type = type;
+	setEntityType('E');
 	setHealth(hp);   // 
 	setDamage(dmg);  // 
 	std::cout << "Enemy Created at (" << r << ", " << c << ") with type: "
