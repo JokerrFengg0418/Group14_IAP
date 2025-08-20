@@ -82,6 +82,16 @@ void Player::move()
 
 }
 
+Inventory& Player::getInventory()
+{
+	// TODO: insert return statement here
+}
+
+const Inventory& Player::getInventory() const
+{
+	// TODO: insert return statement here
+}
+
 
 
 
