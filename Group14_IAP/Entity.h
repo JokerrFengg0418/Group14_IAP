@@ -29,7 +29,8 @@ public:
 
     int getRow() const;
     int getCol() const;
-    
+    Position getPosition() const;
+    bool isAlive() const;
 
     // Setters
     void setHealth(int hp);

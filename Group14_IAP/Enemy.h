@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include "Player.h"
 #include <string>
 
 // define different types of Enemies with enum
@@ -20,6 +21,7 @@ class Enemy : public Entity  // inheritance from Entity
 
 private:
 	EnemyType type; // type of enemy
+	Position pos; // position of the enemy
 
 public:
 
@@ -38,7 +40,7 @@ public:
 
 	// Enemy Behaviour
 	void takeDamage(int amount);
-	void attack() const;
+	void attack(Player* player);
 	virtual void moveEnemy();
 
 	// Debug

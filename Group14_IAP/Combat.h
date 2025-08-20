@@ -7,13 +7,19 @@ class Combat
 {
 private:
 
-	Entity* List[20];
+	Entity* List[20] ;
+
 
 
 public:
 
 	Entity* FactoryCreateEntity(int CharacterType);
 
+	Entity* CreatePlayer();
+
+	Entity* CreateEnemy();
+
+	int WinCondition();
 	void TurnOrder();
 
 	// Calculates distance between two positions using Chebyshev distance

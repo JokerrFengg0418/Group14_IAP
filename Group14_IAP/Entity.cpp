@@ -29,6 +29,14 @@ void Entity::setCol(int c) {
     position.setPosition(position.getRow(), c);
 }
 
+Position Entity::getPosition() const {
+    return position;
+}
+
+bool Entity::isAlive() const {
+    return Health > 0;
+}
+
 void Entity::move() {
     // Example: Move diagonally down-right
     position.setPosition(position.getRow() + 1, position.getCol() + 1);
