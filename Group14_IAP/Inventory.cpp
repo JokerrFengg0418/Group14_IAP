@@ -10,7 +10,7 @@ void Inventory::DrawInventory() const{
 	for (int i = 0; i < 4; ++i) {
 		std::cout << i << " ";
 		for (int j = 0; j < 5; ++j) {
-			std::cout << '|' << InventorySlots[i][j] << ' ';
+			std::cout << '|' << Inventory[j] << ' ';
 		}
 		std::cout << '|' << std::endl;
 	}
@@ -246,5 +246,7 @@ void Inventory::setCurrency(int NewAmount) {
 
 	Currency = NewAmount;
 }
+
+
 
 

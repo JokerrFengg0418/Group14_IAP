@@ -28,6 +28,8 @@ public:
 	int WinCondition();
 	void TurnOrder();
 
+	void startCombat(Player& player, Enemy& enemy);
+
 	// Calculates distance between two positions using Chebyshev distance
 	static int calculateDistance(const Position& a, const Position& b);
 
