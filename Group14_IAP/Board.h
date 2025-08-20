@@ -8,6 +8,7 @@ public:
 
 	//Destructors
 	~Board();
+	void selectEnemy(Entity* e);
 	//Getters//
 	char GetBoard() const;
 	//Setters//
