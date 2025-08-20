@@ -47,5 +47,6 @@ public:
     virtual void move();
     virtual void attack();
     virtual void takeDamage();
+    virtual void getType();
     void EntityLocation() const;
 };

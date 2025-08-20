@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cmath>
 #include <cstdlib>
+#include "Option.h"
 
 using namespace std;
 
@@ -108,45 +109,26 @@ int Combat::calculateDistance(const Position& a, const Position& b) {
     return max(dx, dy);  // Chebyshev distance
 }
 
-void Combat::attack(Player& player, Enemy& enemy) {
+void Combat::attack(Entity* Entity1, Inventory* PlayerInventory) {
 	std::cout << "\n=== Combat Start ===\n";
 
-	while (player.getHealth() > 0 && enemy.getHealth() > 0) {
-		int distance = calculateDistance(player.getPosition(), enemy.getPosition());
-		std::cout << "\nDistance between you and " << enemy.getTypeName() << ": " << distance << "\n";
+	int distance;
+	Player* player;
 
-		// ============ Player's Turn ============
-		bool attacked = false;
-		Inventory& inventory = player.getInventory();
+	if (Entity1->getEntityType() == 'E') {
 
-		if (inventory.getInventory("Sword") != nullptr && distance <= 1) {
-			std::cout << "You slash the enemy with your Sword!\n";
-			enemy.takeDamage(20);
-			attacked = true;
-		}
-		else if (inventory.getInventory("Bow") != nullptr && distance <= 5) {
-			std::cout << "You shoot an arrow at the enemy!\n";
-			enemy.takeDamage(15);
-			attacked = true;
-		}
-		else if (inventory.getInventory("Bomb") != nullptr && distance <= 2) {
-			std::cout << "You throw a bomb at the enemy!\n";
-			enemy.takeDamage(30);
-			attacked = true;
+		for (int i = 0; i < 20; i++) {
+			if (List[i]->getEntityType() == 'P') {
+				distance = calculateDistance(Entity1->getPosition(), List[i]->getPosition());
+				player = dynamic_cast<Player*>(List[i]);
+
+			}
 		}
 
-		if (!attacked) {
-			std::cout << "You are either unarmed or out of range to attack.\n";
-		}
-
-		// Check if enemy died after player's turn
-		if (enemy.getHealth() <= 0) {
-			std::cout << "You defeated the " << enemy.getTypeName() << "!\n";
-			break;
-		}
 
 		// ============ Enemy's Turn ============
-		EnemyType type = enemy.getType();
+		Enemy* enemyReference = dynamic_cast<Enemy*>(Entity1);
+		EnemyType type = enemyReference->getType();
 		bool enemyCanMelee = (type == EnemyType::Monster || type == EnemyType::Hellhound ||
 			type == EnemyType::Zombie || type == EnemyType::Goblin ||
 			type == EnemyType::Bat || type == EnemyType::Skeleton ||
@@ -157,40 +139,86 @@ void Combat::attack(Player& player, Enemy& enemy) {
 		bool enemyAttacked = false;
 
 		if (enemyCanMelee && distance <= 1) {
-			std::cout << enemy.getTypeName() << " strikes you in close combat!\n";
-			player.takeDamage(enemy.getDamage());
+			std::cout << enemyReference->getTypeName() << " strikes you in close combat!\n";
+			player->takeDamage(enemyReference->getDamage());
 			enemyAttacked = true;
 		}
 		else if (enemyCanRange && distance <= 5) {
-			std::cout << enemy.getTypeName() << " attacks you from range!\n";
-			player.takeDamage(enemy.getDamage() - 2);
+			std::cout << enemyReference->getTypeName() << " attacks you from range!\n";
+			player->takeDamage(enemyReference->getDamage() - 2);
 			enemyAttacked = true;
 		}
 
 		if (!enemyAttacked) {
-			std::cout << enemy.getTypeName() << " is too far to attack.\n";
+			std::cout << enemyReference->getTypeName() << " is too far to attack.\n";
 		}
 
 		// Check if player died after enemy's turn
-		if (player.getHealth() <= 0) {
+		if (player->getHealth() <= 0) {
 			std::cout << "You have been defeated...\n";
-			break;
+
 		}
+
 	}
+
+	// ============ Player's Turn ============
+	bool attacked = false;
+	Inventory* inventory = PlayerInventory;
+
+	if (inventory->getInventory("Sword") != nullptr && distance <= 1) {
+		std::cout << "You slash the enemy with your Sword!\n";
+		enemy.takeDamage(20);
+		attacked = true;
+	}
+	else if (inventory->getInventory("Bow") != nullptr && distance <= 5) {
+		std::cout << "You shoot an arrow at the enemy!\n";
+		enemy.takeDamage(15);
+		attacked = true;
+	}
+	else if (inventory->getInventory("Bomb") != nullptr && distance <= 2) {
+		std::cout << "You throw a bomb at the enemy!\n";
+		enemy.takeDamage(30);
+		attacked = true;
+	}
+
+	if (!attacked) {
+		std::cout << "You are either unarmed or out of range to attack.\n";
+	}
+
+	// Check if enemy died after player's turn
+	if (enemy.getHealth() <= 0) {
+		std::cout << "You defeated the " << enemy.getTypeName() << "!\n";
+		
+	}
+
+	
+	
 
 	std::cout << "=== Combat End ===\n";
 }
 
 int Combat::WinCondition()
 {
-	bool Wincheck = true;
+	bool PlayerCheck = false;
+	bool EnemyCheck = false;
 	for (int i = 0; i < 20; i++)
 	{
 		if (List[i]->getEntityType() == 'E') {
-
+			EnemyCheck = true;
 		}
+		if (List[i]->getEntityType() == 'P') {
+			PlayerCheck = true;
+		}
+		if (PlayerCheck == true && EnemyCheck == true) {
+			return 0;
+		}
+		else {
+			return 1;
+		}
+
+		
 	}
-	return 1;
+	
 }
 
 void Combat::TurnOrder()
@@ -201,7 +229,13 @@ void Combat::TurnOrder()
         board.drawBoard();
 		List[i]->move();
 		List[i]->attack();
-		WinCondition();
+		if (WinCondition() == 1) {
+
+			std::cout << "Combat Ended \n";
+
+			return;
+
+		}
 		firstTurn++;
 	}
 	std::cout << "Turn Number: " << firstTurn;
@@ -212,11 +246,29 @@ void Combat::startCombat(char CombatScenario) {
 	switch (CombatScenario) {
 	case 'A':
 		FactoryCreateEntity(8);
+		board.addPlayer(List[0]);
 		FactoryCreateEntity(0);
+		board.addEnemy(List[1]);
 		FactoryCreateEntity(0);
+		board.addEnemy(List[2]);
 		FactoryCreateEntity(0);
+		board.addEnemy(List[3]);
 		break;
 	}
 
+
+}
+
+void Combat::earnGold(int amount, Inventory* Inventory) {
+
+	int CurrentAmount = Inventory->getCurrency();
+	CurrentAmount + amount;
+	Inventory->setCurrency(CurrentAmount);
+
+}
+
+int Combat::getGold(Inventory* PlayerInventory) const {
+
+	return PlayerInventory->getCurrency();
 
 }

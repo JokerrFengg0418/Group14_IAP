@@ -19,6 +19,7 @@ Player::Player(int r, int c, int hp, int dmg)
 	setCol(c);
 	setHealth(hp);   // 
 	setDamage(dmg);  // 
+	setEntityType('P');
 	std::cout << "Player Created at (" << r << ", " << c << ")" << ", health: " << getHealth() << ", damage: " << getDamage() << std::endl;
 }
 

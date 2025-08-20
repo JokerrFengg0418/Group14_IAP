@@ -1,5 +1,6 @@
 #include "Shop.h"
 #include <iostream>
+#include "Option.h"
 
 Shop::Shop(Inventory* inventoryPtr) : gameInventory(inventoryPtr) 
 {
@@ -46,8 +47,8 @@ void Shop::displayItems() {
     }
     std::cout << "------------------------------------------" << std::endl;
 }
-void Shop::buyItem(Player* player) {
-    if (player == nullptr) {
+void Shop::buyItem(Inventory* PlayerInventory) {
+    if (PlayerInventory == nullptr) {
         std::cout << "Error: Player object is invalid." << std::endl;
         return;
     }
@@ -58,13 +59,13 @@ void Shop::buyItem(Player* player) {
 
     if (choice > 0 && choice <= inventory.size()) {
         Item* selectedItem = inventory[choice - 1];
-        if ((player->getInventory().getCurrency() >= selectedItem->GetItemValue('S'))){
+        if ((PlayerInventory->getCurrency() >= selectedItem->GetItemValue('S'))) {
 
             // Use the setCurrency() function on the player's Inventory object
-            player->getInventory().setCurrency(player->getInventory().getCurrency() - selectedItem->GetItemValue('S'));
+            PlayerInventory->setCurrency(PlayerInventory->getCurrency() - selectedItem->GetItemValue('S'));
 
             // Add the item to the player's inventory here
-            player->getInventory().setInventory(selectedItem->GetItemWord('N'), 1);
+            PlayerInventory->setInventory(selectedItem->GetItemWord('N'), 1);
 
 
             std::cout << "You have successfully purchased a " << selectedItem->GetItemWord('N') << "!" << std::endl;

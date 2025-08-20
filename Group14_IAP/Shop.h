@@ -19,6 +19,6 @@ public:
     // Member functions
     void populateShop();
     void displayItems();
-    void buyItem(Player* player);
+    void buyItem(Inventory* PlayerInventory);
 };
 

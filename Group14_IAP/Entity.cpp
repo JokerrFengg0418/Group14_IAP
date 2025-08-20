@@ -83,3 +83,7 @@ void Entity::takeDamage()
 {
 
 }
+
+void Entity::getType() {
+    return;
+}

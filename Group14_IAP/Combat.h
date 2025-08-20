@@ -29,18 +29,16 @@ public:
 	// Calculates distance between two positions using Chebyshev distance
 	static int calculateDistance(const Position& a, const Position& b);
 
-	// Handles a full turn: player attacks first, enemy retaliates if alive
-	static void attack(Player& player, Enemy& enemy);
+	// Attack Function
+	void attack(Entity* Entity, Inventory* PlayerInventory);
 
 	void move();
 
-	// Inventory Functions
-	void addItem(const std::string& item);
-	const std::vector<std::string>& getInventory() const;
+	
 
 	// Reward
-	void earnGold(int amount);
-	int getGold() const;
+	void earnGold(int amount, Inventory* Inventory);
+	int getGold(Inventory* PlayerInventory) const;
 
 };
 

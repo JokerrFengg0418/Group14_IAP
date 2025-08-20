@@ -20,9 +20,7 @@ public:
 
 	void move();
 
-	// Inventory Functions
-	Inventory& getInventory();
-	const Inventory& getInventory() const;
+	
 
 
 };
