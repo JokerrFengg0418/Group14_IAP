@@ -12,7 +12,7 @@
 using namespace std;
 
 
-Entity* Combat::FactoryCreateEntity(int CharacterType) {
+void Combat::FactoryCreateEntity(int CharacterType) {
 
 	int RandomTurf = rand() % 40;
 	switch (CharacterType) {
@@ -22,82 +22,100 @@ Entity* Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				return new Enemy(39, 0, EnemyType::Monster, 99, 99);
+				List [i] = new Enemy(39, 0, EnemyType::Monster, 99, 99);
+				return;
 
 			}
 		}
+		break;
 	case 1:
 		for (int i = 0; i < 20; i++) {
 
 			if (List[i] == nullptr) {
 
-				return new Enemy(39, 0, EnemyType::Hellhound, 99, 99);
+				List[i] = new Enemy(39, 0, EnemyType::Hellhound, 99, 99);
+				return;
 
 			}
 		}
+		break;
 	case 2:
 		for (int i = 0; i < 20; i++) {
 
 			if (List[i] == nullptr) {
 
-				return new Enemy(39, 0, EnemyType::Zombie, 99, 99);
+				List[i] = new Enemy(39, 0, EnemyType::Zombie, 99, 99);
+				return;
 
 			}
 		}
+		break;
 	case 3:
 		for (int i = 0; i < 20; i++) {
 
 			if (List[i] == nullptr) {
 
-				return new Enemy(39, 0, EnemyType::Goblin, 99, 99);
+				List[i] = new Enemy(39, 0, EnemyType::Goblin, 99, 99);
+				return;
 
 			}
 		}
+		break;
 	case 4:
 		for (int i = 0; i < 20; i++) {
 
 			if (List[i] == nullptr) {
 
-				return new Enemy(39, 0, EnemyType::Bat, 99, 99);
+				List[i] = new Enemy(39, 0, EnemyType::Bat, 99, 99);
+				return;
 
 			}
 		}
+		break;
 	case 5:
 		for (int i = 0; i < 20; i++) {
 
 			if (List[i] == nullptr) {
 
-				return new Enemy(39, 0, EnemyType::Skeleton, 99, 99);
+				List[i] = new Enemy(39, 0, EnemyType::Skeleton, 99, 99);
+				return;
 
 			}
 		}
+		break;
 	case 6:
 		for (int i = 0; i < 20; i++) {
 
 			if (List[i] == nullptr) {
 
-				return new Enemy(39, 0, EnemyType::Gargoyle, 99, 99);
+				List[i] = new Enemy(39, 0, EnemyType::Gargoyle, 99, 99);
+				return;
 
 			}
 		}
+		break;
 	case 7:
 		for (int i = 0; i < 20; i++) {
 
 			if (List[i] == nullptr) {
 
-				return new Enemy(39, 0, EnemyType::Boss, 99, 99);
+				List[i] = new Enemy(39, 0, EnemyType::Boss, 99, 99);
+				return;
 
 			}
 		}
+		break;
 	case 8:
 		for (int i = 0; i < 20; i++) {
 
 			if (List[i] == nullptr) {
 
-				return new Player(0, 0, 100, 50);
+				List[i] = new Player(0, 0, 100, 50);
+				return;
 
 			}
 		}
+		break;
 	}
 }
 
@@ -273,10 +291,13 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
     firstTurn = 1;
 	for (int i = 0; i < 20; i++)
 	{
-        board.drawBoard();
-		List[i]->move();
-		attack(List[i], PlayerInventory);
-		FactoryDestructor();
+		if (List[i] != nullptr)
+		{
+			board.drawBoard();
+			List[i]->move();
+			attack(List[i], PlayerInventory);
+			FactoryDestructor();
+		}
 		if (WinCondition() == 1) {
 
 			std::cout << "Combat Ended \n";
