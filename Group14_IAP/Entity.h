@@ -44,7 +44,7 @@ public:
     void setCol(int c);
 
     // functions
-    virtual void move();
+    virtual void move(Entity* List[20]);
     virtual void takeDamage(int amount);
     virtual void getType();
     void EntityLocation() const;
