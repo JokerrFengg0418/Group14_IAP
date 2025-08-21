@@ -22,7 +22,7 @@ public:
 	Entity* FactoryCreateEntity(int CharacterType);
 
 	int WinCondition();
-	void TurnOrder();
+	void TurnOrder(Inventory* PlayerInevntory);
 
 	void startCombat(char CombatScenario);
 
@@ -34,7 +34,7 @@ public:
 
 	void move();
 
-	
+	void FactoryDestructor();
 
 	// Reward
 	void earnGold(int amount, Inventory* Inventory);
