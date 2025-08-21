@@ -254,7 +254,13 @@ int Combat::WinCondition()
 			return 0;
 		}
 		else {
+			
+			for (int i = 0; i < 20; i++) {
+				delete List[i];
+				List[i] = nullptr;
+			}
 			return 1;
+
 		}
 
 		
@@ -262,14 +268,15 @@ int Combat::WinCondition()
 	
 }
 
-void Combat::TurnOrder()
+void Combat::TurnOrder(Inventory* PlayerInventory)
 {
     firstTurn = 1;
 	for (int i = 0; i < 20; i++)
 	{
         board.drawBoard();
 		List[i]->move();
-		List[i]->attack();
+		attack(List[i], PlayerInventory);
+		FactoryDestructor();
 		if (WinCondition() == 1) {
 
 			std::cout << "Combat Ended \n";
@@ -311,5 +318,16 @@ void Combat::earnGold(int amount, Inventory* Inventory) {
 int Combat::getGold(Inventory* PlayerInventory) const {
 
 	return PlayerInventory->getCurrency();
+
+}
+
+void Combat::FactoryDestructor() {
+
+	for (int i = 0; i < 20; i++) {
+		if (List[i]->getHealth() <= 0) {
+			delete List[i];
+			List[i] = nullptr;
+		}
+	}
 
 }

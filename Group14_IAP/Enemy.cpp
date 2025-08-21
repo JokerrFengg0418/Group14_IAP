@@ -88,6 +88,32 @@ void Enemy::move()
 		setCol(getCol() + 1); // Move right
 		break;
 	}
+
+	if (getRow() < 0 || getRow() > 39 || getCol() < 0 || getCol() > 39)
+	{
+		return;
+	}
+	for (int i = 0; i < 20; i++)
+	{
+		if (List[i] != nullptr)
+		{
+			int otherx = List[i]->getPosition().getRow();
+			int othery = List[i]->getPosition().getCol();
+			char othertype = List[i]->getEntityType();
+
+			if (otherx == getRow() && othery == getCol())
+			{
+				if (othertype == 'E' && getEntityType() == 'P')
+				{
+					return;
+				}
+				else if (othertype == 'E' && getEntityType() == 'E')
+				{
+					return;
+				}
+			}
+		}
+	}
 }
 
 // Debug

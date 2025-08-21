@@ -9,6 +9,7 @@ Item::Item() {
 	ResaleValue = 0;
 	SaleValue = 0;
 	Type = NULL;
+	Number = NULL;
 }
 
 
