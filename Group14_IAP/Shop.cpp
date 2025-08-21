@@ -26,59 +26,59 @@ static inline void pushIfFound(std::vector<Item*>& v, Item* it, const char* name
 void Shop::populateShop() {
     if (gameInventory != nullptr) {
         // Weapons
-        Item* sword = gameInventory->DrawDatabase('W', "Sword");
+        Item* sword = gameInventory->DrawDatabase('W', "    Swords    ");
         if (sword != nullptr) {
             inventory.push_back(sword);
         }
-        Item* slingShot = gameInventory->DrawDatabase('W', "SlingShot");
+        Item* slingShot = gameInventory->DrawDatabase('W', "  SlingShots  ");
         if (slingShot != nullptr) {
             inventory.push_back(slingShot);
         }
-        Item* bowAndArrow = gameInventory->DrawDatabase('W', "Bow and Arrow");
+        Item* bowAndArrow = gameInventory->DrawDatabase('W', "Bow and Arrows");
         if (bowAndArrow != nullptr) {
             inventory.push_back(bowAndArrow);
         }
-        Item* mace = gameInventory->DrawDatabase('W', "Mace");
+        Item* mace = gameInventory->DrawDatabase('W', "     Mace     ");
         if (mace != nullptr) {
             inventory.push_back(mace);
         }
-        Item* axe = gameInventory->DrawDatabase('W', "Axe");
+        Item* axe = gameInventory->DrawDatabase('W', "     Axee     ");
         if (axe != nullptr) {
             inventory.push_back(axe);
         }
-        Item* crossbow = gameInventory->DrawDatabase('W', "Crossbow");
+        Item* crossbow = gameInventory->DrawDatabase('W', "   Crossbow   ");
         if (crossbow != nullptr) {
             inventory.push_back(crossbow);
         }
-        Item* turret = gameInventory->DrawDatabase('W', "Turret");
+        Item* turret = gameInventory->DrawDatabase('W', "    Turret    ");
         if (turret != nullptr) {
             inventory.push_back(turret);
         }
 
         // Armor (Note: Assuming armor is in the 'A' database)
-        Item* woodenArmor = gameInventory->DrawDatabase('I', "Wooden Armor");
+        Item* woodenArmor = gameInventory->DrawDatabase('I', " Wooden Armor ");
         if (woodenArmor != nullptr) {
             inventory.push_back(woodenArmor);
         }
-        Item* silverArmor = gameInventory->DrawDatabase('I', "Silver Armor");
+        Item* silverArmor = gameInventory->DrawDatabase('I', " Silver Armor ");
         if (silverArmor != nullptr) {
             inventory.push_back(silverArmor);
         }
-        Item* shield = gameInventory->DrawDatabase('I', "Shield");
+        Item* shield = gameInventory->DrawDatabase('I', "    Shield    ");
         if (shield != nullptr) {
             inventory.push_back(shield);
         }
-        Item* helmet = gameInventory->DrawDatabase('I', "Helmet");
+        Item* helmet = gameInventory->DrawDatabase('I', "    Helmet    ");
         if (helmet != nullptr) {
             inventory.push_back(helmet);
         }
-        Item* leatherArmor = gameInventory->DrawDatabase('I', "Leather Armor");
+        Item* leatherArmor = gameInventory->DrawDatabase('I', "Leather Armors");
         if (leatherArmor != nullptr) {
             inventory.push_back(leatherArmor);
         }
 
         // Consumables / Items (Note: Assuming these are in the 'I' database)
-        Item* healthPotion = gameInventory->DrawDatabase('I', "Health Potion");
+        Item* healthPotion = gameInventory->DrawDatabase('I', "Health Potions");
         if (healthPotion != nullptr) {
             inventory.push_back(healthPotion);
         }
