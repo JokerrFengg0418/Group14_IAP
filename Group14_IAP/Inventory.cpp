@@ -3,6 +3,17 @@
 #include <iostream>
 #include <string>
 
+
+Inventory::Inventory()
+{
+	// Initialize databases when an Inventory object is created.
+	DatabaseInitialisation();
+}
+
+Inventory::~Inventory()
+{
+}
+
 //Drawing Inventory (UI Save Me)
 void Inventory::DrawInventory() const{
 	std::cout << "   0 1 2 3 4\n";
@@ -10,7 +21,7 @@ void Inventory::DrawInventory() const{
 	for (int i = 0; i < 4; ++i) {
 		std::cout << i << " ";
 		for (int j = 0; j < 5; ++j) {
-			std::cout << '|' << Inventory[j] << ' ';
+			std::cout << '|' << inventory[j] << ' ';
 		}
 		std::cout << '|' << std::endl;
 	}
@@ -22,9 +33,9 @@ Item* Inventory::getInventory(std::string Name) const{
 
 	for (int i = 0; i < 25; i++) {
 
-		if (this->Inventory[i]->GetItemWord('N') == Name) {
+		if (this->inventory[i]->GetItemWord('N') == Name) {
 
-			return Inventory[i];
+			return inventory[i];
 
 
 		}
@@ -39,7 +50,7 @@ void Inventory::setInventory(std::string ItemName, int Number) {
 
 	for (int i = 0; i < 25; i++) {
 
-		if (Inventory[i]->GetItemWord('N') == ItemName) {
+		if (inventory[i]->GetItemWord('N') == ItemName) {
 
 			
 			if (WeaponDatabase[i]->GetItemWord('N') == ItemName && i < 10) {
@@ -47,9 +58,9 @@ void Inventory::setInventory(std::string ItemName, int Number) {
 			}
 			
 
-			int CurrentValue = Inventory[i]->GetItemValue('V');
+			int CurrentValue = inventory[i]->GetItemValue('V');
 
-			Inventory[i]->SetItemValue('V', CurrentValue + Number);
+			inventory[i]->SetItemValue('V', CurrentValue + Number);
 
 			return;
 		}
@@ -62,9 +73,9 @@ void Inventory::setInventory(std::string ItemName, int Number) {
 			
 			for (int i = 0; i < 25; i++) {
 
-				if (Inventory[i] == nullptr) {
+				if (inventory[i] == nullptr) {
 
-					Inventory[i] = DrawDatabase('W', ItemName);
+					inventory[i] = DrawDatabase('W', ItemName);
 
 					return;
 
@@ -74,9 +85,9 @@ void Inventory::setInventory(std::string ItemName, int Number) {
 
 			for (int i = 0; i < 25; i++) {
 
-				if (Inventory[i] == nullptr) {
+				if (inventory[i] == nullptr) {
 
-					Inventory[i] = DrawDatabase('M', ItemName);
+					inventory[i] = DrawDatabase('M', ItemName);
 
 					return;
 
@@ -86,9 +97,9 @@ void Inventory::setInventory(std::string ItemName, int Number) {
 
 			for (int i = 0; i < 25; i++) {
 
-				if (Inventory[i] == nullptr) {
+				if (inventory[i] == nullptr) {
 
-					Inventory[i] = DrawDatabase('I', ItemName);
+					inventory[i] = DrawDatabase('I', ItemName);
 
 					return;
 
@@ -104,27 +115,27 @@ void Inventory::RemoveItemFromInventory(std::string ItemName, int Number) {
 
 	for (int i = 0; i < 25; i++) {
 
-		if (Inventory[i]->GetItemWord('N') == ItemName) {
+		if (inventory[i]->GetItemWord('N') == ItemName) {
 
 			for (int j = 0; j < 10; j++) {
 				if (WeaponDatabase[j]->GetItemWord('N') == ItemName) {
-					delete Inventory[i];
-					Inventory[i] = nullptr;
+					delete inventory[i];
+					inventory[i] = nullptr;
 					return;
 				}
 			}
-			int CurrentValue = Inventory[i]->GetItemValue('V');
+			int CurrentValue = inventory[i]->GetItemValue('V');
 			CurrentValue - Number;
 
 			if (CurrentValue <= 0) {
 
-				delete Inventory[i];
-				Inventory[i] = nullptr;
+				delete inventory[i];
+				inventory[i] = nullptr;
 
 			}
 			else {
 
-				Inventory[i]->SetItemValue('V', CurrentValue);
+				inventory[i]->SetItemValue('V', CurrentValue);
 
 			}
 
@@ -188,11 +199,15 @@ void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescript
 
 void Inventory::DatabaseInitialisation() {
 
-	//Weapon Section here
+	//FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, int number, char DatabaseType)
+	//Weapon Section here4
+	FactoryCreateItem("Iron Sword", "A sturdy sword.", 'W', 100, 40, 60, 2, 'W');
 
 	//Monster Section here
 
 	//Item Section here
+	FactoryCreateItem("Health Potion", "Restores health.", 'P', 50, 20, 30, 20, 'I');
+	FactoryCreateItem("Leather Armor", "Lightweight armor.", 'A', 75, 30, 45, 50, 'I');
 
 
 }

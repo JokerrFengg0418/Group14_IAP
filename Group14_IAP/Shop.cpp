@@ -20,9 +20,9 @@ void Shop::populateShop() {
         // Populate the shop with items from your databases.
         // For example, pulling an item named "Iron Sword" from the 'W'eapon database.
         Item* ironSword = gameInventory->DrawDatabase('W', "Iron Sword");
-        if (ironSword != nullptr) {
-            inventory.push_back(ironSword);
-        }
+		if (ironSword != nullptr) {
+			inventory.push_back(ironSword);
+		}
 
         // Add more items as needed, for example, from the 'M'onster or 'I'tem databases.
         Item* healthPotion = gameInventory->DrawDatabase('I', "Health Potion");
