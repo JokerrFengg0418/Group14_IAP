@@ -13,7 +13,6 @@ Inventory::Inventory()
 	}
 	for (int i = 0; i < 10; i++) {
 		WeaponDatabase[i] = nullptr;
-		ArmorDatabase[i] = nullptr;
 	}
 	// Initialize databases when an Inventory object is created.
 	DatabaseInitialisation();
@@ -126,19 +125,6 @@ void Inventory::setInventory(std::string ItemName, int Number) {
 				}
 			}
 		}
-		else if (i == 3 && DrawDatabase('A', ItemName) != nullptr) {
-
-			for (int i = 0; i < 25; i++) {
-
-				if (inventory[i] == nullptr) {
-
-					inventory[i] = DrawDatabase('A', ItemName);
-
-					return;
-
-				}
-			}
-		}
 	}
 }
 
@@ -224,21 +210,6 @@ void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescript
 
 		break;
 
-	case 'A':
-
-		for (int i = 0; i < 10; i++) {
-
-			if (ArmorDatabase[i] == nullptr) {
-
-				ArmorDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue, number);
-
-				return;
-			}
-
-		}
-
-		break;
-
 	}
 
 }
@@ -269,65 +240,27 @@ void Inventory::DatabaseInitialisation() {
 
 //Draws Item from Database instead of Inventory//
 Item* Inventory::DrawDatabase(char DatabaseType, std::string ItemName) {
-
 	switch (DatabaseType) {
-
 	case 'W':
-
-		for (int i = 0; i < 10; i++) {
-
-			if (WeaponDatabase[i]->GetItemWord('N') == ItemName) {
-
-				return WeaponDatabase[i];
-
-			}
-
+		for (int i = 0; i < 10; ++i) {
+			Item* it = WeaponDatabase[i];
+			if (it && it->GetItemWord('N') == ItemName) return it;
 		}
 		break;
 
-	case 'I':
-
-		for (int i = 0; i < 50; i++) {
-
-			if (MonsterItemDatabase[i]->GetItemWord('N') == ItemName) {
-
-				return MonsterItemDatabase[i];
-
-			}
-
+	case 'I': // Items (consumables/armors)  <-- was wrong before
+		for (int i = 0; i < 50; ++i) {
+			Item* it = ItemDatabase[i];
+			if (it && it->GetItemWord('N') == ItemName) return it;
 		}
 		break;
 
-	case 'M':
-
-		for (int i = 0; i < 50; i++) {
-
-			if (ItemDatabase[i]->GetItemWord('N') == ItemName) {
-
-				return ItemDatabase[i];
-
-			}
-
+	case 'M': // Monster drops                <-- was wrong before
+		for (int i = 0; i < 50; ++i) {
+			Item* it = MonsterItemDatabase[i];
+			if (it && it->GetItemWord('N') == ItemName) return it;
 		}
 		break;
-
-	case 'A':
-
-		for (int i = 0; i < 10; i++) {
-
-			if (ArmorDatabase[i]->GetItemWord('N') == ItemName) {
-
-				return ArmorDatabase[i];
-
-			}
-
-		}
-		break;
-
-	default:
-
-		return nullptr;
-
 	}
 	return nullptr;
 }

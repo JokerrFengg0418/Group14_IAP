@@ -13,7 +13,6 @@ private:
 	Item* EquippedItem;
 	Item* MonsterItemDatabase[50];
 	Item* WeaponDatabase[10];
-	Item* ArmorDatabase[10];
 	int Currency;
 
 public:
