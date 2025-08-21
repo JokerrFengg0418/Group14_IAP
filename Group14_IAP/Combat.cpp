@@ -205,7 +205,6 @@ void Combat::attack(Entity* Entity1, Inventory* PlayerInventory) {
 					else if (1 > distance) {
 						std::cout << "Warning: No Item Equipped! \n";
 						Highlightlist[i] = true;
-						return;
 					}
 				}
 			}
@@ -315,6 +314,7 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
     firstTurn = 1;
 	while (WinCondition() == 0)
 	{
+		std::cout << "Turn Number: " << firstTurn << "\n";
 		board.drawBoard();
 		for (int i = 0; i < 20; i++)
 		{
@@ -328,7 +328,8 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 			}
 		}
 		firstTurn++;
-		std::cout << "Turn Number: " << firstTurn << "\n";
+		
+		Sleep(2000);
 		system("cls");
 	}
 
