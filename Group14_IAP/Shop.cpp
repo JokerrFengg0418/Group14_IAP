@@ -26,7 +26,7 @@ static inline void pushIfFound(std::vector<Item*>& v, Item* it, const char* name
 void Shop::populateShop() {
     if (gameInventory != nullptr) {
         // Weapons
-        Item* sword = gameInventory->DrawDatabase('W', "    Swords    ");
+        Item* sword = gameInventory->DrawDatabase('W', "    Broadsword    ");
         if (sword != nullptr) {
             inventory.push_back(sword);
         }
