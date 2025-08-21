@@ -41,6 +41,12 @@ void Inventory::setInventory(std::string ItemName, int Number) {
 
 		if (Inventory[i]->GetItemWord('N') == ItemName) {
 
+			
+			if (WeaponDatabase[i]->GetItemWord('N') == ItemName && i < 10) {
+				break;
+			}
+			
+
 			int CurrentValue = Inventory[i]->GetItemValue('V');
 
 			Inventory[i]->SetItemValue('V', CurrentValue + Number);
@@ -100,6 +106,13 @@ void Inventory::RemoveItemFromInventory(std::string ItemName, int Number) {
 
 		if (Inventory[i]->GetItemWord('N') == ItemName) {
 
+			for (int j = 0; j < 10; j++) {
+				if (WeaponDatabase[j]->GetItemWord('N') == ItemName) {
+					delete Inventory[i];
+					Inventory[i] = nullptr;
+					return;
+				}
+			}
 			int CurrentValue = Inventory[i]->GetItemValue('V');
 			CurrentValue - Number;
 
@@ -121,7 +134,7 @@ void Inventory::RemoveItemFromInventory(std::string ItemName, int Number) {
 
 }
 
-void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, char DatabaseType) {
+void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, int number, char DatabaseType) {
 
 	switch (DatabaseType) {
 
@@ -131,7 +144,7 @@ void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescript
 
 			if (WeaponDatabase[i] == nullptr) {
 
-				WeaponDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue);
+				WeaponDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue, number);
 
 				return;
 			}
@@ -145,7 +158,7 @@ void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescript
 
 			if (ItemDatabase[i] == nullptr) {
 
-				ItemDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue);
+				ItemDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue, number);
 
 				return;
 			}
@@ -160,7 +173,7 @@ void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescript
 
 			if (MonsterItemDatabase[i] == nullptr) {
 
-				MonsterItemDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue);
+				MonsterItemDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue, number);
 
 				return;
 			}
@@ -245,6 +258,14 @@ int Inventory::getCurrency() const {
 void Inventory::setCurrency(int NewAmount) {
 
 	Currency = NewAmount;
+}
+
+Item* Inventory::getEquippedItem() const {
+	return EquippedItem;
+}
+
+void Inventory::setEquippedItem(Item* SelectedItem) {
+	EquippedItem = SelectedItem;
 }
 
 

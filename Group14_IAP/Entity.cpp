@@ -79,7 +79,7 @@ void Entity::attack()
     return;
 }
 
-void Entity::takeDamage()
+void Entity::takeDamage(int amount)
 {
 
 }

@@ -13,7 +13,7 @@ private:
 	Item* EquippedItem;
 	Item* MonsterItemDatabase[50];
 	Item* WeaponDatabase[10];
-		int Currency;
+	int Currency;
 
 public:
 
@@ -22,6 +22,10 @@ public:
 	Item* getInventory(std::string Name) const;
 
 	void setInventory(std::string ItemName, int Number);
+
+	Item* getEquippedItem() const;
+
+	void setEquippedItem(Item* ItemSelect);
 
 	void RemoveItemFromInventory(std::string ItemName, int Number);
 
@@ -33,7 +37,7 @@ public:
 
 	Item* DrawDatabase(char DatabaseType, std::string ItemName);
 
-	void FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, char DatabaseType);
+	void FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, int number, char DatabaseType);
 
 };
 

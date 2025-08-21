@@ -15,7 +15,7 @@ Item::Item() {
 
 
 
-Item::Item(std::string Item, std::string ItemDes, char type, int value, int resaleValue, int saleValue) {
+Item::Item(std::string Item, std::string ItemDes, char type, int value, int resaleValue, int saleValue, int number) {
 
 	ItemName = Item;
 	ItemDescription = ItemDes;
@@ -23,7 +23,7 @@ Item::Item(std::string Item, std::string ItemDes, char type, int value, int resa
 	ResaleValue = resaleValue;
 	SaleValue = saleValue;
 	Type = type;
-
+	Number = number;
 }
 
 
@@ -108,6 +108,14 @@ void Item::SetType(char NewType) {
 
 }
 
+int Item::GetNumber() const {
 
+	return Number;
+};
+
+void Item::SetNumber(int Numberinsert) {
+
+	Number = Numberinsert;
+}
 
 

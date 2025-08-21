@@ -19,6 +19,7 @@ public:
 	// Function to add Entity
 	void addPlayer(Entity* p);
 	void addEnemy(Entity* e);
+	void printBoardCellColor(int row, int col);
 
 private:
 	char board [40][40];
@@ -26,7 +27,7 @@ private:
 	Entity* Player; // Pointer to player entity
 
 	Entity* selectedEnemy;
-	void printBoardCellColor(int row, int col);
+	
 
 	static const int maxEnemies = 20; // Maximum number of enemies
 	Entity* enemies[maxEnemies]; // Array of enemy pointers

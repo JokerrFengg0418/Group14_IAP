@@ -7,6 +7,7 @@
 #include <cmath>
 #include <cstdlib>
 #include "Option.h"
+#include <conio.h>
 
 using namespace std;
 
@@ -125,7 +126,7 @@ void Combat::attack(Entity* Entity1, Inventory* PlayerInventory) {
 			}
 		}
 
-
+		
 		// ============ Enemy's Turn ============
 		Enemy* enemyReference = dynamic_cast<Enemy*>(Entity1);
 		EnemyType type = enemyReference->getType();
@@ -161,38 +162,78 @@ void Combat::attack(Entity* Entity1, Inventory* PlayerInventory) {
 
 	}
 
-	// ============ Player's Turn ============
-	bool attacked = false;
-	Inventory* inventory = PlayerInventory;
+	if (Entity1->getEntityType() == 'P') {
 
-	if (inventory->getInventory("Sword") != nullptr && distance <= 1) {
-		std::cout << "You slash the enemy with your Sword!\n";
-		enemy.takeDamage(20);
-		attacked = true;
-	}
-	else if (inventory->getInventory("Bow") != nullptr && distance <= 5) {
-		std::cout << "You shoot an arrow at the enemy!\n";
-		enemy.takeDamage(15);
-		attacked = true;
-	}
-	else if (inventory->getInventory("Bomb") != nullptr && distance <= 2) {
-		std::cout << "You throw a bomb at the enemy!\n";
-		enemy.takeDamage(30);
-		attacked = true;
-	}
+		bool attacked = false;
+		Inventory* inventory = PlayerInventory;
+		bool Highlightlist[20];
 
-	if (!attacked) {
-		std::cout << "You are either unarmed or out of range to attack.\n";
-	}
+		for (int i = 0; i < 20; i++) {
+			Highlightlist[i] = false;
+		}
 
-	// Check if enemy died after player's turn
-	if (enemy.getHealth() <= 0) {
-		std::cout << "You defeated the " << enemy.getTypeName() << "!\n";
-		
-	}
+		for (int i = 0; i < 20; i++) {
+			if (List[i]->getEntityType() == 'E') {
 
-	
-	
+				distance = calculateDistance(Entity1->getPosition(), List[i]->getPosition());
+				if (inventory->getEquippedItem()->GetNumber() < distance) {
+					Highlightlist[i] = true;
+				}
+
+			}
+		}
+		// ============ Player's Turn ============
+		bool Selection = true;
+		int Increment = 0;
+		while (Selection == true) {
+			if (Highlightlist[Increment] == true) {
+				board.printBoardCellColor(List[Increment]->getRow(), List[Increment]->getCol());
+				int input = _getch();
+
+				switch (input) {
+				case 'a':
+					Increment - 1;
+					break;
+				case 'A':
+					Increment - 1;
+					break;
+				case 'd':
+					Increment + 1;
+					break;
+				case 'D':
+					Increment + 1;
+					break;
+				default:
+					break;
+				case '\r':
+					Selection = false;
+
+				}
+
+			}
+
+		}
+
+		Item* EquippedItem = inventory->getEquippedItem();
+
+		if (EquippedItem != nullptr) {
+			std::cout << "You attacked the enemy with your" << EquippedItem->GetItemWord('N') << "! \n";
+
+			List[Increment]->takeDamage(EquippedItem->GetItemValue('V'));
+			attacked = true;
+		} else if (!attacked) {
+			std::cout << "You are either unarmed or out of range to attack.\n";
+		}
+
+		// Check if enemy died after player's turn
+		if (List[Increment]->getHealth() <= 0) {
+			Enemy* EnemyNameReference = dynamic_cast<Enemy*>(List[Increment]);
+			std::cout << "You defeated the " << EnemyNameReference->getTypeName() << "!\n";
+
+		}
+
+
+	}
 
 	std::cout << "=== Combat End ===\n";
 }

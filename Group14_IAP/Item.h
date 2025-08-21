@@ -10,12 +10,13 @@ private:
 	int Value;
 	int ResaleValue;
 	int SaleValue;
+	int Number;
 
 public:
 	
 	Item();
 
-	Item(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue);
+	Item(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, int number);
 
 	~Item();
 
@@ -31,6 +32,9 @@ public:
 
 	void SetType(char Type);
 
+	int GetNumber() const;
+
+	void SetNumber(int Numberinsert);
 
 };
 
