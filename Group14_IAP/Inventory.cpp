@@ -37,7 +37,7 @@ void Inventory::DrawInventory() const{
 				std::cout << '|' << inventory[index]->GetItemWord('N') << ' ';
 			}
 			else {
-				std::cout << '|' << "  ";
+				std::cout << '|' << " ";
 			}
 		}
 		std::cout << '|' << std::endl;
