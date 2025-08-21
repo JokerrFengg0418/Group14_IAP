@@ -8,8 +8,8 @@ Item::Item() {
 	Value = 0;
 	ResaleValue = 0;
 	SaleValue = 0;
-	Type = NULL;
-	Number = NULL;
+	Type = '\0';
+	Number = 0;
 }
 
 
@@ -51,6 +51,9 @@ std::string Item::GetItemWord(char WordType) const {
 
 		return ItemDescription;
 
+	default :
+
+		return "INVALID";
 	}
 }
 
@@ -63,8 +66,10 @@ void Item::SetItemWord(char ChangeType, std::string Change) {
 
 	case 'N':
 		ItemName = Change;
+		break;
 	case 'D':
 		ItemDescription = Change;
+		break;
 
 	}
 }
@@ -74,8 +79,10 @@ int Item::GetItemValue(char Type) const {
 	switch (Type) {
 	case 'V':
 		return Value;
+		
 	case 'R':
 		return ResaleValue;
+		
 	case 'S':
 		return SaleValue;
 	}

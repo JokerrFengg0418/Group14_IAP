@@ -40,7 +40,6 @@ public:
 
 	// Enemy Behaviour
 	void takeDamage(int amount);
-	void attack(Player* player);
 	void move();
 
 	// Debug

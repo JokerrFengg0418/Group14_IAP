@@ -91,3 +91,4 @@ void Shop::refreshStock() {
     // We only store pointers owned by Inventory DBs, so clearing is safe
     inventory.clear();
     populateShop();   // Re-fill (you can add randomness inside populateShop if desired)
+}

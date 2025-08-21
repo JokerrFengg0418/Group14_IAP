@@ -74,11 +74,6 @@ void Entity::setEntityType(char Type) {
 
 }
 
-void Entity::attack()
-{
-    return;
-}
-
 void Entity::takeDamage(int amount)
 {
 

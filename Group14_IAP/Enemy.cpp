@@ -61,14 +61,6 @@ void Enemy::takeDamage(int amount)
 	}
 }
 
-void Enemy::attack(Player* player)
-{
-	if (player != nullptr) {
-		player->takeDamage(getDamage());
-		std::cout << "Enemy attacks the player, dealing " << getDamage() << " damage." << std::endl;
-	}
-}
-
 
 void Enemy::move()
 {

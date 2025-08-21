@@ -6,8 +6,19 @@
 
 Inventory::Inventory()
 {
+
+	for (int i = 0; i < 50; i++) {
+		ItemDatabase[i] = nullptr;
+		MonsterItemDatabase[i] = nullptr;
+	}
+	for (int i = 0; i < 10; i++) {
+		WeaponDatabase[i] = nullptr;
+	}
 	// Initialize databases when an Inventory object is created.
 	DatabaseInitialisation();
+	for (int i = 0; i < 25; i++) {
+		inventory[i] = nullptr;
+	}
 }
 
 Inventory::~Inventory()
@@ -21,7 +32,13 @@ void Inventory::DrawInventory() const{
 	for (int i = 0; i < 4; ++i) {
 		std::cout << i << " ";
 		for (int j = 0; j < 5; ++j) {
-			std::cout << '|' << inventory[j] << ' ';
+			int index = i * 5 + j;
+			if (inventory[index] != nullptr) {
+				std::cout << '|' << inventory[index]->GetItemWord('N') << ' ';
+			}
+			else {
+				std::cout << '|' << "  ";
+			}
 		}
 		std::cout << '|' << std::endl;
 	}
@@ -237,6 +254,7 @@ Item* Inventory::DrawDatabase(char DatabaseType, std::string ItemName) {
 			}
 
 		}
+		break;
 
 	case 'I':
 
@@ -249,6 +267,7 @@ Item* Inventory::DrawDatabase(char DatabaseType, std::string ItemName) {
 			}
 
 		}
+		break;
 
 	case 'M':
 
@@ -261,6 +280,7 @@ Item* Inventory::DrawDatabase(char DatabaseType, std::string ItemName) {
 			}
 
 		}
+		break;
 
 	default:
 

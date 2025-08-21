@@ -114,14 +114,14 @@ void Combat::attack(Entity* Entity1, Inventory* PlayerInventory) {
 	std::cout << "\n=== Combat Start ===\n";
 
 	int distance;
-	Player* player;
+	Entity* player = nullptr;
 
 	if (Entity1->getEntityType() == 'E') {
 
 		for (int i = 0; i < 20; i++) {
 			if (List[i]->getEntityType() == 'P') {
 				distance = calculateDistance(Entity1->getPosition(), List[i]->getPosition());
-				player = dynamic_cast<Player*>(List[i]);
+				player = List[i];
 
 			}
 		}

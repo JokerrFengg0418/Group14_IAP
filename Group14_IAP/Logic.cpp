@@ -56,7 +56,7 @@ void Logic::TurnOrder() {
 	while (GameEndState == false) {
 
 
-		GameOption.displayMenu();
+		GameOption.runMainMenu();
 		CombatHandler.startCombat('A');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);

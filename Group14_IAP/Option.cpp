@@ -7,10 +7,14 @@ using std::endl;
 
 // Inventory
 
-Option::Option(Inventory* inv) : PlayerInventory(inv), inventoryOpen(false) {}
+Option::Option(){
+
+    inventoryOpen = false;
+    PlayerInventoryPointer = &PlayerInventory;
+}
 
 Inventory* Option::getPlayerInventory() const {
-    return PlayerInventory;
+    return PlayerInventoryPointer;
 }
 
 void Option::runMainMenu() {
@@ -39,7 +43,7 @@ void Option::runMainMenu() {
             waitForEnter();
             break;
         case 2:
-            shopOption(*PlayerInventory);
+            shopOption(PlayerInventoryPointer);
             break;
         case 3:
             dungeonOption();
@@ -53,16 +57,6 @@ void Option::runMainMenu() {
             waitForEnter();
             break;
         }
-    }
-}
-
-void Option::handleChoice(int choice, Inventory& inventory) {
-    switch (choice) {
-    case 1: openInventory(); break;
-    case 2: shopOption(inventory); break;
-    case 3: dungeonOption(); break;
-    case 4: cout << "Exiting...\n"; break;
-    default: cout << "Invalid choice, try again.\n"; break;
     }
 }
 
@@ -87,7 +81,7 @@ void Option::openInventory() {
 
     while (running) {
         std::cout << "\n=== INVENTORY ===\n";
-        PlayerInventory->DrawInventory();
+        PlayerInventory.DrawInventory();
         std::cout << "Enter coordinates (row col) to equip item, or 'E' to close: ";
 
         std::string input;
@@ -116,9 +110,9 @@ void Option::openInventory() {
 
         int index = row * 5 + col; // Flatten 2D → 1D
 
-        Item* item = PlayerInventory->PullInventoryIndex(index);
+        Item* item = PlayerInventory.PullInventoryIndex(index);
         if (item != nullptr) {
-            PlayerInventory->setEquippedItem(item);
+            PlayerInventory.setEquippedItem(item);
             std::cout << "Equipped " << item->GetItemWord('N') << "!\n";
         }
         else {
@@ -146,7 +140,7 @@ void Option::displayMenu() {
     cout << "Enter your choice: ";
 }
 
-void Option::handleChoice(int choice, Inventory& inventory) {
+void Option::handleChoice(int choice, Inventory* inventory) {
     switch (choice) {
     case 1:
         // Open/close & interact with inventory
@@ -169,15 +163,15 @@ void Option::handleChoice(int choice, Inventory& inventory) {
     }
 }
 
-void Option::shopOption(Inventory& inventory) {
-    Shop shop(&inventory);   // uses the player's DBs
+void Option::shopOption(Inventory* inventory) {
+    Shop shop(inventory);   // uses the player's DBs
 
     bool keepShopping = true;
     while (keepShopping) {
         cout << "\n============================================\n";
         cout << "Welcome to the shop!\n";
         cout << "--------------------------------------------\n";
-        cout << "Your gold: " << inventory.getCurrency() << "\n\n";
+        cout << "Your gold: " << inventory->getCurrency() << "\n\n";
 
         // Show current stock
         shop.displayItems();
@@ -193,7 +187,7 @@ void Option::shopOption(Inventory& inventory) {
             char a = static_cast<char>(std::tolower(action[0]));
             if (a == 'b') {
                 // Shop handles prompting for item index internally
-                shop.buyItem(&inventory);
+                shop.buyItem(inventory);
                 continue;
             }
             else if (a == 'r') {
