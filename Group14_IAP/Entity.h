@@ -3,7 +3,6 @@
 
 class Entity {
 protected:
-    Entity* List[20];
 
     Position position; // Stores row & col of Entity
 
