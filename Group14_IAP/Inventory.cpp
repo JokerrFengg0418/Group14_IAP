@@ -210,6 +210,21 @@ void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescript
 
 		break;
 
+	case 'A':
+
+		for (int i = 0; i < 50; i++) {
+
+			if (MonsterItemDatabase[i] == nullptr) {
+
+				MonsterItemDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue, number);
+
+				return;
+			}
+
+		}
+
+		break;
+
 	}
 
 }
@@ -235,7 +250,7 @@ void Inventory::DatabaseInitialisation() {
 	FactoryCreateItem("Helmet", "Protects your head.", 'A', 80, 30, 50, 5, 'I');
 
 	// ===== Consumables / Other =====
-	FactoryCreateItem("Health Potion", "Restores health.", 'P', 50, 20, 30, 20, 'I');
+	FactoryCreateItem("Health Potion", "Restores health.", 'I', 50, 20, 30, 20, 'I');
 }
 
 //Draws Item from Database instead of Inventory//
@@ -322,7 +337,3 @@ Item* Inventory::PullInventoryIndex(int Index) const{
 	return inventory[Index];
 
 }
-
-
-
-
