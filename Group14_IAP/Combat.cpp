@@ -254,7 +254,13 @@ int Combat::WinCondition()
 			return 0;
 		}
 		else {
+			
+			for (int i = 0; i < 20; i++) {
+				delete List[i];
+				List[i] = nullptr;
+			}
 			return 1;
+
 		}
 
 		
