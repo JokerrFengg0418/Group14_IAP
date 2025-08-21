@@ -116,7 +116,7 @@ void Option::openInventory() {
 
         int index = row * 5 + col; // Flatten 2D → 1D
 
-        Item* item = (*PlayerInventory).Inventory[index];
+        Item* item = PlayerInventory->PullInventoryIndex(index);
         if (item != nullptr) {
             PlayerInventory->setEquippedItem(item);
             std::cout << "Equipped " << item->GetItemWord('N') << "!\n";
