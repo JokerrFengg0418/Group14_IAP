@@ -19,7 +19,7 @@ private:
 
 public:
 
-	Entity* FactoryCreateEntity(int CharacterType);
+	void FactoryCreateEntity(int CharacterType);
 
 	int WinCondition();
 	void TurnOrder(Inventory* PlayerInventory);
