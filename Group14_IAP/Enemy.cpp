@@ -67,44 +67,60 @@ void Enemy::move(Entity* List[20])
 	// Example: Move randomly in one of the four directions
 	int direction = rand() % 4; // 0: up, 1: down, 2: left, 3: right
 	int newPos;
+	char A;
 	switch (direction) {
 	case 0:
-		setRow(getRow() - 1); // Move up
+		newPos = getRow() - 1; // Move up
+		A = 'A';
 		break;
 	case 1:
-		setRow(getRow() + 1); // Move down
+		newPos = getRow() + 1; // Move down
+		A = 'A';
 		break;
 	case 2:
-		setCol(getCol() - 1); // Move left
+		newPos = getCol() - 1; // Move left
+		A = 'B';
 		break;
 	case 3:
-		setCol(getCol() + 1); // Move right
+		newPos = getCol() + 1; // Move right
+		A = 'B';
 		break;
 	}
 
-	if (getRow() < 0 || getRow() > 39 || getCol() < 0 || getCol() > 39)
+	if (newPos < 0 || newPos > 39 || newPos < 0 || newPos > 39)
 	{
 		return;
 	}
-	for (int i = 0; i < 20; i++)
+	else
 	{
-		if (List[i] != nullptr)
+		for (int i = 0; i < 20; i++)
 		{
-			int otherx = List[i]->getPosition().getRow();
-			int othery = List[i]->getPosition().getCol();
-			char othertype = List[i]->getEntityType();
-
-			if (otherx == getRow() && othery == getCol())
+			if (List[i] != nullptr)
 			{
-				if (othertype == 'E' && getEntityType() == 'P')
+				int otherx = List[i]->getPosition().getRow();
+				int othery = List[i]->getPosition().getCol();
+				char othertype = List[i]->getEntityType();
+
+				if (otherx == getRow() && othery == getCol())
 				{
-					return;
-				}
-				else if (othertype == 'E' && getEntityType() == 'E')
-				{
-					return;
+					if (othertype == 'P' && getEntityType() == 'E')
+					{
+						return;
+					}
+					else if (othertype == 'E' && getEntityType() == 'E')
+					{
+						return;
+					}
 				}
 			}
+		}
+		if (A == 'A')
+		{
+			setRow(newPos);
+		}
+		else
+		{
+			setCol(newPos);
 		}
 	}
 }

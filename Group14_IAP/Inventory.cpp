@@ -160,7 +160,7 @@ void Inventory::DatabaseInitialisation() {
 	//FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, int number, char DatabaseType)
 
 	// ===== Weapons =====
-	FactoryCreateItem("    Swords    ", "A basic but reliable blade.", 'W', 50, 20, 30, 10, 'W');
+	FactoryCreateItem("  Broadsword  ", "A basic but reliable blade.", 'W', 50, 20, 30, 10, 'W');
 	FactoryCreateItem("  SlingShots  ", "A simple ranged weapon.", 'W', 50, 20, 30, 10, 'W');
 	FactoryCreateItem("Bow and Arrows", "Classic ranged weapon with arrows.", 'W', 80, 30, 50, 10, 'W');
 	FactoryCreateItem("     Mace     ", "A heavy blunt weapon.", 'W', 100, 40, 60, 5, 'W');
