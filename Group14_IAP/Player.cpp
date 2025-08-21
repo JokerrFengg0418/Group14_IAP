@@ -38,86 +38,70 @@ void Player::takeDamage(int amount)
 	}
 }
 
-void Player::move(Entity* List[20])
-{
-	int newPos = 0;
-	char A;
-	std::cout << "Use WASD to move\n";
+#include <conio.h> // for _getch
 
-	char input;
-	input = _getch();
+void Player::move(Entity* list[20]) {
+    std::cout << "Use WASD to move\n";
 
-	switch (input) {
-	case 'w':
-	case 'W':
-		newPos = getCol() - 1;
-		A = 'A';
-		std::cout << "Move Up \n";
-		break;
-	case 's':
-	case 'S':
-		newPos = getCol() + 1;
-		A = 'A';
-		std::cout << "Move Down \n";
-		break;
-	case 'a':
-	case 'A':
-		newPos = getRow() - 1;
-		A = 'B';
-		std::cout << "Move Left \n";
-		break;
-	case 'd':
-	case 'D':
-		newPos = getRow() + 1;
-		A = 'B';
-		std::cout << "Move Right \n";
-		break;
-	default:
-		std::cout << "invalid input\n";
-		break;
-	}
+    // current position
+    int row = getRow();
+    int col = getCol();
 
-	if (newPos < 0 || newPos > 39 || newPos < 0 || newPos > 39)
-	{
-		return;
-	}
-	if (A == 'B')
-	{
-		setCol(newPos);
-	}
-	else
-	{
-		setRow(newPos);
-	}
-	for (int i = 0; i < 20; i++)
-	{
-		if (List[i] != nullptr)
-		{
-			int otherx = List[i]->getPosition().getRow();
-			int othery = List[i]->getPosition().getCol();
-			char othertype = List[i]->getEntityType();
-			for (int j = i + 1; j < 20; j++)
-			{
-				if (List[j] != nullptr && j != i)
-				{
-					int otherx1 = List[j]->getPosition().getRow();
-					int othery1 = List[j]->getPosition().getCol();
-					char othertype1 = List[j]->getEntityType();
-					if (otherx == otherx1 && othery == othery1)
-					{
-						if (otherx == otherx1 && othery == othery1)
-						{
-							if (othertype == 'P' && othertype1 == 'E')
-							{
-								return;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+    // target position starts as current
+    int newRow = row;
+    int newCol = col;
+
+    const int ROWS = 40;  // adjust to your board size
+    const int COLS = 40;
+
+    const char input = _getch();
+    switch (input) {
+    case 'w': case 'W':
+        newRow = row - 1;
+        std::cout << "Move Up\n";
+        break;
+    case 's': case 'S':
+        newRow = row + 1;
+        std::cout << "Move Down\n";
+        break;
+    case 'a': case 'A':
+        newCol = col - 1;
+        std::cout << "Move Left\n";
+        break;
+    case 'd': case 'D':
+        newCol = col + 1;
+        std::cout << "Move Right\n";
+        break;
+    default:
+        std::cout << "invalid input\n";
+        return; // don't move on invalid input
+    }
+
+    // bounds check (both axes)
+    if (newRow < 0 || newRow >= ROWS || newCol < 0 || newCol >= COLS) {
+        return; // out of bounds: ignore the move
+    }
+
+    // apply the move
+    setRow(newRow);
+    setCol(newCol);
+
+    // collision: check player vs others (e.g., enemies 'E')
+    for (int i = 0; i < 20; ++i) {
+        Entity* e = list[i];
+        if (!e || e == this) continue; // skip empty and yourself if present
+
+        if (e->getPosition().getRow() == newRow &&
+            e->getPosition().getCol() == newCol) {
+            if (e->getEntityType() == 'E') {
+                // handle player-enemy collision here
+                // e.g., takeDamage(), start combat, or just return
+                return;
+            }
+        }
+    }
 }
+
 
 
 
