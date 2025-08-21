@@ -16,6 +16,7 @@ public:
 	//Functions
 	void drawBoard();
 	void drawDungeon();
+	void clearBoard();
 
 	// Function to add Entity
 	void addPlayer(Entity* p);

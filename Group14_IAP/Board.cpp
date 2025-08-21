@@ -136,3 +136,24 @@ char Board::GetBoard() const
 {
 	return board[40][40];
 }
+
+void Board::clearBoard()
+{
+	for (int row = 0; row < 40; row++)
+	{
+		for (int col = 0; col < 40; col++)
+		{
+			board[row][col] = ' ';
+		}
+	}
+
+	Player = nullptr;         
+	selectedEnemy = nullptr;    
+
+	for (int i = 0; i < enemyCount; i++)
+	{
+		enemies[i] = nullptr;   
+	}
+
+	enemyCount = 0;
+}
