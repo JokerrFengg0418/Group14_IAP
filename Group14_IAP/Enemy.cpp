@@ -95,7 +95,7 @@ void Enemy::move(Entity* List[20])
 
 			if (otherx == getRow() && othery == getCol())
 			{
-				if (othertype == 'E' && getEntityType() == 'P')
+				if (othertype == 'P' && getEntityType() == 'E')
 				{
 					return;
 				}
