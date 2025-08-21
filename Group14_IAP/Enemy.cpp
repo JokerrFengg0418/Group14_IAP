@@ -100,16 +100,24 @@ void Enemy::move(Entity* List[20])
 				int otherx = List[i]->getPosition().getRow();
 				int othery = List[i]->getPosition().getCol();
 				char othertype = List[i]->getEntityType();
-
-				if (otherx == getRow() && othery == getCol())
+				for (int j = i + 1; j < 20; j++)
 				{
-					if (othertype == 'P' && getEntityType() == 'E')
+					if (List[j] != nullptr && j != i)
 					{
-						return;
-					}
-					else if (othertype == 'E' && getEntityType() == 'E')
-					{
-						return;
+						int otherx1 = List[j]->getPosition().getRow();
+						int othery1 = List[j]->getPosition().getCol();
+						char othertype1 = List[j]->getEntityType();
+						if (otherx == otherx1 && othery == othery1)
+						{
+							if (othertype == 'P' && othertype1 == 'E')
+							{
+								return;
+							}
+							else if (othertype == 'E' && othertype1 == 'E')
+							{
+								return;
+							}
+						}
 					}
 				}
 			}
