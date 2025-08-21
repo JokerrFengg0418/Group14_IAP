@@ -15,18 +15,22 @@ Entity::~Entity() {
 
 int Entity::getRow() const {
     return position.getRow();
-}
-
-void Entity::setRow(int r) {
-    position.setPosition(r, position.getCol());
+    return position.row;
 }
 
 int Entity::getCol() const {
     return position.getCol();
+    return position.col;
+}
+
+void Entity::setRow(int r) {
+    position.setPosition(r, position.getCol());
+    position.row = r;
 }
 
 void Entity::setCol(int c) {
     position.setPosition(position.getRow(), c);
+    position.col = c;
 }
 
 Position Entity::getPosition() const {

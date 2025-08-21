@@ -32,6 +32,9 @@ public:
 
     int getRow() const;
     int getCol() const;
+    void setRow(int r);
+    void setCol(int c);
+
     Position getPosition() const;
     bool isAlive() const;
 
@@ -39,9 +42,6 @@ public:
     void setHealth(int hp);
     void setDamage(int dmg);
     void setEntityType(char Type);
-
-    void setRow(int r);
-    void setCol(int c);
 
     // functions
     virtual void move(Entity* List[20]);
