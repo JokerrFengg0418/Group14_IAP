@@ -194,10 +194,14 @@ void Combat::attack(Entity* Entity1, Inventory* PlayerInventory) {
 			if (List[i]->getEntityType() == 'E') {
 
 				distance = calculateDistance(Entity1->getPosition(), List[i]->getPosition());
-				if (inventory->getEquippedItem()->GetNumber() < distance) {
+				if (inventory->getEquippedItem() != nullptr) {
+					if (inventory->getEquippedItem()->GetNumber() < distance) {
+						Highlightlist[i] = true;
+					}
+				}
+				else if (1 < distance) {
 					Highlightlist[i] = true;
 				}
-
 			}
 		}
 		// ============ Player's Turn ============
