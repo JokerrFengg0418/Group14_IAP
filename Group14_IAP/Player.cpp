@@ -40,9 +40,8 @@ void Player::takeDamage(int amount)
 
 void Player::move(Entity* List[20])
 {
-	int newX = getCol();
-	int newY = getRow();
-
+	int newPos = 0;
+	char A;
 	std::cout << "Use WASD to move\n";
 
 	char input;
@@ -51,22 +50,26 @@ void Player::move(Entity* List[20])
 	switch (input) {
 	case 'w':
 	case 'W':
-		newY--;
+		newPos = getCol() - 1;
+		A = 'A';
 		std::cout << "Move Up \n";
 		break;
 	case 's':
 	case 'S':
-		newY++;
+		newPos = getCol() + 1;
+		A = 'A';
 		std::cout << "Move Down \n";
 		break;
 	case 'a':
 	case 'A':
-		newX--;
+		newPos = getRow() - 1;
+		A = 'B';
 		std::cout << "Move Left \n";
 		break;
 	case 'd':
 	case 'D':
-		newX++;
+		newPos = getRow() + 1;
+		A = 'B';
 		std::cout << "Move Right \n";
 		break;
 	default:
@@ -74,12 +77,17 @@ void Player::move(Entity* List[20])
 		break;
 	}
 
-	setRow(newY);
-	setCol(newX);
-
-	if (newX < 0 || newX > 39 || newY < 0 || newY > 39)
+	if (newPos < 0 || newPos > 39 || newPos < 0 || newPos > 39)
 	{
 		return;
+	}
+	if (A == 'B')
+	{
+		setCol(newPos);
+	}
+	else
+	{
+		setRow(newPos);
 	}
 	for (int i = 0; i < 20; i++)
 	{
@@ -88,19 +96,28 @@ void Player::move(Entity* List[20])
 			int otherx = List[i]->getPosition().getRow();
 			int othery = List[i]->getPosition().getCol();
 			char othertype = List[i]->getEntityType();
-
-			if (otherx == newX && othery == newY)
+			for (int j = i + 1; j < 20; j++)
 			{
-				if (othertype == 'E' && getEntityType() == 'P')
+				if (List[j] != nullptr && j != i)
 				{
-					return;
+					int otherx1 = List[j]->getPosition().getRow();
+					int othery1 = List[j]->getPosition().getCol();
+					char othertype1 = List[j]->getEntityType();
+					if (otherx == otherx1 && othery == othery1)
+					{
+						if (otherx == otherx1 && othery == othery1)
+						{
+							if (othertype == 'P' && othertype1 == 'E')
+							{
+								return;
+							}
+						}
+					}
 				}
 			}
 		}
 	}
-	
 }
-
 
 
 
