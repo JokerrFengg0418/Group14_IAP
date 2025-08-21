@@ -56,7 +56,7 @@ void Shop::populateShop() {
         }
 
         // Armor (Note: Assuming armor is in the 'A' database)
-        Item* woodenArmor = gameInventory->DrawDatabase('A', "Wooden Armor");
+        Item* woodenArmor = gameInventory->DrawDatabase('I', "Wooden Armor");
         if (woodenArmor != nullptr) {
             inventory.push_back(woodenArmor);
         }

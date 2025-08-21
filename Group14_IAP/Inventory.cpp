@@ -271,7 +271,7 @@ Item* Inventory::DrawDatabase(char DatabaseType, std::string ItemName) {
 		}
 		break;
 
-	case 'I':
+	case 'M':
 
 		for (int i = 0; i < 50; i++) {
 
@@ -284,7 +284,7 @@ Item* Inventory::DrawDatabase(char DatabaseType, std::string ItemName) {
 		}
 		break;
 
-	case 'M':
+	case 'I':
 
 		for (int i = 0; i < 50; i++) {
 
