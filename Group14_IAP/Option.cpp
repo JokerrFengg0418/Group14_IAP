@@ -30,7 +30,7 @@ void Option::runMainMenu() {
         cout << "2. Shop\n";
         cout << "3. Dungeon\n";
         cout << "4. Exit\n";
-        cout << "5. Debug (add 50,000 gold + Sword)\n";
+        cout << "5. Debug (add 50,000 gold + Broadsword)\n";
         cout << "=============================\n";
         cout << "Enter your choice: ";
 
@@ -57,8 +57,8 @@ void Option::runMainMenu() {
             if (PlayerInventoryPointer) {
                 PlayerInventoryPointer->setCurrency(
                     PlayerInventoryPointer->getCurrency() + 50000);
-                PlayerInventoryPointer->setInventory("Sword", 1);
-                cout << "[Debug] Added 50,000 gold and a Sword to your inventory.\n";
+                PlayerInventoryPointer->setInventory("Broadsword", 1);
+                cout << "[Debug] Added 50,000 gold and a Broadsword to your inventory.\n";
             }
             else {
                 cout << "[Debug] Player inventory pointer is null.\n";
@@ -161,7 +161,7 @@ void Option::displayMenu() {
     cout << "2. Shop\n";
     cout << "3. Dungeon\n";
     cout << "4. Exit\n";
-    cout << "5. Debug (add 50,000 gold + Sword)\n";
+    cout << "5. Debug (add 50,000 gold + Broadsword)\n";
     cout << "=============================\n";
     cout << "Enter your choice: ";
 }
@@ -186,8 +186,8 @@ void Option::handleChoice(int choice, Inventory* inventory) {
     case 5: // DEBUG GIVE
         if (inventory) {
             inventory->setCurrency(inventory->getCurrency() + 50000);
-            inventory->setInventory("Sword", 1);
-            cout << "[Debug] Added 50,000 gold and a Sword to your inventory.\n";
+            inventory->setInventory("Broadsword", 1);
+            cout << "[Debug] Added 50,000 gold and a Broadsword to your inventory.\n";
         }
         else {
             cout << "[Debug] Player inventory pointer is null.\n";
