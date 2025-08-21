@@ -141,7 +141,8 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 		// Find the player in List
 		Entity* player = nullptr;
 		for (int i = 0; i < 20; ++i) {
-			if (List[i] && List[i]->getEntityType() == 'P') {
+			if (List[i] == nullptr) { continue; }
+			if (List[i]->getEntityType() == 'P') {
 				player = List[i];
 				break;
 			}
@@ -273,6 +274,7 @@ int Combat::WinCondition()
 	bool EnemyCheck = false;
 	for (int i = 0; i < 20; i++)
 	{
+		if (List[i] == nullptr) continue;
 		if (List[i]->getEntityType() == 'E') {
 			EnemyCheck = true;
 		}
@@ -314,8 +316,9 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 		}
 		firstTurn++;
 		
-		Sleep(2000);
+		Sleep(200);
 		system("cls");
+		
 	}
 
 	    std::cout << "Combat Ended \n";

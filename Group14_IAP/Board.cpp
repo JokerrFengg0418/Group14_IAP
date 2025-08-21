@@ -59,14 +59,33 @@ void Board::printBoardCellColor(int row, int col)
 
 	// Check if the current enemy at this position is the one selected
 	for (int k = 0; k < enemyCount; ++k) {
-		if (enemies[k] == selectedEnemy && enemies[k]->getRow() == row && enemies[k]->getCol() == col) {
+		if (enemies[k]->getRow() == row && enemies[k]->getCol() == col) {
 			isSelected = true;
 			break;
 		}
 	}
 
 	if (isSelected) {
-		std::cout << YELLOW << board[row][col] << RESET;
+		
+		system("cls");
+		std::cout << "+-------------------------------------------------------------------------------+ \n";
+
+		for (int i = 0; i < 40; i++) {
+			for (int j = 0; j < 40; j++) {
+				std::cout << "|";
+				if (i == row && j == col){
+					std::cout << YELLOW << board[row][col] << RESET;
+				}
+				else {
+					std::cout << board[i][j];
+				}
+			}
+			std::cout << '|';
+			std::cout << '\n';
+		}
+		std::cout << "+-------------------------------------------------------------------------------+ \n";
+
+		
 	}
 	else {
 		std::cout << board[row][col];
@@ -91,6 +110,7 @@ void Board::drawBoard()
 	}
 
 	for (int i = 0; i < enemyCount; ++i) {
+		
 		if (enemies[i]) {
 			board[enemies[i]->getRow()][enemies[i]->getCol()] = static_cast<Enemy*>(enemies[i])->getTypeName();
 		}
@@ -148,12 +168,14 @@ void Board::clearBoard()
 			board[row][col] = ' ';
 		}
 	}
-
-	Player = nullptr;         
+	delete Player;
+	Player = nullptr;       
+	delete selectedEnemy;
 	selectedEnemy = nullptr;    
 
 	for (int i = 0; i < enemyCount; i++)
 	{
+		delete enemies[i];
 		enemies[i] = nullptr;   
 	}
 
