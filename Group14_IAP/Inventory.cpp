@@ -13,6 +13,7 @@ Inventory::Inventory()
 	}
 	for (int i = 0; i < 10; i++) {
 		WeaponDatabase[i] = nullptr;
+		ArmorDatabase[i] = nullptr;
 	}
 	// Initialize databases when an Inventory object is created.
 	DatabaseInitialisation();
@@ -69,11 +70,11 @@ void Inventory::setInventory(std::string ItemName, int Number) {
 
 		if (inventory[i]->GetItemWord('N') == ItemName) {
 
-			
+
 			if (WeaponDatabase[i]->GetItemWord('N') == ItemName && i < 10) {
 				break;
 			}
-			
+
 
 			int CurrentValue = inventory[i]->GetItemValue('V');
 
@@ -84,10 +85,10 @@ void Inventory::setInventory(std::string ItemName, int Number) {
 
 	}
 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 4; i++) {
 
 		if (i == 0 && DrawDatabase('W', ItemName) != nullptr) {
-			
+
 			for (int i = 0; i < 25; i++) {
 
 				if (inventory[i] == nullptr) {
@@ -98,7 +99,8 @@ void Inventory::setInventory(std::string ItemName, int Number) {
 
 				}
 			}
-		} else if (i == 1 && DrawDatabase('M', ItemName) != nullptr) {
+		}
+		else if (i == 1 && DrawDatabase('M', ItemName) != nullptr) {
 
 			for (int i = 0; i < 25; i++) {
 
@@ -110,7 +112,8 @@ void Inventory::setInventory(std::string ItemName, int Number) {
 
 				}
 			}
-		} else if (i == 2 && DrawDatabase('I', ItemName) != nullptr) {
+		}
+		else if (i == 2 && DrawDatabase('I', ItemName) != nullptr) {
 
 			for (int i = 0; i < 25; i++) {
 
@@ -123,9 +126,20 @@ void Inventory::setInventory(std::string ItemName, int Number) {
 				}
 			}
 		}
+		else if (i == 3 && DrawDatabase('A', ItemName) != nullptr) {
 
+			for (int i = 0; i < 25; i++) {
+
+				if (inventory[i] == nullptr) {
+
+					inventory[i] = DrawDatabase('A', ItemName);
+
+					return;
+
+				}
+			}
+		}
 	}
-
 }
 
 void Inventory::RemoveItemFromInventory(std::string ItemName, int Number) {
@@ -212,11 +226,11 @@ void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescript
 
 	case 'A':
 
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 10; i++) {
 
-			if (MonsterItemDatabase[i] == nullptr) {
+			if (ArmorDatabase[i] == nullptr) {
 
-				MonsterItemDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue, number);
+				ArmorDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue, number);
 
 				return;
 			}
@@ -291,6 +305,19 @@ Item* Inventory::DrawDatabase(char DatabaseType, std::string ItemName) {
 			if (ItemDatabase[i]->GetItemWord('N') == ItemName) {
 
 				return ItemDatabase[i];
+
+			}
+
+		}
+		break;
+
+	case 'A':
+
+		for (int i = 0; i < 10; i++) {
+
+			if (ArmorDatabase[i]->GetItemWord('N') == ItemName) {
+
+				return ArmorDatabase[i];
 
 			}
 

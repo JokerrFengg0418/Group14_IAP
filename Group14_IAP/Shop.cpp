@@ -60,19 +60,19 @@ void Shop::populateShop() {
         if (woodenArmor != nullptr) {
             inventory.push_back(woodenArmor);
         }
-        Item* silverArmor = gameInventory->DrawDatabase('A', "Silver Armor");
+        Item* silverArmor = gameInventory->DrawDatabase('I', "Silver Armor");
         if (silverArmor != nullptr) {
             inventory.push_back(silverArmor);
         }
-        Item* shield = gameInventory->DrawDatabase('A', "Shield");
+        Item* shield = gameInventory->DrawDatabase('I', "Shield");
         if (shield != nullptr) {
             inventory.push_back(shield);
         }
-        Item* helmet = gameInventory->DrawDatabase('A', "Helmet");
+        Item* helmet = gameInventory->DrawDatabase('I', "Helmet");
         if (helmet != nullptr) {
             inventory.push_back(helmet);
         }
-        Item* leatherArmor = gameInventory->DrawDatabase('A', "Leather Armor");
+        Item* leatherArmor = gameInventory->DrawDatabase('I', "Leather Armor");
         if (leatherArmor != nullptr) {
             inventory.push_back(leatherArmor);
         }
