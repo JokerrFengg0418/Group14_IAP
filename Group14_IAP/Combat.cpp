@@ -309,15 +309,19 @@ int Combat::WinCondition()
 void Combat::TurnOrder(Inventory* PlayerInventory)
 {
     firstTurn = 1;
-	for (int i = 0; i < 20; i++)
+	while (WinCondition() == 0)
 	{
-		if (List[i] != nullptr)
+		for (int i = 0; i < 20; i++)
 		{
-			board.drawBoard();
-			List[i]->move();
-			attack(List[i], PlayerInventory);
-			FactoryDestructor();
+			if (List[i] != nullptr)
+			{
+				board.drawBoard();
+				List[i]->move();
+				attack(List[i], PlayerInventory);
+				FactoryDestructor();
+			}
 		}
+	}
 		if (WinCondition() == 1) {
 
 			std::cout << "Combat Ended \n";
@@ -326,9 +330,9 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 
 		}
 		firstTurn++;
-	}
-	std::cout << "Turn Number: " << firstTurn;
+		std::cout << "Turn Number: " << firstTurn;
 }
+
 
 void Combat::startCombat(char CombatScenario) {
 
