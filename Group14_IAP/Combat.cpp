@@ -205,6 +205,7 @@ void Combat::attack(Entity* Entity1, Inventory* PlayerInventory) {
 					else if (1 > distance) {
 						std::cout << "Warning: No Item Equipped! \n";
 						Highlightlist[i] = true;
+						return;
 					}
 				}
 			}
