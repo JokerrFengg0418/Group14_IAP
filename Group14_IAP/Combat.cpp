@@ -290,19 +290,19 @@ int Combat::WinCondition()
 		}
 		if (PlayerCheck == true && EnemyCheck == true) {
 			return 0;
-		}
-		else {
-			
-			for (int i = 0; i < 20; i++) {
-				delete List[i];
-				List[i] = nullptr;
-			}
-			return 1;
-
-		}
+		} 
 
 		
 	}
+	
+
+	for (int i = 0; i < 20; i++) {
+		delete List[i];
+		List[i] = nullptr;
+	}
+	return 1;
+
+	
 	
 }
 
@@ -365,9 +365,12 @@ int Combat::getGold(Inventory* PlayerInventory) const {
 void Combat::FactoryDestructor() {
 
 	for (int i = 0; i < 20; i++) {
-		if (List[i]->getHealth() <= 0) {
-			delete List[i];
-			List[i] = nullptr;
+		if (List[i] != nullptr) {
+			if (List[i]->getHealth() <= 0) {
+				std::cout << "Enemy Health:" << List[i]->getHealth() << "\n";
+				delete List[i];
+				List[i] = nullptr;
+			}
 		}
 	}
 

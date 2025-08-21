@@ -37,9 +37,9 @@ bool Entity::isAlive() const {
     return Health > 0;
 }
 
-void Entity::move() {
-    // Example: Move diagonally down-right
-    position.setPosition(position.getRow() + 1, position.getCol() + 1);
+void Entity::move(Entity* List[20]) {
+
+    return;
 }
 
 void Entity::EntityLocation() const {
