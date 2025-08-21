@@ -15,35 +15,29 @@ Shop::~Shop()
 }
 
 void Shop::populateShop() {
-    if (gameInventory == nullptr) return;
-
-    // small helper to avoid repetitive null checks
-    auto add = [&](char db, const std::string& name) {
-        if (Item* it = gameInventory->DrawDatabase(db, name)) {
-            inventory.push_back(it);
+    // Adding some example items to the shop's inventory
+    if (gameInventory != nullptr) {
+        // Populate the shop with items from your databases.
+        // For example, pulling an item named "Iron Sword" from the 'W'eapon database.
+        Item* ironSword = gameInventory->DrawDatabase('W', "Iron Sword");
+        if (ironSword != nullptr) {
+            inventory.push_back(ironSword);
         }
-        };
 
-    // Weapons
-    add('W', "Sword");
-    add('W', "SlingShot");
-    add('W', "Bow and Arrow");
-    add('W', "Mace");
-    add('W', "Axe");
-    add('W', "Crossbow");
-    add('W', "Turret");
+        // Add more items as needed, for example, from the 'M'onster or 'I'tem databases.
+        Item* healthPotion = gameInventory->DrawDatabase('I', "Health Potion");
+        if (healthPotion != nullptr) {
+            inventory.push_back(healthPotion);
+        }
 
-    // Armor
-    add('A', "Wooden Armor");
-    add('A', "Silver Armor");
-    add('A', "Shield");
-    add('A', "Helmet");
-    add('A', "Leather Armor");
-
-    // Consumables / Items
-    add('I', "Health Potion");
+        Item* leatherArmor = gameInventory->DrawDatabase('A', "Leather Armor");
+        if (leatherArmor != nullptr) {
+            inventory.push_back(leatherArmor);
+        }
+    }
 }
 
+now same thing for the shop
 
 void Shop::displayItems() {
     std::cout << "Welcome to the shop! What would you like to buy?" << std::endl;
