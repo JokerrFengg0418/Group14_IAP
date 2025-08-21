@@ -7,6 +7,8 @@ Logic::Logic() {
 	GlobalOrderState = 1;
 	GameEndState = false;
 
+
+
 }
 
 
