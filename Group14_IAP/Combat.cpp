@@ -229,6 +229,7 @@ void Combat::attack(Entity* Entity1, Inventory* PlayerInventory) {
 					break;
 				case '\r':
 					Selection = false;
+					break;
 
 				}
 
