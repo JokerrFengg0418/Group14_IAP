@@ -22,7 +22,7 @@ public:
 	Entity* FactoryCreateEntity(int CharacterType);
 
 	int WinCondition();
-	void TurnOrder(Inventory* PlayerInevntory);
+	void TurnOrder(Inventory* PlayerInventory);
 
 	void startCombat(char CombatScenario);
 

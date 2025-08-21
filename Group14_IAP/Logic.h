@@ -2,8 +2,7 @@
 class Logic
 {
 private:
-	// Determines what part of the game to access//
-	int GameOrderState;
+	
 
 	//Determines what progression the Player is at//
 	int GlobalOrderState;
@@ -14,12 +13,6 @@ public:
 
 	//Constructor//
 	Logic();
-
-	//Game Order Setter//
-	void GameOrderStateSet(int CurrentGameOrder);
-
-	//Game Order Getter//
-	int GameOrderStateGet();
 
 	// Game End State increases//
 	void GameEndStateIncrease();
