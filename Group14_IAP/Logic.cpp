@@ -1,4 +1,6 @@
 #include "Logic.h"
+#include "Combat.h"
+#include "Option.h"
 
 Logic::Logic() {
 
@@ -41,7 +43,7 @@ void Logic::GameEndStateIncrease() {
 
 bool Logic::GameEndStateGet() {
 
-	return GameEndStateGet;
+	return GameEndState;
 
 }
 
@@ -68,6 +70,13 @@ void Logic::GlobalOrderSet(int CurrentGlobalOrder) {
 
 void Logic::TurnOrder() {
 
+	Option GameOption;
 
+	while (GameEndState == false) {
+
+		Option::displayMenu();
+
+
+	}
 
 }
