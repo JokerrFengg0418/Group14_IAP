@@ -189,7 +189,7 @@ void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescript
 void Inventory::DatabaseInitialisation() {
 
 	//Weapon Section here
-
+	
 	//Monster Section here
 
 	//Item Section here
@@ -265,7 +265,15 @@ Item* Inventory::getEquippedItem() const {
 }
 
 void Inventory::setEquippedItem(Item* SelectedItem) {
-	EquippedItem = SelectedItem;
+	for (int i = 0; i < 10; i++) {
+		if (WeaponDatabase[i]->GetItemWord('N') == SelectedItem->GetItemWord('N') ){
+			EquippedItem = SelectedItem;
+			return;
+		}
+	}
+
+	std::cout << "You can't equip this item! \n";
+	
 }
 
 
