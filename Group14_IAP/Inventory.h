@@ -8,7 +8,6 @@ class Inventory
 private:
 
 	char InventorySlots[4][5];
-	Item* Inventory[25];
 	Item* ItemDatabase[50];
 	Item* EquippedItem;
 	Item* MonsterItemDatabase[50];
@@ -16,6 +15,8 @@ private:
 	int Currency;
 
 public:
+	
+	Item* Inventory[25];
 
 	void DrawInventory() const;
 
