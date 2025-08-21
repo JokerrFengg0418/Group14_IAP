@@ -66,6 +66,7 @@ void Enemy::move(Entity* List[20])
 {
 	// Example: Move randomly in one of the four directions
 	int direction = rand() % 4; // 0: up, 1: down, 2: left, 3: right
+	int newPos;
 	switch (direction) {
 	case 0:
 		setRow(getRow() - 1); // Move up

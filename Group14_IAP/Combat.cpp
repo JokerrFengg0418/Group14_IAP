@@ -22,7 +22,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List [i] = new Enemy(39, 0, EnemyType::Monster, 99, 99);
+				List [i] = new Enemy(0, RandomTurf, EnemyType::Monster, 99, 99);
 				return;
 
 			}
@@ -33,7 +33,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(39, 0, EnemyType::Hellhound, 99, 99);
+				List[i] = new Enemy(0, RandomTurf, EnemyType::Hellhound, 99, 99);
 				return;
 
 			}
@@ -44,7 +44,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(39, 0, EnemyType::Zombie, 99, 99);
+				List[i] = new Enemy(0 , RandomTurf, EnemyType::Zombie, 99, 99);
 				return;
 
 			}
@@ -55,7 +55,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(39, 0, EnemyType::Goblin, 99, 99);
+				List[i] = new Enemy(0, RandomTurf, EnemyType::Goblin, 99, 99);
 				return;
 
 			}
@@ -66,7 +66,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(39, 0, EnemyType::Bat, 99, 99);
+				List[i] = new Enemy(0, RandomTurf, EnemyType::Bat, 99, 99);
 				return;
 
 			}
@@ -77,7 +77,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(39, 0, EnemyType::Skeleton, 99, 99);
+				List[i] = new Enemy(0, RandomTurf, EnemyType::Skeleton, 99, 99);
 				return;
 
 			}
@@ -88,7 +88,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(39, 0, EnemyType::Gargoyle, 99, 99);
+				List[i] = new Enemy(0, RandomTurf, EnemyType::Gargoyle, 99, 99);
 				return;
 
 			}
@@ -99,7 +99,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(39, 0, EnemyType::Boss, 99, 99);
+				List[i] = new Enemy(0, RandomTurf, EnemyType::Boss, 99, 99);
 				return;
 
 			}
@@ -316,7 +316,7 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 			if (List[i] != nullptr)
 			{
 				board.drawBoard();
-				List[i]->move();
+				List[i]->move(List);
 				attack(List[i], PlayerInventory);
 				FactoryDestructor();
 			}
