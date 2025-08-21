@@ -18,8 +18,5 @@ public:
 
 	void move();
 
-	
-
-
 };
 
