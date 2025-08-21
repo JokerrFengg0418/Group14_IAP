@@ -322,7 +322,7 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 			}
 		}
 		firstTurn++;
-		std::cout << "Turn Number: " << firstTurn;
+		std::cout << "Turn Number: " << firstTurn << "\n";
 	}
 
 	    std::cout << "Combat Ended \n";

@@ -98,6 +98,7 @@ void Player::move(Entity* List[20])
 			}
 		}
 	}
+	
 }
 
 
