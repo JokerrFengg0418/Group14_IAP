@@ -5,20 +5,14 @@
 
 
 Inventory::Inventory()
+	: Currency(0), EquippedItem(nullptr)
 {
+	for (int i = 0; i < 50; ++i) { ItemDatabase[i] = nullptr; MonsterItemDatabase[i] = nullptr; }
+	for (int i = 0; i < 10; ++i) { WeaponDatabase[i] = nullptr; }
+	for (int i = 0; i < 25; ++i) { inventory[i] = nullptr; }
 
-	for (int i = 0; i < 50; i++) {
-		ItemDatabase[i] = nullptr;
-		MonsterItemDatabase[i] = nullptr;
-	}
-	for (int i = 0; i < 10; i++) {
-		WeaponDatabase[i] = nullptr;
-	}
-	// Initialize databases when an Inventory object is created.
+	// Build DB after arrays are null-inited
 	DatabaseInitialisation();
-	for (int i = 0; i < 25; i++) {
-		inventory[i] = nullptr;
-	}
 }
 
 Inventory::~Inventory()
@@ -46,120 +40,67 @@ void Inventory::DrawInventory() const{
 }
 
 //Draws Specifications of Inventory Item
-Item* Inventory::getInventory(std::string Name) const{
-
-	for (int i = 0; i < 25; i++) {
-
-		if (this->inventory[i]->GetItemWord('N') == Name) {
-
-			return inventory[i];
-
-
-		}
-
+Item* Inventory::getInventory(std::string Name) const {
+	for (int i = 0; i < 25; ++i) {
+		Item* it = inventory[i];
+		if (it && it->GetItemWord('N') == Name) return it;
 	}
-
 	return nullptr;
 }
 
 //Sets Item into Inventory
 void Inventory::setInventory(std::string ItemName, int Number) {
+	if (Number <= 0) return;
 
-	for (int i = 0; i < 25; i++) {
-
-		if (inventory[i]->GetItemWord('N') == ItemName) {
-
-
-			if (WeaponDatabase[i]->GetItemWord('N') == ItemName && i < 10) {
-				break;
+	// Is it already in inventory? (stack only if not a weapon)
+	for (int i = 0; i < 25; ++i) {
+		Item* it = inventory[i];
+		if (it && it->GetItemWord('N') == ItemName) {
+			bool isWeapon = (DrawDatabase('W', ItemName) != nullptr);
+			if (!isWeapon) {
+				int cur = it->GetItemValue('V');
+				it->SetItemValue('V', cur + Number);
 			}
-
-
-			int CurrentValue = inventory[i]->GetItemValue('V');
-
-			inventory[i]->SetItemValue('V', CurrentValue + Number);
-
 			return;
 		}
-
 	}
 
-	for (int i = 0; i < 4; i++) {
-
-		if (i == 0 && DrawDatabase('W', ItemName) != nullptr) {
-
-			for (int i = 0; i < 25; i++) {
-
-				if (inventory[i] == nullptr) {
-
-					inventory[i] = DrawDatabase('W', ItemName);
-
-					return;
-
-				}
-			}
-		}
-		else if (i == 1 && DrawDatabase('M', ItemName) != nullptr) {
-
-			for (int i = 0; i < 25; i++) {
-
-				if (inventory[i] == nullptr) {
-
-					inventory[i] = DrawDatabase('M', ItemName);
-
-					return;
-
-				}
-			}
-		}
-		else if (i == 2 && DrawDatabase('I', ItemName) != nullptr) {
-
-			for (int i = 0; i < 25; i++) {
-
-				if (inventory[i] == nullptr) {
-
-					inventory[i] = DrawDatabase('I', ItemName);
-
-					return;
-
-				}
-			}
-		}
+	// Find the source pointer in DBs
+	Item* src = DrawDatabase('W', ItemName);
+	if (!src) src = DrawDatabase('I', ItemName);
+	if (!src) src = DrawDatabase('M', ItemName);
+	if (!src) {
+		std::cerr << "[Inventory] Unknown item: " << ItemName << "\n";
+		return;
 	}
+
+	// Put in first empty slot (player holds pointer owned by DB)
+	for (int i = 0; i < 25; ++i) {
+		if (inventory[i] == nullptr) { inventory[i] = src; return; }
+	}
+	std::cout << "Inventory is full.\n";
 }
 
 void Inventory::RemoveItemFromInventory(std::string ItemName, int Number) {
+	if (Number <= 0) return;
 
-	for (int i = 0; i < 25; i++) {
+	for (int i = 0; i < 25; ++i) {
+		Item* it = inventory[i];
+		if (!it) continue;
+		if (it->GetItemWord('N') == ItemName) {
+			bool isWeapon = (DrawDatabase('W', ItemName) != nullptr);
 
-		if (inventory[i]->GetItemWord('N') == ItemName) {
-
-			for (int j = 0; j < 10; j++) {
-				if (WeaponDatabase[j]->GetItemWord('N') == ItemName) {
-					delete inventory[i];
-					inventory[i] = nullptr;
-					return;
-				}
-			}
-			int CurrentValue = inventory[i]->GetItemValue('V');
-			CurrentValue - Number;
-
-			if (CurrentValue <= 0) {
-
-				delete inventory[i];
-				inventory[i] = nullptr;
-
-			}
-			else {
-
-				inventory[i]->SetItemValue('V', CurrentValue);
-
+			if (isWeapon) {                 // non-stackable: just clear the slot
+				inventory[i] = nullptr;     // DO NOT delete; DB owns it
+				return;
 			}
 
+			int cur = it->GetItemValue('V') - Number;
+			if (cur <= 0) inventory[i] = nullptr;
+			else          it->SetItemValue('V', cur);
+			return;
 		}
-
 	}
-
 }
 
 void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, int number, char DatabaseType) {
@@ -281,19 +222,18 @@ Item* Inventory::getEquippedItem() const {
 }
 
 void Inventory::setEquippedItem(Item* SelectedItem) {
-	for (int i = 0; i < 10; i++) {
-		if (WeaponDatabase[i]->GetItemWord('N') == SelectedItem->GetItemWord('N') ){
+	if (!SelectedItem) return;
+	for (int i = 0; i < 10; ++i) {
+		Item* w = WeaponDatabase[i];
+		if (w && w->GetItemWord('N') == SelectedItem->GetItemWord('N')) {
 			EquippedItem = SelectedItem;
 			return;
 		}
 	}
-
-	std::cout << "You can't equip this item! \n";
-	
+	std::cout << "You can't equip this item!\n";
 }
 
-Item* Inventory::PullInventoryIndex(int Index) const{
-
+Item* Inventory::PullInventoryIndex(int Index) const {
+	if (Index < 0 || Index >= 25) return nullptr;
 	return inventory[Index];
-
 }
