@@ -316,7 +316,7 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 			if (List[i] != nullptr)
 			{
 				board.drawBoard();
-				List[i]->move();
+				List[i]->move(List);
 				attack(List[i], PlayerInventory);
 				FactoryDestructor();
 			}
