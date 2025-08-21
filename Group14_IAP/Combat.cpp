@@ -321,16 +321,12 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 				FactoryDestructor();
 			}
 		}
-	}
-		if (WinCondition() == 1) {
-
-			std::cout << "Combat Ended \n";
-
-			return;
-
-		}
 		firstTurn++;
 		std::cout << "Turn Number: " << firstTurn;
+	}
+
+	    std::cout << "Combat Ended \n";
+		return;
 }
 
 
