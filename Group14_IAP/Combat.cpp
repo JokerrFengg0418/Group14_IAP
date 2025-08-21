@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include "Option.h"
 #include <conio.h>
+#include <Windows.h>
 
 using namespace std;
 
@@ -202,6 +203,7 @@ void Combat::attack(Entity* Entity1, Inventory* PlayerInventory) {
 						}
 					}
 					else if (1 > distance) {
+						std::cout << "Warning: No Item Equipped! \n";
 						Highlightlist[i] = true;
 					}
 				}
@@ -219,6 +221,7 @@ void Combat::attack(Entity* Entity1, Inventory* PlayerInventory) {
 			}
 
 			if (NoEnemyExists == true) {
+				std::cout << "Out of Range \n";
 				return;
 			}
 
@@ -311,18 +314,21 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
     firstTurn = 1;
 	while (WinCondition() == 0)
 	{
+		board.drawBoard();
 		for (int i = 0; i < 20; i++)
 		{
 			if (List[i] != nullptr)
 			{
-				board.drawBoard();
+				
 				List[i]->move(List);
 				attack(List[i], PlayerInventory);
 				FactoryDestructor();
+				
 			}
 		}
 		firstTurn++;
 		std::cout << "Turn Number: " << firstTurn << "\n";
+		system("cls");
 	}
 
 	    std::cout << "Combat Ended \n";

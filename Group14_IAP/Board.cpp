@@ -96,18 +96,20 @@ void Board::drawBoard()
 		}
 	}
 
+	std::string Template;
 	// Print out Board
-	std::cout << "+-------------------------------------------------------------------------------+";
-	std::cout << std::endl;
+	Template.append("+-------------------------------------------------------------------------------+ \n");
+
 	for (int i = 0; i < 40; i++) {
 		for (int j = 0; j < 40; j++) {
-			std::cout << '|' << board[i][j];
+			Template.append("|"); 
+			Template.append(1, board[i][j]);
 		}
-		std::cout << '|';
-		std::cout << std::endl;
+		Template.append(1,'|');
+		Template.append(1, '\n');
 	}
-	std::cout << "+-------------------------------------------------------------------------------+";
-	std::cout << std::endl;
+	Template.append("+-------------------------------------------------------------------------------+ \n");
+	std::cout << Template;
 }
 
 // Function to draw Dungeon Layout
