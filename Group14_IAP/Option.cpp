@@ -84,7 +84,7 @@ void Option::openInventory() {
     while (inventoryOpen) {
         std::cout << "\n=== INVENTORY ===\n";
         PlayerInventory.DrawInventory();
-        std::cout << "Enter coordinates (row col) to equip item, or 'E' to close: ";
+        std::cout << "Enter coordinates (row col) e.g (0 0) to equip item, or 'E' to close: ";
 
         std::string first;
         if (!(std::cin >> first)) {
