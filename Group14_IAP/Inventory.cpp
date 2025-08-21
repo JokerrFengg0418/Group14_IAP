@@ -21,22 +21,22 @@ Inventory::~Inventory()
 
 //Drawing Inventory (UI Save Me)
 void Inventory::DrawInventory() const{
-	std::cout << "   0 1 2 3 4\n";
-	std::cout << "+-----------+\n";
+	std::cout << "          0              1              2              3              4\n";
+	std::cout << "+----------------------------------------------------------------------------+\n";
 	for (int i = 0; i < 4; ++i) {
 		std::cout << i << " ";
 		for (int j = 0; j < 5; ++j) {
 			int index = i * 5 + j;
 			if (inventory[index] != nullptr) {
-				std::cout << '|' << inventory[index]->GetItemWord('N') << ' ';
+				std::cout << '|' << inventory[index]->GetItemWord('N');
 			}
 			else {
-				std::cout << '|' << " ";
+				std::cout << '|' << "              ";
 			}
 		}
 		std::cout << '|' << std::endl;
 	}
-	std::cout << "+-----------+\n";
+	std::cout << "+----------------------------------------------------------------------------+\n";
 }
 
 //Draws Specifications of Inventory Item
@@ -160,23 +160,23 @@ void Inventory::DatabaseInitialisation() {
 	//FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, int number, char DatabaseType)
 
 	// ===== Weapons =====
-	FactoryCreateItem("Sword", "A basic but reliable blade.", 'W', 50, 20, 30, 10, 'W');
-	FactoryCreateItem("SlingShot", "A simple ranged weapon.", 'W', 50, 20, 30, 10, 'W');
-	FactoryCreateItem("Bow and Arrow", "Classic ranged weapon with arrows.", 'W', 80, 30, 50, 10, 'W');
-	FactoryCreateItem("Mace", "A heavy blunt weapon.", 'W', 100, 40, 60, 5, 'W');
-	FactoryCreateItem("Axe", "Powerful for chopping and combat.", 'W', 250, 100, 150, 5, 'W');
-	FactoryCreateItem("Crossbow", "Advanced ranged weapon.", 'W', 150, 60, 90, 5, 'W');
-	FactoryCreateItem("Turret", "Stationary defense weapon.", 'W', 300, 120, 180, 2, 'W');
+	FactoryCreateItem("    Swords    ", "A basic but reliable blade.", 'W', 50, 20, 30, 10, 'W');
+	FactoryCreateItem("  SlingShots  ", "A simple ranged weapon.", 'W', 50, 20, 30, 10, 'W');
+	FactoryCreateItem("Bow and Arrows", "Classic ranged weapon with arrows.", 'W', 80, 30, 50, 10, 'W');
+	FactoryCreateItem("     Mace     ", "A heavy blunt weapon.", 'W', 100, 40, 60, 5, 'W');
+	FactoryCreateItem("     Axee     ", "Powerful for chopping and combat.", 'W', 250, 100, 150, 5, 'W');
+	FactoryCreateItem("   Crossbow   ", "Advanced ranged weapon.", 'W', 150, 60, 90, 5, 'W');
+	FactoryCreateItem("    Turret    ", "Stationary defense weapon.", 'W', 300, 120, 180, 2, 'W');
 
 	// ===== Armors =====
-	FactoryCreateItem("Wooden Armor", "Basic protective armor.", 'A', 50, 20, 30, 10, 'I');
-	FactoryCreateItem("Silver Armor", "Strong armor for better defense.", 'A', 100, 40, 60, 5, 'I');
-	FactoryCreateItem("Leather Armor", "Lightweight armor.", 'A', 10, 4, 6, 20, 'I');
-	FactoryCreateItem("Shield", "Protects against attacks.", 'A', 100, 40, 60, 5, 'I');
-	FactoryCreateItem("Helmet", "Protects your head.", 'A', 80, 30, 50, 5, 'I');
+	FactoryCreateItem(" Wooden Armor ", "Basic protective armor.", 'A', 50, 20, 30, 10, 'I');
+	FactoryCreateItem(" Silver Armor ", "Strong armor for better defense.", 'A', 100, 40, 60, 5, 'I');
+	FactoryCreateItem("Leather Armors", "Lightweight armor.", 'A', 10, 4, 6, 20, 'I');
+	FactoryCreateItem("    Shield    ", "Protects against attacks.", 'A', 100, 40, 60, 5, 'I');
+	FactoryCreateItem("    Helmet    ", "Protects your head.", 'A', 80, 30, 50, 5, 'I');
 
 	// ===== Consumables / Other =====
-	FactoryCreateItem("Health Potion", "Restores health.", 'I', 50, 20, 30, 20, 'I');
+	FactoryCreateItem("Health Potions", "Restores health.", 'I', 50, 20, 30, 20, 'I');
 }
 
 //Draws Item from Database instead of Inventory//
