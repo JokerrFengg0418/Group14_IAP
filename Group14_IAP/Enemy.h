@@ -3,6 +3,9 @@
 #include "Player.h"
 #include <string>
 
+// Forward declaration of the Player class
+class Player;
+
 // define different types of Enemies with enum
 enum class EnemyType {
 	Monster, // M
