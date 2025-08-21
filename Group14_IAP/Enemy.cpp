@@ -45,7 +45,7 @@ char Enemy::getTypeName() const
 	case EnemyType::Bat:       return 'B';
 	case EnemyType::Skeleton:  return 'S';
 	case EnemyType::Gargoyle:  return 'G';
-	case EnemyType::Boss:      return 'B';
+	case EnemyType::Boss:      return 'A';
 	default:                   return 'U';
 	}
 }
