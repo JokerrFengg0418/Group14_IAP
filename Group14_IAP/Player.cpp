@@ -38,8 +38,6 @@ void Player::takeDamage(int amount)
 	}
 }
 
-#include <conio.h> // for _getch
-
 void Player::move(Entity* list[20]) {
     std::cout << "Use WASD to move\n";
 

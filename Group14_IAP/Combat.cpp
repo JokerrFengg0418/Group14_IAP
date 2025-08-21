@@ -1,12 +1,15 @@
+#define NOMINMAX
 #include "Combat.h"
 #include "Entity.h"
 #include "Enemy.h"
 #include "Player.h"
 #include "Inventory.h"
+#include "Option.h"
 #include <iostream>
 #include <cmath>
+#include <algorithm>  
 #include <cstdlib>
-#include "Option.h"
+#include <vector>
 #include <conio.h>
 #include <Windows.h>
 
@@ -124,160 +127,145 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 extern Entity* List[20];
 
 int Combat::calculateDistance(const Position& a, const Position& b) {
-    int dx = abs(a.getRow() - b.getRow());
-    int dy = abs(a.getCol() - b.getCol());
-    return max(dx, dy);  // Chebyshev distance
+	int dx = std::abs(a.getRow() - b.getRow());
+	int dy = std::abs(a.getCol() - b.getCol());
+	return std::max(dx, dy);  // Chebyshev distance
 }
 
-void Combat::attack(Entity* Entity1, Inventory* PlayerInventory) {
+void Combat::attack(Entity* entity1, Inventory* playerInv) {
+	if (!entity1) return;
 	std::cout << "\n=== Combat Start ===\n";
 
-	int distance;
-	Entity* player = nullptr;
-
-	if (Entity1->getEntityType() == 'E') {
-
-		for (int i = 0; i < 20; i++) {
-			if (List[i]->getEntityType() == 'P') {
-				distance = calculateDistance(Entity1->getPosition(), List[i]->getPosition());
+	// ------------- ENEMY TURN -------------
+	if (entity1->getEntityType() == 'E') {
+		// Find the player in List
+		Entity* player = nullptr;
+		for (int i = 0; i < 20; ++i) {
+			if (List[i] && List[i]->getEntityType() == 'P') {
 				player = List[i];
 				break;
-
 			}
 		}
+		if (!player) { std::cout << "[Combat] No player found.\n"; std::cout << "=== Combat End ===\n"; return; }
 
-		
-		// ============ Enemy's Turn ============
-		Enemy* enemyReference = dynamic_cast<Enemy*>(Entity1);
-		EnemyType type = enemyReference->getType();
-		bool enemyCanMelee = (type == EnemyType::Monster || type == EnemyType::Hellhound ||
+		int distance = calculateDistance(entity1->getPosition(), player->getPosition());
+
+		Enemy* enemyRef = dynamic_cast<Enemy*>(entity1);
+		if (!enemyRef) { std::cout << "[Combat] Bad enemy cast.\n"; std::cout << "=== Combat End ===\n"; return; }
+
+		EnemyType type = enemyRef->getType();
+		bool canMelee = (type == EnemyType::Monster || type == EnemyType::Hellhound ||
 			type == EnemyType::Zombie || type == EnemyType::Goblin ||
 			type == EnemyType::Bat || type == EnemyType::Skeleton ||
 			type == EnemyType::Boss);
 
-		bool enemyCanRange = (type == EnemyType::Gargoyle || type == EnemyType::Boss);
+		bool canRange = (type == EnemyType::Gargoyle || type == EnemyType::Boss);
 
 		bool enemyAttacked = false;
-
-		if (enemyCanMelee && distance <= 1) {
-			std::cout << enemyReference->getTypeName() << " strikes you in close combat!\n";
-			player->takeDamage(enemyReference->getDamage());
+		if (canMelee && distance <= 1) {
+			std::cout << enemyRef->getTypeName() << " strikes you in close combat!\n";
+			player->takeDamage(enemyRef->getDamage());
 			enemyAttacked = true;
 		}
-		else if (enemyCanRange && distance <= 5) {
-			std::cout << enemyReference->getTypeName() << " attacks you from range!\n";
-			player->takeDamage(enemyReference->getDamage() - 2);
+		else if (canRange && distance <= 5) {
+			std::cout << enemyRef->getTypeName() << " attacks you from range!\n";
+			player->takeDamage(std::max(0, enemyRef->getDamage() - 2));
 			enemyAttacked = true;
 		}
-
-		if (!enemyAttacked) {
-			std::cout << enemyReference->getTypeName() << " is too far to attack.\n";
+		else {
+			std::cout << enemyRef->getTypeName() << " is too far to attack.\n";
 		}
 
-		// Check if player died after enemy's turn
 		if (player->getHealth() <= 0) {
 			std::cout << "You have been defeated...\n";
-
+			std::cout << "=== Combat End ===\n";
+			return;
 		}
-
 	}
 
-	if (Entity1->getEntityType() == 'P') {
+	// ------------- PLAYER TURN -------------
+	if (entity1->getEntityType() == 'P') {
+		if (!playerInv) { std::cout << "[Combat] Player inventory is null.\n"; std::cout << "=== Combat End ===\n"; return; }
 
-		bool attacked = false;
-		Inventory* inventory = PlayerInventory;
-		bool Highlightlist[20];
-
-		for (int i = 0; i < 20; i++) {
-			Highlightlist[i] = false;
+		// Determine attack range
+		int range = 1; // default melee
+		if (Item* eq = playerInv->getEquippedItem()) {
+			// If your item stores range differently, adjust here
+			range = std::max(1, eq->GetNumber());
 		}
 
-		for (int i = 0; i < 20; i++) {
-			if (List[i] != nullptr) {
-				if (List[i]->getEntityType() == 'E') {
-
-					distance = calculateDistance(Entity1->getPosition(), List[i]->getPosition());
-					if (inventory->getEquippedItem() != nullptr) {
-						if (inventory->getEquippedItem()->GetNumber() > distance) {
-							Highlightlist[i] = true;
-						}
-					}
-					else if (1 > distance) {
-						std::cout << "Warning: No Item Equipped! \n";
-						Highlightlist[i] = true;
-					}
-				}
-			}
+		// Collect targetable enemies
+		std::vector<int> candidates;
+		for (int i = 0; i < 20; ++i) {
+			if (!List[i] || List[i]->getEntityType() != 'E') continue;
+			int d = calculateDistance(entity1->getPosition(), List[i]->getPosition());
+			if (d <= range) candidates.push_back(i);
 		}
-		// ============ Player's Turn ============
-		bool Selection = true;
-		int Increment = 0;
-		bool NoEnemyExists = true;
-		while (Selection == true) {
-			for (int i = 0; i < 20; i++) {
-				if (Highlightlist[i] == true) {
-					NoEnemyExists = false;
-				}
-			}
 
-			if (NoEnemyExists == true) {
-				std::cout << "Out of Range \n";
-				return;
+		if (candidates.empty()) {
+			std::cout << "No enemies in range.\n";
+			std::cout << "=== Combat End ===\n";
+			return;
+		}
+
+		// Selection UI: cycle through only the valid candidates
+		size_t sel = 0;
+		bool selecting = true;
+		while (selecting) {
+			int idx = candidates[sel];
+			// Highlight the current candidate on your board (adapt if your API differs)
+			// (guarding against null just in case)
+			if (List[idx]) {
+				board.printBoardCellColor(List[idx]->getPosition().getRow(),
+					List[idx]->getPosition().getCol());
 			}
 
-			if (Highlightlist[Increment] == true) {
-				board.printBoardCellColor(List[Increment]->getRow(), List[Increment]->getCol());
-				std::cout << "Select Enemy";
-				int input = _getch();
-
-				switch (input) {
-				case 'a':
-					Increment -= 1;
-					break;
-				case 'A':
-					Increment -= 1;
-					break;
-				case 'd':
-					Increment += 1;
-					break;
-				case 'D':
-					Increment += 1;
-					break;
-				default:
-					break;
-				case '\r':
-					Selection = false;
-					break;
-
-				}
-
+			std::cout << "Select Enemy [A/D to cycle, ENTER to confirm]\n";
+			int key = _getch();
+			switch (key) {
+			case 'a': case 'A':
+				sel = (sel + candidates.size() - 1) % candidates.size();
+				break;
+			case 'd': case 'D':
+				sel = (sel + 1) % candidates.size();
+				break;
+			case '\r': // Enter
+				selecting = false;
+				break;
+			default:
+				// ignore other keys
+				break;
 			}
-
 		}
 
-		Item* EquippedItem = inventory->getEquippedItem();
+		int targetIndex = candidates[sel];
+		Entity* target = (targetIndex >= 0 && targetIndex < 20) ? List[targetIndex] : nullptr;
+		if (!target) { std::cout << "[Combat] Target went missing.\n"; std::cout << "=== Combat End ===\n"; return; }
 
-		if (EquippedItem != nullptr) {
-			std::cout << "You attacked the enemy with your" << EquippedItem->GetItemWord('N') << "! \n";
-
-			List[Increment]->takeDamage(EquippedItem->GetItemValue('V'));
-			attacked = true;
-		} else if (!attacked) {
-			std::cout << "You are either unarmed or out of range to attack.\n";
+		Item* equipped = playerInv->getEquippedItem();
+		if (equipped) {
+			std::cout << "You attacked the enemy with your " << equipped->GetItemWord('N') << "!\n";
+			int dmg = std::max(1, equipped->GetItemValue('V')); // swap to your damage stat if different
+			target->takeDamage(dmg);
+		}
+		else {
+			std::cout << "Warning: No item equipped! You punch for 1 damage.\n";
+			target->takeDamage(1);
 		}
 
-		// Check if enemy died after player's turn
-		if (List[Increment]->getHealth() <= 0) {
-			Enemy* EnemyNameReference = dynamic_cast<Enemy*>(List[Increment]);
-			std::cout << "You defeated the " << EnemyNameReference->getTypeName() << "!\n";
-
+		if (target->getHealth() <= 0) {
+			if (Enemy* e = dynamic_cast<Enemy*>(target)) {
+				std::cout << "You defeated the " << e->getTypeName() << "!\n";
+			}
+			else {
+				std::cout << "Enemy defeated!\n";
+			}
 		}
-
-
 	}
 
 	std::cout << "=== Combat End ===\n";
 }
+
 
 int Combat::WinCondition()
 {
@@ -297,7 +285,6 @@ int Combat::WinCondition()
 
 		
 	}
-	
 
 	for (int i = 0; i < 20; i++) {
 		delete List[i];
@@ -305,8 +292,6 @@ int Combat::WinCondition()
 	}
 	return 1;
 
-	
-	
 }
 
 void Combat::TurnOrder(Inventory* PlayerInventory)
