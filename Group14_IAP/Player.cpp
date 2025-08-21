@@ -81,6 +81,27 @@ void Player::move()
 		break;
 	}
 
+	if (newX < 0 || newX > 39 || newY < 0 || newY > 39)
+	{
+		return;
+	}
+	for (int i = 0; i < 20; i++)
+	{
+		if (List[i] != nullptr)
+		{
+			int otherx = List[i]->getPosition().getRow();
+			int othery = List[i]->getPosition().getCol();
+			char othertype = List[i]->getEntityType();
+
+			if (otherx == newX && othery == newY)
+			{
+				if (othertype == 'E' && getEntityType() == 'P')
+				{
+					return;
+				}
+			}
+		}
+	}
 }
 
 
