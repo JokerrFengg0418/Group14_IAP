@@ -26,6 +26,7 @@ Entity* Combat::FactoryCreateEntity(int CharacterType) {
 
 			}
 		}
+		break;
 	case 1:
 		for (int i = 0; i < 20; i++) {
 
@@ -35,6 +36,7 @@ Entity* Combat::FactoryCreateEntity(int CharacterType) {
 
 			}
 		}
+		break;
 	case 2:
 		for (int i = 0; i < 20; i++) {
 
@@ -44,6 +46,7 @@ Entity* Combat::FactoryCreateEntity(int CharacterType) {
 
 			}
 		}
+		break;
 	case 3:
 		for (int i = 0; i < 20; i++) {
 
@@ -53,6 +56,7 @@ Entity* Combat::FactoryCreateEntity(int CharacterType) {
 
 			}
 		}
+		break;
 	case 4:
 		for (int i = 0; i < 20; i++) {
 
@@ -62,6 +66,7 @@ Entity* Combat::FactoryCreateEntity(int CharacterType) {
 
 			}
 		}
+		break;
 	case 5:
 		for (int i = 0; i < 20; i++) {
 
@@ -71,6 +76,7 @@ Entity* Combat::FactoryCreateEntity(int CharacterType) {
 
 			}
 		}
+		break;
 	case 6:
 		for (int i = 0; i < 20; i++) {
 
@@ -80,6 +86,7 @@ Entity* Combat::FactoryCreateEntity(int CharacterType) {
 
 			}
 		}
+		break;
 	case 7:
 		for (int i = 0; i < 20; i++) {
 
@@ -89,15 +96,17 @@ Entity* Combat::FactoryCreateEntity(int CharacterType) {
 
 			}
 		}
+		break;
 	case 8:
 		for (int i = 0; i < 20; i++) {
 
 			if (List[i] == nullptr) {
 
-				return new Player(0, 0, 100, 50);
+				return new Player;
 
 			}
 		}
+		break;
 	}
 }
 
@@ -270,6 +279,7 @@ int Combat::WinCondition()
 
 void Combat::TurnOrder(Inventory* PlayerInventory)
 {
+	Entity* List[20];
     firstTurn = 1;
 	for (int i = 0; i < 20; i++)
 	{
