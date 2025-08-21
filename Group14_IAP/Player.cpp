@@ -40,8 +40,8 @@ void Player::takeDamage(int amount)
 
 void Player::move(Entity* List[20])
 {
-	int newX = position.row;
-	int newY = position.col;
+	int newX = getCol();
+	int newY = getRow();
 
 	std::cout << "Use WASD to move\n";
 
@@ -73,6 +73,9 @@ void Player::move(Entity* List[20])
 		std::cout << "invalid input\n";
 		break;
 	}
+
+	setRow(newY);
+	setCol(newX);
 
 	if (newX < 0 || newX > 39 || newY < 0 || newY > 39)
 	{
