@@ -140,6 +140,7 @@ void Combat::attack(Entity* Entity1, Inventory* PlayerInventory) {
 			if (List[i]->getEntityType() == 'P') {
 				distance = calculateDistance(Entity1->getPosition(), List[i]->getPosition());
 				player = List[i];
+				break;
 
 			}
 		}
@@ -191,39 +192,53 @@ void Combat::attack(Entity* Entity1, Inventory* PlayerInventory) {
 		}
 
 		for (int i = 0; i < 20; i++) {
-			if (List[i]->getEntityType() == 'E') {
+			if (List[i] != nullptr) {
+				if (List[i]->getEntityType() == 'E') {
 
-				distance = calculateDistance(Entity1->getPosition(), List[i]->getPosition());
-				if (inventory->getEquippedItem() != nullptr) {
-					if (inventory->getEquippedItem()->GetNumber() < distance) {
+					distance = calculateDistance(Entity1->getPosition(), List[i]->getPosition());
+					if (inventory->getEquippedItem() != nullptr) {
+						if (inventory->getEquippedItem()->GetNumber() > distance) {
+							Highlightlist[i] = true;
+						}
+					}
+					else if (1 > distance) {
 						Highlightlist[i] = true;
 					}
-				}
-				else if (1 < distance) {
-					Highlightlist[i] = true;
 				}
 			}
 		}
 		// ============ Player's Turn ============
 		bool Selection = true;
 		int Increment = 0;
+		bool NoEnemyExists = true;
 		while (Selection == true) {
+			for (int i = 0; i < 20; i++) {
+				if (Highlightlist[i] == true) {
+					NoEnemyExists = false;
+				}
+			}
+
+			if (NoEnemyExists == true) {
+				return;
+			}
+
 			if (Highlightlist[Increment] == true) {
 				board.printBoardCellColor(List[Increment]->getRow(), List[Increment]->getCol());
+				std::cout << "Select Enemy";
 				int input = _getch();
 
 				switch (input) {
 				case 'a':
-					Increment - 1;
+					Increment -= 1;
 					break;
 				case 'A':
-					Increment - 1;
+					Increment -= 1;
 					break;
 				case 'd':
-					Increment + 1;
+					Increment += 1;
 					break;
 				case 'D':
-					Increment + 1;
+					Increment += 1;
 					break;
 				default:
 					break;
