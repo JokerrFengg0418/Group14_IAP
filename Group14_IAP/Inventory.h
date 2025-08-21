@@ -25,6 +25,8 @@ public:
 
 	Item* getInventory(std::string Name) const;
 
+	Item* PullInventoryIndex(int Index) const;
+
 	void setInventory(std::string ItemName, int Number);
 
 	Item* getEquippedItem() const;

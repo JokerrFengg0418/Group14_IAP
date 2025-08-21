@@ -291,6 +291,12 @@ void Inventory::setEquippedItem(Item* SelectedItem) {
 	
 }
 
+Item* Inventory::PullInventoryIndex(int Index) const{
+
+	return inventory[Index];
+
+}
+
 
 
 
