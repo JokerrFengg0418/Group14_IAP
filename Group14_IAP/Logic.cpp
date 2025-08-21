@@ -4,28 +4,8 @@
 
 Logic::Logic() {
 
-	GameOrderState = 1;
 	GlobalOrderState = 1;
 	GameEndState = false;
-
-}
-
-
-
-
-
-void Logic::GameOrderStateSet(int CurrentGameOrder) {
-	
-	GameOrderState = CurrentGameOrder;
-
-}
-
-
-
-
-int Logic::GameOrderStateGet() {
-
-	return GameOrderState;
 
 }
 
@@ -71,11 +51,15 @@ void Logic::GlobalOrderSet(int CurrentGlobalOrder) {
 void Logic::TurnOrder() {
 
 	Option GameOption;
+	Combat CombatHandler;
 
 	while (GameEndState == false) {
 
-		Option::displayMenu();
 
+		GameOption.displayMenu();
+		CombatHandler.startCombat('A');
+		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+		GlobalOrderSet(GlobalOrderGet() + 1);
 
 	}
 
