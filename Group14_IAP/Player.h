@@ -16,7 +16,7 @@ public:
 
 	void takeDamage(int amount);
 
-	void move();
+	void move(Entity* List[20]);
 
 };
 

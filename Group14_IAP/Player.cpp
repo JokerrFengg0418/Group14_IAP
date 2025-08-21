@@ -38,7 +38,7 @@ void Player::takeDamage(int amount)
 	}
 }
 
-void Player::move()
+void Player::move(Entity* List[20])
 {
 	int newX = position.row;
 	int newY = position.col;

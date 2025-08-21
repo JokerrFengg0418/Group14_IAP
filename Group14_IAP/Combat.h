@@ -9,14 +9,13 @@
 class Combat
 {
 private:
-
-	Entity* List[20] ;
 	int firstTurn;
 	bool spawn;
 	bool playerTurn;
 	Board board;
 
-
+protected:
+	Entity* List[20];
 public:
 
 	void FactoryCreateEntity(int CharacterType);
