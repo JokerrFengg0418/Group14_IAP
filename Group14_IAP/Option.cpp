@@ -77,41 +77,53 @@ void Option::handleInput() {
 
 void Option::openInventory() {
     inventoryOpen = true;
-    bool running = true;
 
-    while (running) {
+    constexpr int ROWS = 4;
+    constexpr int COLS = 5;
+
+    while (inventoryOpen) {
         std::cout << "\n=== INVENTORY ===\n";
         PlayerInventory.DrawInventory();
         std::cout << "Enter coordinates (row col) to equip item, or 'E' to close: ";
 
-        std::string input;
-        std::cin >> input;
-
-        if (input == "E" || input == "e") {
-            running = false;
-            closeInventory();
-            break;
-        }
-
-        int row, col;
-        try {
-            row = std::stoi(input);
-            std::cin >> col;
-        }
-        catch (...) {
+        std::string first;
+        if (!(std::cin >> first)) {
+            clearCin();
             std::cout << "Invalid input, try again.\n";
             continue;
         }
 
-        if (row < 0 || row >= 4 || col < 0 || col >= 5) {
+        if (first == "E" || first == "e") {
+            closeInventory();
+            break;
+        }
+
+        int row;
+        try {
+            row = std::stoi(first);
+        }
+        catch (...) {
+            std::cout << "Invalid input, try again.\n";
+            clearCin();
+            continue;
+        }
+
+        int col;
+        if (!(std::cin >> col)) {
+            std::cout << "Invalid input, try again.\n";
+            clearCin();
+            continue;
+        }
+
+        if (row < 0 || row >= ROWS || col < 0 || col >= COLS) {
             std::cout << "Invalid coordinates, try again.\n";
             continue;
         }
 
-        int index = row * 5 + col; // Flatten 2D → 1D
+        const int index = row * COLS + col;
 
         Item* item = PlayerInventory.PullInventoryIndex(index);
-        if (item != nullptr) {
+        if (item) {
             PlayerInventory.setEquippedItem(item);
             std::cout << "Equipped " << item->GetItemWord('N') << "!\n";
         }
