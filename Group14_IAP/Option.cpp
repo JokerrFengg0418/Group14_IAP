@@ -56,16 +56,6 @@ void Option::runMainMenu() {
     }
 }
 
-void Option::handleChoice(int choice, Inventory& inventory) {
-    switch (choice) {
-    case 1: openInventory(); break;
-    case 2: shopOption(inventory); break;
-    case 3: dungeonOption(); break;
-    case 4: cout << "Exiting...\n"; break;
-    default: cout << "Invalid choice, try again.\n"; break;
-    }
-}
-
 void Option::handleInput() {
     char input;
     std::cout << "Press 'E' to open/close inventory.\n";
