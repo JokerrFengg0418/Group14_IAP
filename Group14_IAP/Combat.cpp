@@ -288,14 +288,16 @@ int Combat::WinCondition()
 
 void Combat::TurnOrder(Inventory* PlayerInventory)
 {
-	Entity* List[20];
     firstTurn = 1;
 	for (int i = 0; i < 20; i++)
 	{
-        board.drawBoard();
-		List[i]->move();
-		attack(List[i], PlayerInventory);
-		FactoryDestructor();
+		if (List[i] != nullptr)
+		{
+			board.drawBoard();
+			List[i]->move();
+			attack(List[i], PlayerInventory);
+			FactoryDestructor();
+		}
 		if (WinCondition() == 1) {
 
 			std::cout << "Combat Ended \n";
