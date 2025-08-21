@@ -124,13 +124,13 @@ void Shop::buyItem(Inventory* PlayerInventory) {
     }
 
     const int cost = selectedItem->GetItemValue('S');
-    if (playerInv->getCurrency() < cost) {
+    if (PlayerInventory->getCurrency() < cost) {
         std::cout << "You don't have enough gold to buy that.\n";
         return;
     }
 
-    playerInv->setCurrency(playerInv->getCurrency() - cost);
-    playerInv->setInventory(selectedItem->GetItemWord('N'), 1);
+    PlayerInventory->setCurrency(PlayerInventory->getCurrency() - cost);
+    PlayerInventory->setInventory(selectedItem->GetItemWord('N'), 1);
     std::cout << "You have successfully purchased a "
         << selectedItem->GetItemWord('N') << "!\n";
 }
