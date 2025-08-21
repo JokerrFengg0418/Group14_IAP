@@ -22,7 +22,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List [i] = new Enemy(0, RandomTurf, EnemyType::Monster, 99, 99);
+				List [i] = new Enemy(39, RandomTurf, EnemyType::Monster, 99, 99);
 				return;
 
 			}
