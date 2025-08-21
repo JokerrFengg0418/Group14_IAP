@@ -13,6 +13,59 @@ Inventory* Option::getPlayerInventory() const {
     return PlayerInventory;
 }
 
+void Option::runMainMenu() {
+    bool running = true;
+    while (running) {
+        // Simple clear (optional)
+        // system("cls"); // Windows
+
+        cout << "=============================\n";
+        cout << "           MAIN MENU         \n";
+        cout << "=============================\n";
+        cout << "1. Inventory\n";
+        cout << "2. Shop\n";
+        cout << "3. Dungeon\n";
+        cout << "4. Exit\n";
+        cout << "=============================\n";
+        cout << "Enter your choice: ";
+
+        int choice = 0;
+        cin >> choice;
+        clearCin(); // clean trailing junk/newlines
+
+        switch (choice) {
+        case 1:
+            openInventory();
+            waitForEnter();
+            break;
+        case 2:
+            shopOption(*PlayerInventory);
+            break;
+        case 3:
+            dungeonOption();
+            break;
+        case 4:
+            cout << "Exiting...\n";
+            running = false;
+            break;
+        default:
+            cout << "Invalid choice, try again.\n";
+            waitForEnter();
+            break;
+        }
+    }
+}
+
+void Option::handleChoice(int choice, Inventory& inventory) {
+    switch (choice) {
+    case 1: openInventory(); break;
+    case 2: shopOption(inventory); break;
+    case 3: dungeonOption(); break;
+    case 4: cout << "Exiting...\n"; break;
+    default: cout << "Invalid choice, try again.\n"; break;
+    }
+}
+
 void Option::handleInput() {
     char input;
     std::cout << "Press 'E' to open/close inventory.\n";
@@ -85,8 +138,10 @@ void Option::displayMenu() {
     cout << "=============================\n";
     cout << "           MAIN MENU         \n";
     cout << "=============================\n";
-    cout << "1. Enter Shop\n";
-    cout << "2. Exit\n";
+    cout << "1. Inventory\n";
+    cout << "2. Shop\n";
+    cout << "3. Dungeon\n";
+    cout << "4. Exit\n";
     cout << "=============================\n";
     cout << "Enter your choice: ";
 }
@@ -94,9 +149,18 @@ void Option::displayMenu() {
 void Option::handleChoice(int choice, Inventory& inventory) {
     switch (choice) {
     case 1:
-        shopOption(inventory);
+        // Open/close & interact with inventory
+        openInventory();
         break;
     case 2:
+        // Enter the shop flow
+        shopOption(inventory);
+        break;
+    case 3:
+        // Enter dungeon (stub here; hook up to your dungeon system)
+        dungeonOption();
+        break;
+    case 4:
         cout << "Exiting...\n";
         break;
     default:
@@ -106,42 +170,45 @@ void Option::handleChoice(int choice, Inventory& inventory) {
 }
 
 void Option::shopOption(Inventory& inventory) {
-    // Create a Shop that uses the player's inventory and databases
-    Shop shop(&inventory);
+    Shop shop(&inventory);   // uses the player's DBs
 
     bool keepShopping = true;
     while (keepShopping) {
-        // Clear screen (optional; comment out if you don't want it)
-        // system("cls"); // Windows
         cout << "\n============================================\n";
-        cout << "Welcome to the shop! What would you like to buy?\n";
+        cout << "Welcome to the shop!\n";
         cout << "--------------------------------------------\n";
-
-        // Show player's current gold before the list
         cout << "Your gold: " << inventory.getCurrency() << "\n\n";
 
-        // Show items currently available in the shop
+        // Show current stock
         shop.displayItems();
-        cout << "Tip: Enter the item number shown above, or 0 to exit.\n";
 
-        // Let the Shop handle the buy flow (it prompts for the item index itself)
-        shop.buyItem(&inventory);
+        // New actions, including Refresh
+        cout << "\nActions: [B]uy   [R]efresh stock   [E]xit\n";
+        cout << "Enter action: ";
 
-        // After buying (or cancel), ask if they want to continue
-        cout << "\nContinue shopping? (Y/N): ";
-        char yn;
-        cin >> yn;
+        std::string action;
+        cin >> action;
 
-        if (yn == 'n' || yn == 'N' || yn == '0') {
-            keepShopping = false;
+        if (action.size() == 1) {
+            char a = static_cast<char>(std::tolower(action[0]));
+            if (a == 'b') {
+                // Shop handles prompting for item index internally
+                shop.buyItem(&inventory);
+                continue;
+            }
+            else if (a == 'r') {
+                // NEW: refresh stock
+                shop.refreshStock();      // requires Shop::refreshStock() (see below)
+                cout << "Shop stock refreshed!\n";
+                continue;
+            }
+            else if (a == 'e') {
+                keepShopping = false;
+                break;
+            }
         }
-        else if (yn == 'y' || yn == 'Y') {
-            keepShopping = true;
-        }
-        else {
-            // If input is weird, default to leaving the shop
-            keepShopping = false;
-        }
+
+        cout << "Invalid action. Try again.\n";
     }
 
     cout << "Leaving the shop...\n";
@@ -157,4 +224,12 @@ void Option::waitForEnter() const {
 void Option::clearCin() const {
     cin.clear();
     cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+// --- NEW: simple dungeon entry stub (add if you don't already have one) ---
+void Option::dungeonOption() {
+    cout << "\n[Entering the dungeon...]\n";
+    // TODO: hook up your dungeon run here
+    cout << "[Dungeon WIP]\n";
+    waitForEnter();
 }

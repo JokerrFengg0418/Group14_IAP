@@ -15,27 +15,35 @@ Shop::~Shop()
 }
 
 void Shop::populateShop() {
-    // Adding some example items to the shop's inventory
-    if (gameInventory != nullptr) {
-        // Populate the shop with items from your databases.
-        // For example, pulling an item named "Iron Sword" from the 'W'eapon database.
-        Item* ironSword = gameInventory->DrawDatabase('W', "Iron Sword");
-		if (ironSword != nullptr) {
-			inventory.push_back(ironSword);
-		}
+    if (gameInventory == nullptr) return;
 
-        // Add more items as needed, for example, from the 'M'onster or 'I'tem databases.
-        Item* healthPotion = gameInventory->DrawDatabase('I', "Health Potion");
-        if (healthPotion != nullptr) {
-            inventory.push_back(healthPotion);
+    // small helper to avoid repetitive null checks
+    auto add = [&](char db, const std::string& name) {
+        if (Item* it = gameInventory->DrawDatabase(db, name)) {
+            inventory.push_back(it);
         }
+        };
 
-        Item* leatherArmor = gameInventory->DrawDatabase('A', "Leather Armor");
-        if (leatherArmor != nullptr) {
-            inventory.push_back(leatherArmor);
-        }
-    }
+    // Weapons
+    add('W', "Sword");
+    add('W', "SlingShot");
+    add('W', "Bow and Arrow");
+    add('W', "Mace");
+    add('W', "Axe");
+    add('W', "Crossbow");
+    add('W', "Turret");
+
+    // Armor
+    add('A', "Wooden Armor");
+    add('A', "Silver Armor");
+    add('A', "Shield");
+    add('A', "Helmet");
+    add('A', "Leather Armor");
+
+    // Consumables / Items
+    add('I', "Health Potion");
 }
+
 
 void Shop::displayItems() {
     std::cout << "Welcome to the shop! What would you like to buy?" << std::endl;
@@ -78,3 +86,8 @@ void Shop::buyItem(Inventory* PlayerInventory) {
         std::cout << "Invalid choice." << std::endl;
     }
 }
+
+void Shop::refreshStock() {
+    // We only store pointers owned by Inventory DBs, so clearing is safe
+    inventory.clear();
+    populateShop();   // Re-fill (you can add randomness inside populateShop if desired)

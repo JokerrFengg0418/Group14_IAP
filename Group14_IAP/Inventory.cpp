@@ -200,20 +200,26 @@ void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescript
 void Inventory::DatabaseInitialisation() {
 
 	//FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, int number, char DatabaseType)
-	//Weapon Section here4
-	FactoryCreateItem("Iron Sword", "A sturdy sword.", 'W', 100, 40, 60, 2, 'W');
 
-	//Monster Section here
+	// ===== Weapons =====
+	FactoryCreateItem("Sword", "A basic but reliable blade.", 'W', 50, 20, 30, 10, 'W');
+	FactoryCreateItem("SlingShot", "A simple ranged weapon.", 'W', 50, 20, 30, 10, 'W');
+	FactoryCreateItem("Bow and Arrow", "Classic ranged weapon with arrows.", 'W', 80, 30, 50, 10, 'W');
+	FactoryCreateItem("Mace", "A heavy blunt weapon.", 'W', 100, 40, 60, 5, 'W');
+	FactoryCreateItem("Axe", "Powerful for chopping and combat.", 'W', 250, 100, 150, 5, 'W');
+	FactoryCreateItem("Crossbow", "Advanced ranged weapon.", 'W', 150, 60, 90, 5, 'W');
+	FactoryCreateItem("Turret", "Stationary defense weapon.", 'W', 300, 120, 180, 2, 'W');
 
-	//Item Section here
+	// ===== Armors =====
+	FactoryCreateItem("Wooden Armor", "Basic protective armor.", 'A', 50, 20, 30, 10, 'I');
+	FactoryCreateItem("Silver Armor", "Strong armor for better defense.", 'A', 100, 40, 60, 5, 'I');
+	FactoryCreateItem("Leather Armor", "Lightweight armor.", 'A', 10, 4, 6, 20, 'I');
+	FactoryCreateItem("Shield", "Protects against attacks.", 'A', 100, 40, 60, 5, 'I');
+	FactoryCreateItem("Helmet", "Protects your head.", 'A', 80, 30, 50, 5, 'I');
+
+	// ===== Consumables / Other =====
 	FactoryCreateItem("Health Potion", "Restores health.", 'P', 50, 20, 30, 20, 'I');
-	FactoryCreateItem("Leather Armor", "Lightweight armor.", 'A', 75, 30, 45, 50, 'I');
-
-
 }
-
-
-
 
 //Draws Item from Database instead of Inventory//
 Item* Inventory::DrawDatabase(char DatabaseType, std::string ItemName) {

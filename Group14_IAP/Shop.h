@@ -20,5 +20,7 @@ public:
     void populateShop();
     void displayItems();
     void buyItem(Inventory* PlayerInventory);
+
+    void refreshStock();
 };
 

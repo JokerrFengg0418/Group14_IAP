@@ -12,6 +12,9 @@ private:
 
     void shopOption(Inventory& inventory);  // Opens the shop and keeps looping until the player chooses to exit
 
+    void dungeonOption();       // Stub/entry to your dungeon flow
+    void runMainMenu();         // The single menu loop
+
     // Small helpers
     void waitForEnter() const;
     void clearCin() const;
