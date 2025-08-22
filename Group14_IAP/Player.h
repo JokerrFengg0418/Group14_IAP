@@ -18,5 +18,7 @@ public:
 
 	void move(Entity* List[20]);
 
+	bool moveDungeon();
+
 };
 

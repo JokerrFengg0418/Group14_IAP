@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <iomanip>
 #include "Board.h"
 #include "Enemy.h"
@@ -140,23 +140,29 @@ void Board::drawBoard()
 // Function to draw a 5x5 Dungeon layout (kept as-is, but bounded)
 void Board::drawDungeon()
 {
-    std::cout << '\n';
-    for (int i = 0; i < 5; ++i) {
-        for (int j = 0; j < 5; ++j) {
-            if (inBounds(i, j))
-                std::cout << '|' << board[i][j];
-            else
-                std::cout << '|' << ' ';
-        }
-        std::cout << "|\n";
-    }
+	std::cout << "+---------+ \n";
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 5; j++) {
+			char cell = Board::board[i][j];
+			if (cell == ' ' || cell == '\0') {
+				std::cout << '|' << 'X'; // gap → X
+			}
+			else {
+				std::cout << '|' << cell; // keep actual content
+			}
+		}
+		std::cout << '|';
+		std::cout << std::endl;
+	}
+	std::cout << "+---------+ \n";
+}
 
-    // Clear the 5x5 dungeon region
-    for (int r = 0; r < 5; ++r) {
-        for (int c = 0; c < 5; ++c) {
-            if (inBounds(r, c)) board[r][c] = ' ';
-        }
-    }
+
+void Board::setCellContentDungeon(int row, int col, char content)
+{
+	if (row >= 0 && row < 5 && col >= 0 && col < 5) {
+		board[row][col] = content;
+	}
 }
 
 // Prefer a safe accessor with indices.

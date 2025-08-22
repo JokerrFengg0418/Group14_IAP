@@ -5,7 +5,8 @@
 #include <iostream>
 #include "Position.h"
 #include "Shop.h"
-
+#include "Dungeon.h"
+#include <cctype>
 
 Player::Player()
 {
@@ -99,6 +100,58 @@ void Player::move(Entity* list[20]) {
         }
     }
 }
+
+
+bool Player::moveDungeon()
+{
+    // current position
+    int row = getRow();
+    int col = getCol();
+
+    // target position starts as current
+    int newRow = row;
+    int newCol = col;
+
+    const int ROWS = 5;  // dungeon board size
+    const int COLS = 5;
+
+    const char input = _getch();
+    switch (toupper(input)) {
+    case 'W':
+        newRow--;
+        std::cout << "Move Up\n";
+        break;
+    case 'S':
+        newRow++;
+        std::cout << "Move Down\n";
+        break;
+    case 'A':
+        newCol--;
+        std::cout << "Move Left\n";
+        break;
+    case 'D':
+        newCol++;
+        std::cout << "Move Right\n";
+        break;
+    case 'E':
+        return true; // signal exit
+    default:
+        std::cout << "Invalid input\n";
+        return false; // ignore bad key
+    }
+
+    // bounds check
+    if (newRow < 0 || newRow >= ROWS || newCol < 0 || newCol >= COLS) {
+        return false; // out of bounds: ignore move
+    }
+
+    // apply the move
+    setRow(newRow);
+    setCol(newCol);
+
+    return false; // no exit, just moved
+}
+
 
 
 
