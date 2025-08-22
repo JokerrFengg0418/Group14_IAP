@@ -21,10 +21,8 @@ Inventory::~Inventory()
 
 //Drawing Inventory (UI Save Me)
 void Inventory::DrawInventory() const{
-	std::cout << "          0              1              2              3              4\n";
-	std::cout << "+----------------------------------------------------------------------------+\n";
+	std::cout << "+--------------------------------------------------------------------------+\n";
 	for (int i = 0; i < 4; ++i) {
-		std::cout << i << " ";
 		for (int j = 0; j < 5; ++j) {
 			int index = i * 5 + j;
 			if (inventory[index] != nullptr) {
@@ -36,7 +34,7 @@ void Inventory::DrawInventory() const{
 		}
 		std::cout << '|' << std::endl;
 	}
-	std::cout << "+----------------------------------------------------------------------------+\n";
+	std::cout << "+--------------------------------------------------------------------------+\n";
 }
 
 //Draws Specifications of Inventory Item
@@ -247,6 +245,12 @@ void Inventory::setEquippedItem(Item* SelectedItem) {
 	// This correctly validates if the item is a weapon that can be equipped.
 	Item* w = DrawDatabase('W', SelectedItem->GetItemWord('N'));
 	if (w) {
+		EquippedItem = SelectedItem;
+		return;
+	}
+
+	Item* i = DrawDatabase('I', SelectedItem->GetItemWord('N'));
+	if (i) {
 		EquippedItem = SelectedItem;
 		return;
 	}
