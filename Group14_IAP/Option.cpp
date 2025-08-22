@@ -96,7 +96,7 @@ void Option::openInventory() {
     inventoryOpen = true;
 
     while (inventoryOpen) {
-        std::cout << "\n=== INVENTORY ===\n";
+        std::cout << "\n================================ INVENTORY ================================= \n";
         PlayerInventory.DrawInventory();
         std::cout << "Enter the name of the item to equip, or 'E' to close: ";
 
