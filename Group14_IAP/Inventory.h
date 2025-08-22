@@ -11,6 +11,8 @@ private:
 	Item* inventory[25];
 	Item* ItemDatabase[50];
 	Item* EquippedItem;
+	Item* EquippedWeapon = nullptr;
+	Item* EquippedArmor = nullptr;
 	Item* MonsterItemDatabase[50];
 	Item* WeaponDatabase[10];
 	int Currency;
@@ -30,6 +32,18 @@ public:
 	void setInventory(std::string ItemName, int Number);
 
 	Item* getEquippedItem() const;
+
+	Item* getEquippedWeapon() const;
+
+	Item* getEquippedArmor() const;
+
+	bool  equipWeaponByName(const std::string& name);
+
+	bool  equipArmorByName(const std::string& name);
+
+	void  unequipWeapon();
+
+	void  unequipArmor();
 
 	void unequip();
 

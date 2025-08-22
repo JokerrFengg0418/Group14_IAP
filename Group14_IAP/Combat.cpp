@@ -133,6 +133,13 @@ static void clearCinLocal() {
 	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
+// Helper: return a lowercase copy of a string (ASCII-safe)
+static inline std::string toLowerCopy(std::string s) {
+	for (auto& c : s)
+		c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+	return s;
+}
+
 // Open inventory while in combat. Returns when user presses E.
 static void openInventoryDuringCombatByName(Inventory* inv) {
 	if (!inv) return;
@@ -140,17 +147,35 @@ static void openInventoryDuringCombatByName(Inventory* inv) {
 	while (true) {
 		std::cout << "\n=== INVENTORY (Combat) ===\n";
 		inv->DrawInventory();
-		std::cout << "Type item name to equip (partial ok), or:\n";
-		std::cout << "  U = Unequip   |   E = Exit\n> ";
+		std::cout << "Commands:\n";
+		std::cout << "  w <name>  = equip weapon by name (partial ok)\n";
+		std::cout << "  a <name>  = equip armor  by name (partial ok)\n";
+		std::cout << "  uw        = unequip weapon\n";
+		std::cout << "  ua        = unequip armor\n";
+		std::cout << "  e         = exit\n> ";
 
 		std::string line;
-		std::getline(std::cin >> std::ws, line);   // eat leading whitespace, then read line
+		std::getline(std::cin >> std::ws, line);
 		if (line.empty()) continue;
 
-		char c0 = static_cast<char>(std::tolower(line[0]));
-		if (line.size() == 1 && c0 == 'e') return;
-		if (line.size() == 1 && c0 == 'u') { inv->unequip(); continue; }
+		std::string lower = toLowerCopy(line);
+		if (lower == "e") return;
+		if (lower == "uw") { inv->unequipWeapon(); continue; }
+		if (lower == "ua") { inv->unequipArmor();  continue; }
 
+		// Parse "w ..." or "a ..."
+		if (lower.size() > 2 && lower[0] == 'w' && lower[1] == ' ') {
+			std::string name = line.substr(2); // keep original case/padding for matching
+			inv->equipWeaponByName(name);
+			continue;
+		}
+		if (lower.size() > 2 && lower[0] == 'a' && lower[1] == ' ') {
+			std::string name = line.substr(2);
+			inv->equipArmorByName(name);
+			continue;
+		}
+
+		// Fallback: auto-route (weapon then armor)
 		inv->equipByName(line);
 	}
 }
@@ -173,11 +198,8 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 		// Find the player in List
 		Entity* player = nullptr;
 		for (int i = 0; i < 20; ++i) {
-			if (List[i] == nullptr) { continue; }
-			if (List[i]->getEntityType() == 'P') {
-				player = List[i];
-				break;
-			}
+			if (List[i] == nullptr) continue;
+			if (List[i]->getEntityType() == 'P') { player = List[i]; break; }
 		}
 		if (!player) { std::cout << "[Combat] No player found.\n"; std::cout << "=== Combat End ===\n"; return; }
 
@@ -194,15 +216,30 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 
 		bool canRange = (type == EnemyType::Gargoyle || type == EnemyType::Boss);
 
+		// Armor mitigation (flat; tweak as you like)
+		int mitigation = 0;
+		if (playerInv) {
+			if (Item* armor = playerInv->getEquippedArmor()) {
+				// Simple model: reduce by V/10 (clamped >=0); adjust to your stat model if needed
+				mitigation = std::max(0, armor->GetItemValue('V') / 10);
+			}
+		}
+
 		bool enemyAttacked = false;
 		if (canMelee && distance <= 1) {
+			int raw = enemyRef->getDamage();
+			int finalDmg = std::max(0, raw - mitigation);
 			std::cout << enemyRef->getTypeName() << " strikes you in close combat!\n";
-			player->takeDamage(enemyRef->getDamage());
+			if (mitigation > 0) std::cout << "(Your armor reduces damage by " << mitigation << ")\n";
+			player->takeDamage(finalDmg);
 			enemyAttacked = true;
 		}
 		else if (canRange && distance <= 5) {
+			int raw = std::max(0, enemyRef->getDamage() - 2);
+			int finalDmg = std::max(0, raw - mitigation);
 			std::cout << enemyRef->getTypeName() << " attacks you from range!\n";
-			player->takeDamage(std::max(0, enemyRef->getDamage() - 2));
+			if (mitigation > 0) std::cout << "(Your armor reduces damage by " << mitigation << ")\n";
+			player->takeDamage(finalDmg);
 			enemyAttacked = true;
 		}
 		else {
@@ -227,7 +264,7 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 			key = std::tolower(key);
 
 			if (key == 'i') {
-				openInventoryDuringCombatByName(playerInv);  // <-- new flow
+				openInventoryDuringCombatByName(playerInv);  // lets you equip/unequip
 				// After returning, let the player choose again (they might now attack)
 				continue;
 			}
@@ -237,18 +274,17 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 				return;
 			}
 			else if (key == 'a') {
-				break; // proceed to your target selection + damage flow
+				break; // proceed to target selection + damage flow
 			}
 			else {
 				std::cout << "Invalid key.\n";
 			}
 		}
 
-		// Determine attack range
-		int range = 1; // default melee
-		if (Item* eq = playerInv->getEquippedItem()) {
-			// If your item stores range differently, adjust here
-			range = std::max(1, eq->GetNumber());
+		// Determine attack range from the equipped WEAPON
+		int range = 1; // default melee (no weapon)
+		if (Item* w = playerInv->getEquippedWeapon()) {
+			range = std::max(1, w->GetNumber());   // adjust if your range stat is different
 		}
 
 		// Collect targetable enemies
@@ -265,13 +301,11 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 			return;
 		}
 
-		// Selection UI: cycle through only the valid candidates
+		// Selection UI: cycle valid candidates
 		size_t sel = 0;
 		bool selecting = true;
 		while (selecting) {
 			int idx = candidates[sel];
-			// Highlight the current candidate on your board (adapt if your API differs)
-			// (guarding against null just in case)
 			if (List[idx]) {
 				board.printBoardCellColor(List[idx]->getPosition().getRow(),
 					List[idx]->getPosition().getCol());
@@ -290,7 +324,6 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 				selecting = false;
 				break;
 			default:
-				// ignore other keys
 				break;
 			}
 		}
@@ -299,14 +332,14 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 		Entity* target = (targetIndex >= 0 && targetIndex < 20) ? List[targetIndex] : nullptr;
 		if (!target) { std::cout << "[Combat] Target went missing.\n"; std::cout << "=== Combat End ===\n"; return; }
 
-		Item* equipped = playerInv->getEquippedItem();
-		if (equipped) {
-			std::cout << "You attacked the enemy with your " << equipped->GetItemWord('N') << "!\n";
-			int dmg = std::max(1, equipped->GetItemValue('V')); // swap to your damage stat if different
+		// Damage from WEAPON (or unarmed)
+		if (Item* w = playerInv->getEquippedWeapon()) {
+			std::cout << "You attacked the enemy with your " << w->GetItemWord('N') << "!\n";
+			int dmg = std::max(1, w->GetItemValue('V'));   // adjust if you store damage elsewhere
 			target->takeDamage(dmg);
 		}
 		else {
-			std::cout << "Warning: No item equipped! You punch for 1 damage.\n";
+			std::cout << "Warning: No weapon equipped! You punch for 1 damage.\n";
 			target->takeDamage(1);
 		}
 
@@ -322,7 +355,6 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 
 	std::cout << "=== Combat End ===\n";
 }
-
 
 int Combat::WinCondition()
 {
