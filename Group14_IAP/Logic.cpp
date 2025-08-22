@@ -1,6 +1,7 @@
 #include "Logic.h"
 #include "Combat.h"
 #include "Option.h"
+#include "Story.h"
 
 Logic::Logic() {
 
@@ -52,9 +53,9 @@ void Logic::TurnOrder() {
 
 	Option GameOption;
 	Combat CombatHandler;
+	Story story;
 
 	while (GameEndState == false) {
-
 
 		GameOption.runMainMenu();
 		CombatHandler.startCombat('A');
