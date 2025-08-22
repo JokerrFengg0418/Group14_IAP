@@ -1,6 +1,7 @@
 ﻿#include "Option.h"
 #include "Inventory.h"
 #include "Item.h"
+#include "Board.h"
 #include <iostream>
 #include <string>
 #include <limits>
@@ -51,7 +52,7 @@ void Option::runMainMenu() {
             shopOption(PlayerInventoryPointer);
             break;
         case 3:
-            dungeonOption();
+            
             break;
         case 4:
             cout << "Exiting...\n";
@@ -131,52 +132,6 @@ void Option::closeInventory() {
 
 // Shop Menu
 
-void Option::displayMenu() {
-    cout << "=============================\n";
-    cout << "           MAIN MENU         \n";
-    cout << "=============================\n";
-    cout << "1. Inventory\n";
-    cout << "2. Shop\n";
-    cout << "3. Dungeon\n";
-    cout << "4. Exit\n";
-    cout << "5. Debug (add 50,000 gold + Broadsword)\n";
-    cout << "=============================\n";
-    cout << "Enter your choice: ";
-}
-
-void Option::handleChoice(int choice, Inventory* inventory) {
-    switch (choice) {
-    case 1:
-        // Open/close & interact with inventory
-        openInventory();
-        break;
-    case 2:
-        // Enter the shop flow
-        shopOption(inventory);
-        break;
-    case 3:
-        // Enter dungeon (stub here; hook up to your dungeon system)
-        dungeonOption();
-        break;
-    case 4:
-        cout << "Exiting...\n";
-        break;
-    case 5: // DEBUG GIVE
-        if (inventory) {
-            inventory->setCurrency(inventory->getCurrency() + 50000);
-            inventory->setInventory("  Broadsword  ", 1);
-            cout << "[Debug] Added 50,000 gold and a Broadsword to your inventory.\n";
-        }
-        else {
-            cout << "[Debug] Player inventory pointer is null.\n";
-        }
-        break;
-    default:
-        cout << "Invalid choice, try again.\n";
-        break;
-    }
-}
-
 void Option::shopOption(Inventory* inventory) {
     if (!inventory) {
         cout << "[Shop] Player inventory is null.\n";
@@ -247,12 +202,4 @@ void Option::waitForEnter() const {
 void Option::clearCin() const {
     cin.clear();
     cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-}
-
-// --- NEW: simple dungeon entry stub (add if you don't already have one) ---
-void Option::dungeonOption() {
-    cout << "\n[Entering the dungeon...]\n";
-    // TODO: hook up your dungeon run here
-    cout << "[Dungeon WIP]\n";
-    waitForEnter();
 }

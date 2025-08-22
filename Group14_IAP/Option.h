@@ -13,8 +13,6 @@ private:
 
     void shopOption(Inventory* inventory);  // Opens the shop and keeps looping until the player chooses to exit
 
-    void dungeonOption();       // Stub/entry to your dungeon flow
-
     // Small helpers
     void waitForEnter() const;
     void clearCin() const;
@@ -29,7 +27,4 @@ public:
     void openInventory();       // open and interact with inventory
     void closeInventory();      // close inventory
 
-    void displayMenu();         // Prints the main menu 
-
-    void handleChoice(int choice, Inventory* inventory);    // Handles the user’s menu choice
 };
