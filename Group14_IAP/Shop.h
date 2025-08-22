@@ -10,6 +10,7 @@ class Shop
 private:
     std::vector<Item*> inventory;
     Inventory* gameInventory;
+    void populateShop();
 
 public:
     // Constructor
@@ -17,10 +18,8 @@ public:
     ~Shop();
 
     // Member functions
-    void populateShop();
     void displayItems();
     void buyItem(Inventory* PlayerInventory);
-
     void refreshStock();
 };
 

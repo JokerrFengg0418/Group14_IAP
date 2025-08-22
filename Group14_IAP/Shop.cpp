@@ -1,109 +1,122 @@
 #include "Shop.h"
 #include <iostream>
+#include <algorithm>
+#include <random>
+#include <ctime>
+#include <limits>   
 #include <cctype>
 
 Shop::Shop(Inventory* inventoryPtr) : gameInventory(inventoryPtr)
 {
-    if (gameInventory == nullptr) {
-        std::cerr << "Error: Shop was not provided with a valid inventory.\n";
-        return; // don't populate with a null DB
+    if (!gameInventory) {
+        std::cerr << "Error: Shop not given a valid Inventory.\n";
     }
+    // Seed RNG once per process (mt19937 is better than rand)
+    static bool seeded = false;
+    if (!seeded) {
+        std::mt19937 rng{ static_cast<unsigned>(std::time(nullptr)) };
+        // store engine in a static to keep seeding meaningful if you later need it
+        seeded = true;
+    }
+
     populateShop();
 }
 
 Shop::~Shop() {}
 
-// Helper to push only valid items and log misses
-static inline void pushIfFound(std::vector<Item*>& v, Item* it, const char* name, char db) {
-    if (it) {
-        v.push_back(it);
-    }
-    else {
-        std::cerr << "[Shop] Not found in DB '" << db << "': " << name << "\n";
+// Helper to push only valid items
+static inline void pushIfFound(std::vector<Item*>& v, Item* it) {
+    if (it) v.push_back(it);
+}
+
+void Shop::populateShop()
+{
+    inventory.clear();
+    if (!gameInventory) return;
+
+    std::vector<std::pair<char, std::string>> candidates = {
+        // Use the exact names that exist in your DB!
+        {'W', "  Broadsword  "},
+        {'W', "  SlingShots  "},
+        {'W', "Bow and Arrows"},
+        {'W', "     Mace     "},
+        {'W', "  Battle Axe  "},
+        {'W', "   Crossbow   "},
+        {'W', "    Turret    "},
+
+        {'I', " Wooden Armor "},
+        {'I', " Silver Armor "},
+        {'I', "  Gold Armor  "},
+        {'I', "Leather Armors"},
+        {'I', "    Shield    "},
+        {'I', "    Helmet    "},
+        {'I', "Health Potions"},
+    };
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::shuffle(candidates.begin(), candidates.end(), gen);
+
+    const int MAX_STOCK = 5;
+    int picked = 0;
+
+    // C++11-friendly loop (no structured bindings)
+    for (const auto& p : candidates) {
+        if (picked >= MAX_STOCK) break;
+
+        char dbType = p.first;
+        const std::string& name = p.second;
+
+        Item* it = gameInventory->DrawDatabase(dbType, name);
+        if (it) {
+            bool exists = false;
+            for (auto* s : inventory) {
+                if (s == it) { exists = true; break; }
+            }
+            if (!exists) {
+                inventory.push_back(it);
+                ++picked;
+            }
+        }
     }
 }
 
-void Shop::populateShop() {
-    if (gameInventory != nullptr) {
-        // Weapons
-        Item* sword = gameInventory->DrawDatabase('W', "    Broadsword    ");
-        if (sword != nullptr) {
-            inventory.push_back(sword);
-        }
-        Item* slingShot = gameInventory->DrawDatabase('W', "  SlingShots  ");
-        if (slingShot != nullptr) {
-            inventory.push_back(slingShot);
-        }
-        Item* bowAndArrow = gameInventory->DrawDatabase('W', "Bow and Arrows");
-        if (bowAndArrow != nullptr) {
-            inventory.push_back(bowAndArrow);
-        }
-        Item* mace = gameInventory->DrawDatabase('W', "     Mace     ");
-        if (mace != nullptr) {
-            inventory.push_back(mace);
-        }
-        Item* axe = gameInventory->DrawDatabase('W', "     Axee     ");
-        if (axe != nullptr) {
-            inventory.push_back(axe);
-        }
-        Item* crossbow = gameInventory->DrawDatabase('W', "   Crossbow   ");
-        if (crossbow != nullptr) {
-            inventory.push_back(crossbow);
-        }
-        Item* turret = gameInventory->DrawDatabase('W', "    Turret    ");
-        if (turret != nullptr) {
-            inventory.push_back(turret);
-        }
-
-        // Armor (Note: Assuming armor is in the 'A' database)
-        Item* woodenArmor = gameInventory->DrawDatabase('I', " Wooden Armor ");
-        if (woodenArmor != nullptr) {
-            inventory.push_back(woodenArmor);
-        }
-        Item* silverArmor = gameInventory->DrawDatabase('I', " Silver Armor ");
-        if (silverArmor != nullptr) {
-            inventory.push_back(silverArmor);
-        }
-        Item* shield = gameInventory->DrawDatabase('I', "    Shield    ");
-        if (shield != nullptr) {
-            inventory.push_back(shield);
-        }
-        Item* helmet = gameInventory->DrawDatabase('I', "    Helmet    ");
-        if (helmet != nullptr) {
-            inventory.push_back(helmet);
-        }
-        Item* leatherArmor = gameInventory->DrawDatabase('I', "Leather Armors");
-        if (leatherArmor != nullptr) {
-            inventory.push_back(leatherArmor);
-        }
-
-        // Consumables / Items (Note: Assuming these are in the 'I' database)
-        Item* healthPotion = gameInventory->DrawDatabase('I', "Health Potions");
-        if (healthPotion != nullptr) {
-            inventory.push_back(healthPotion);
-        }
-    }
-    std::cout << "------------------------------------------\n";
+void Shop::refreshStock()   // <- rename to match your call site
+{
+    std::cout << "\nThe shop has refreshed its stock!\n";
+    populateShop();
 }
+void Shop::displayItems()
+{
+    std::cout << "=== Shop Stock ===\n";
+    if (inventory.empty()) {
+        std::cout << "(No items available right now)\n";
+    }
 
-void Shop::displayItems() {
-    std::cout << "Welcome to the shop! What would you like to buy?" << std::endl;
-    std::cout << "------------------------------------------" << std::endl;
     for (size_t i = 0; i < inventory.size(); ++i) {
-        std::cout << i + 1 << ". " << inventory[i]->GetItemWord('N')
-            << " - " << inventory[i]->GetItemWord('D')
-            << " (" << inventory[i]->GetItemValue('S') << " gold)" << std::endl;
+        if (!inventory[i]) continue;
+        std::cout << i + 1 << ". "
+            << inventory[i]->GetItemWord('N') << " - "
+            << inventory[i]->GetItemWord('D') << " ("
+            << inventory[i]->GetItemValue('S') << " gold)\n";
     }
-    std::cout << "------------------------------------------" << std::endl;
+    std::cout << "0. Exit\n";
 }
-void Shop::buyItem(Inventory* PlayerInventory) {
-    if (PlayerInventory == nullptr) {
-        std::cout << "Error: Player object is invalid." << std::endl;
+
+void Shop::buyItem(Inventory* PlayerInventory)
+{
+    if (!PlayerInventory) {
+        std::cout << "Error: Player inventory invalid.\n";
+        return;
+    }
+
+    if (inventory.empty()) {
+        std::cout << "Nothing to buy.\n";
         return;
     }
 
     int choice = -1;
-    std::cout << "Enter the number of the item you wish to buy (or 0 to exit): ";
+    std::cout << "Enter the number of the item you wish to buy (0 to cancel): ";
     if (!(std::cin >> choice)) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -129,14 +142,9 @@ void Shop::buyItem(Inventory* PlayerInventory) {
         return;
     }
 
+    // Deduct gold and add to inventory
     PlayerInventory->setCurrency(PlayerInventory->getCurrency() - cost);
     PlayerInventory->setInventory(selectedItem->GetItemWord('N'), 1);
-    std::cout << "You have successfully purchased a "
-        << selectedItem->GetItemWord('N') << "!\n";
-}
 
-void Shop::refreshStock() {
-    inventory.clear();
-    populateShop();  // (optional) randomize inside here if desired
-    std::cout << "Shop stock refreshed.\n";
+    std::cout << "You bought a " << selectedItem->GetItemWord('N') << "!\n";
 }

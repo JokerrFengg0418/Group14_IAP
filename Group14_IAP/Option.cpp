@@ -1,4 +1,9 @@
 ﻿#include "Option.h"
+#include "Inventory.h"
+#include "Item.h"
+#include "Board.h"
+#include <iostream>
+#include <string>
 #include <limits>
 
 using std::cin;
@@ -47,7 +52,7 @@ void Option::runMainMenu() {
             shopOption(PlayerInventoryPointer);
             break;
         case 3:
-            dungeonOption();
+            
             break;
         case 4:
             cout << "Exiting...\n";
@@ -91,57 +96,31 @@ void Option::handleInput() {
 void Option::openInventory() {
     inventoryOpen = true;
 
-    constexpr int ROWS = 4;
-    constexpr int COLS = 5;
-
     while (inventoryOpen) {
-        std::cout << "\n=== INVENTORY ===\n";
+        std::cout << "\n================================ INVENTORY ================================= \n";
         PlayerInventory.DrawInventory();
-        std::cout << "Enter coordinates (row col) e.g (0 0) to equip item, or 'E' to close: ";
+        std::cout << "Enter the name of the item to equip, or 'E' to close: ";
 
-        std::string first;
-        if (!(std::cin >> first)) {
-            clearCin();
+        std::string itemName;
+        std::getline(std::cin >> std::ws, itemName);
+
+        if (itemName.empty()) {
             std::cout << "Invalid input, try again.\n";
             continue;
         }
 
-        if (first == "E" || first == "e") {
+        if (itemName == "E" || itemName == "e") {
             closeInventory();
             break;
         }
 
-        int row;
-        try {
-            row = std::stoi(first);
-        }
-        catch (...) {
-            std::cout << "Invalid input, try again.\n";
-            clearCin();
-            continue;
-        }
-
-        int col;
-        if (!(std::cin >> col)) {
-            std::cout << "Invalid input, try again.\n";
-            clearCin();
-            continue;
-        }
-
-        if (row < 0 || row >= ROWS || col < 0 || col >= COLS) {
-            std::cout << "Invalid coordinates, try again.\n";
-            continue;
-        }
-
-        const int index = row * COLS + col;
-
-        Item* item = PlayerInventory.PullInventoryIndex(index);
+        Item* item = PlayerInventory.FindItemByName(itemName);
         if (item) {
             PlayerInventory.setEquippedItem(item);
             std::cout << "Equipped " << item->GetItemWord('N') << "!\n";
         }
         else {
-            std::cout << "No item at those coordinates.\n";
+            std::cout << "No item with that name found in your inventory.\n";
         }
     }
 }
@@ -153,54 +132,15 @@ void Option::closeInventory() {
 
 // Shop Menu
 
-void Option::displayMenu() {
-    cout << "=============================\n";
-    cout << "           MAIN MENU         \n";
-    cout << "=============================\n";
-    cout << "1. Inventory\n";
-    cout << "2. Shop\n";
-    cout << "3. Dungeon\n";
-    cout << "4. Exit\n";
-    cout << "5. Debug (add 50,000 gold + Broadsword)\n";
-    cout << "=============================\n";
-    cout << "Enter your choice: ";
-}
-
-void Option::handleChoice(int choice, Inventory* inventory) {
-    switch (choice) {
-    case 1:
-        // Open/close & interact with inventory
-        openInventory();
-        break;
-    case 2:
-        // Enter the shop flow
-        shopOption(inventory);
-        break;
-    case 3:
-        // Enter dungeon (stub here; hook up to your dungeon system)
-        dungeonOption();
-        break;
-    case 4:
-        cout << "Exiting...\n";
-        break;
-    case 5: // DEBUG GIVE
-        if (inventory) {
-            inventory->setCurrency(inventory->getCurrency() + 50000);
-            inventory->setInventory("  Broadsword  ", 1);
-            cout << "[Debug] Added 50,000 gold and a Broadsword to your inventory.\n";
-        }
-        else {
-            cout << "[Debug] Player inventory pointer is null.\n";
-        }
-        break;
-    default:
-        cout << "Invalid choice, try again.\n";
-        break;
-    }
-}
-
 void Option::shopOption(Inventory* inventory) {
+    if (!inventory) {
+        cout << "[Shop] Player inventory is null.\n";
+        return;
+    }
+
     Shop shop(inventory);   // uses the player's DBs
+
+    int refreshesLeft = 3;  // ← limit per visit
 
     bool keepShopping = true;
     while (keepShopping) {
@@ -212,27 +152,35 @@ void Option::shopOption(Inventory* inventory) {
         // Show current stock
         shop.displayItems();
 
-        // New actions, including Refresh
-        cout << "\nActions: [B]uy   [R]efresh stock   [E]xit\n";
+        // Actions
+        cout << "\nActions: [B]uy   [R]efresh stock (" << refreshesLeft << " left)   [E]xit\n";
         cout << "Enter action: ";
 
         std::string action;
-        cin >> action;
+        if (!(cin >> action)) {         // handle stream failure
+            clearCin();
+            cout << "Invalid input. Try again.\n";
+            continue;
+        }
 
-        if (action.size() == 1) {
+        if (!action.empty()) {
             char a = static_cast<char>(std::tolower(action[0]));
             if (a == 'b') {
-                // Shop handles prompting for item index internally
-                shop.buyItem(inventory);
+                shop.buyItem(inventory);     // Shop handles 0 to cancel, etc.
                 continue;
             }
             else if (a == 'r') {
-                // NEW: refresh stock
-                shop.refreshStock();      // requires Shop::refreshStock() (see below)
-                cout << "Shop stock refreshed!\n";
+                if (refreshesLeft > 0) {
+                    shop.refreshStock();
+                    --refreshesLeft;
+                    cout << "Shop stock refreshed! (" << refreshesLeft << " left)\n";
+                }
+                else {
+                    cout << "No refreshes left. Come back after next wave.\n";
+                }
                 continue;
             }
-            else if (a == 'e') {
+            else if (a == 'e' || a == '0') {
                 keepShopping = false;
                 break;
             }
@@ -254,12 +202,4 @@ void Option::waitForEnter() const {
 void Option::clearCin() const {
     cin.clear();
     cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-}
-
-// --- NEW: simple dungeon entry stub (add if you don't already have one) ---
-void Option::dungeonOption() {
-    cout << "\n[Entering the dungeon...]\n";
-    // TODO: hook up your dungeon run here
-    cout << "[Dungeon WIP]\n";
-    waitForEnter();
 }

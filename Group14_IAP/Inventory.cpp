@@ -21,10 +21,8 @@ Inventory::~Inventory()
 
 //Drawing Inventory (UI Save Me)
 void Inventory::DrawInventory() const{
-	std::cout << "          0              1              2              3              4\n";
-	std::cout << "+----------------------------------------------------------------------------+\n";
+	std::cout << "+--------------------------------------------------------------------------+\n";
 	for (int i = 0; i < 4; ++i) {
-		std::cout << i << " ";
 		for (int j = 0; j < 5; ++j) {
 			int index = i * 5 + j;
 			if (inventory[index] != nullptr) {
@@ -36,7 +34,7 @@ void Inventory::DrawInventory() const{
 		}
 		std::cout << '|' << std::endl;
 	}
-	std::cout << "+----------------------------------------------------------------------------+\n";
+	std::cout << "+--------------------------------------------------------------------------+\n";
 }
 
 //Draws Specifications of Inventory Item
@@ -155,6 +153,22 @@ void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescript
 
 }
 
+Item* Inventory::FindItemByName(const std::string& itemName)
+{
+	for (int i = 0; i < 25; ++i) {
+		Item* it = inventory[i];
+		if (it) {
+			// The item name in your database has leading/trailing spaces.
+			// Using find() is a flexible way to check for a partial match.
+			// For example, "Broadsword" will match "  Broadsword  "
+			if (it->GetItemWord('N').find(itemName) != std::string::npos) {
+				return it;
+			}
+		}
+	}
+	return nullptr;
+}
+
 void Inventory::DatabaseInitialisation() {
 
 	//FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, int number, char DatabaseType)
@@ -164,13 +178,14 @@ void Inventory::DatabaseInitialisation() {
 	FactoryCreateItem("  SlingShots  ", "A simple ranged weapon.", 'W', 50, 20, 30, 10, 'W');
 	FactoryCreateItem("Bow and Arrows", "Classic ranged weapon with arrows.", 'W', 80, 30, 50, 10, 'W');
 	FactoryCreateItem("     Mace     ", "A heavy blunt weapon.", 'W', 100, 40, 60, 5, 'W');
-	FactoryCreateItem("     Axee     ", "Powerful for chopping and combat.", 'W', 250, 100, 150, 5, 'W');
+	FactoryCreateItem("  Battle Axe  ", "Powerful for chopping and combat.", 'W', 250, 100, 150, 5, 'W');
 	FactoryCreateItem("   Crossbow   ", "Advanced ranged weapon.", 'W', 150, 60, 90, 5, 'W');
 	FactoryCreateItem("    Turret    ", "Stationary defense weapon.", 'W', 300, 120, 180, 2, 'W');
 
 	// ===== Armors =====
 	FactoryCreateItem(" Wooden Armor ", "Basic protective armor.", 'A', 50, 20, 30, 10, 'I');
 	FactoryCreateItem(" Silver Armor ", "Strong armor for better defense.", 'A', 100, 40, 60, 5, 'I');
+	FactoryCreateItem("  Gold Armor  ", "Shiny and strong armor for better defense.", 'A', 150, 60, 90, 30, 'I');
 	FactoryCreateItem("Leather Armors", "Lightweight armor.", 'A', 10, 4, 6, 20, 'I');
 	FactoryCreateItem("    Shield    ", "Protects against attacks.", 'A', 100, 40, 60, 5, 'I');
 	FactoryCreateItem("    Helmet    ", "Protects your head.", 'A', 80, 30, 50, 5, 'I');
@@ -222,18 +237,34 @@ Item* Inventory::getEquippedItem() const {
 }
 
 void Inventory::setEquippedItem(Item* SelectedItem) {
-	if (!SelectedItem) return;
-	for (int i = 0; i < 10; ++i) {
-		Item* w = WeaponDatabase[i];
-		if (w && w->GetItemWord('N') == SelectedItem->GetItemWord('N')) {
-			EquippedItem = SelectedItem;
-			return;
-		}
+	if (!SelectedItem) {
+		std::cout << "Invalid item selected." << std::endl;
+		return;
 	}
+
+	// Check if the selected item exists in the WeaponDatabase.
+	// This correctly validates if the item is a weapon that can be equipped.
+	Item* w = DrawDatabase('W', SelectedItem->GetItemWord('N'));
+	if (w) {
+		EquippedItem = SelectedItem;
+		return;
+	}
+
+	Item* i = DrawDatabase('I', SelectedItem->GetItemWord('N'));
+	if (i) {
+		EquippedItem = SelectedItem;
+		return;
+	}
+
 	std::cout << "You can't equip this item!\n";
 }
 
 Item* Inventory::PullInventoryIndex(int Index) const {
 	if (Index < 0 || Index >= 25) return nullptr;
 	return inventory[Index];
+}
+
+void Inventory::unequip() {
+	EquippedItem = nullptr;
+	std::cout << "You unequipped your weapon.\n";
 }

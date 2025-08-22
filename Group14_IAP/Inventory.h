@@ -31,6 +31,8 @@ public:
 
 	Item* getEquippedItem() const;
 
+	void unequip();
+
 	void setEquippedItem(Item* ItemSelect);
 
 	void RemoveItemFromInventory(std::string ItemName, int Number);
@@ -45,5 +47,6 @@ public:
 
 	void FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, int number, char DatabaseType);
 
+	Item* FindItemByName(const std::string& itemName);
 };
 
