@@ -10,6 +10,7 @@ public:
     void dungeonOption();
 
 private:
-    Board board;        // board should also be non-owning (no deletes)
-    Player* player;     // non-owning pointer
+    Board board; // The Dungeon class owns the Board object
+    Player player;
+    bool dungeonInited = false;
 };

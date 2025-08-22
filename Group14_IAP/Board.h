@@ -14,10 +14,15 @@ public:
 	//Setters//
 	
 	//Functions
+	void initializeDungeonXGrid();
 	void drawBoard();
 	void drawDungeon();
 	void clearBoard();
 	void setCellContentDungeon(int row, int col, char content);
+	char getCellContentDungeon(int row, int col) const;
+
+	bool save(const char* path) const;
+	bool load(const char* path);
 
 	// Function to add Entity
 	void addPlayer(Entity* p);

@@ -11,32 +11,50 @@
 void Dungeon::dungeonOption() {
     bool running = true;
 
-    // start in bottom-right of 5x5
-    player->setRow(4);
-    player->setCol(4);
+    // Try to load; if no save exists yet, init fresh
+    if (!dungeonInited) {
+        if (!board.load("dungeon.dat")) {
+            board.initializeDungeonXGrid();
+        }
+        dungeonInited = true;
+    }
 
-    int prevR = -1, prevC = -1;
+    // spawn player (bottom-right)
+    player.setRow(4);
+    player.setCol(4);
 
-    auto render = [&]() {
-        CLEAR_SCREEN();
+    while (DungeonOpen) {
+        system("cls");
+
+        // draw with temporary 'P'
+        int pr = player.getRow(), pc = player.getCol();
+        char under = board.getCellContentDungeon(pr, pc);
+        board.setCellContentDungeon(pr, pc, 'P');
+
         board.drawDungeon();
-        std::cout << "\n=== DUNGEON ===\n"
-            << "Move (W/A/S/D) or 'E' to Exit: ";
-        };
-
-    while (running) {
-        // erase previous P
-        if (prevR >= 0 && prevC >= 0)
-            board.setCellContentDungeon(prevR, prevC, ' ');
 
         const int r = player->getRow();
         const int c = player->getCol();
         board.setCellContentDungeon(r, c, 'P');
 
-        prevR = r; prevC = c;
-        render();
+        // restore underlying cell before moving
+        board.setCellContentDungeon(pr, pc, under);
 
-        if (player->moveDungeon())  // returns true on 'E'
-            running = false;
+        if (player.moveDungeon()) {
+            // Save board state and leave
+            board.save("dungeon.dat");
+            break;
+        }
+
+        // delete X when stepped on it
+        pr = player.getRow(); pc = player.getCol();
+        if (board.getCellContentDungeon(pr, pc) == 'X') {
+            board.setCellContentDungeon(pr, pc, ' ');
+        }
     }
+
+    // Also save when loop ends normally
+    board.save("dungeon.dat");
 }
+
+
