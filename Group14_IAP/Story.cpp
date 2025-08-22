@@ -67,9 +67,9 @@ void Story::DatabaseInitialisation()
     FactoryCreateStory(2, "The wind calms, as the dogs remain. Down on the floor, they stay twitchin. A night a day, you save your skin. Now it's time to sleep in between. @");
     FactoryCreateStory(2, "As you wake up, the sun bears down on you. The beasts from the previous day are gone, as if no trace of them had remained, only ashes and shadows remain in their wake. Lifting yourself up, it's the start of a new day. What will you do? @");
     //Choice 2
-    FactoryCreateChoices(2, 2, "Wander around until you find a point of interest # Find Water # Survey the area", "@After walking around for a bit, you discover a mysterious hole in the ground, right by a well. Seems there was civilization here, before whatever happened. Not only that, you notice that there seems to be a column of white carriages travelling through the area. @ # @After walking around for a bit, you discover a mysterious hole in the ground, right by a well. Seems there was civilization here, before whatever happened. Not only that, you notice that there seems to be a column of white carriages travelling through the area. @ #@After walking around for a bit, you discover a mysterious hole in the ground, right by a well. Seems there was civilization here, before whatever happened. Not only that, you notice that there seems to be a column of white carriages travelling through the area. @", 0);
+    FactoryCreateChoices(2, 2, "Wander around until you find a point of interest # Find Water # Survey the area", "@After walking around for a bit, you discover a mysterious hole in the ground, right by a well. Seems there was civilization here, before whatever happened. Not only that, you notice that there seems to be a column of white carriages travelling through the area. @ # @After walking around for a bit, you discover a mysterious hole in the ground, right by a well. Seems there was civilization here, before whatever happened. Not only that, you notice that there seems to be a column of white carriages travelling through the area. @ #@After walking around for a bit, you discover a mysterious hole in the ground, right by a well. Seems there was civilization here, before whatever happened. Not only that, you notice that there seems to be a column of white carriages travelling through the area. @ ", 0);
     //Choice 3
-    FactoryCreateChoices(2, 3, "Head towards the white carriages. # Explore the hole.", "@Heading towards there, you see a weird insignia, getting closer. Bearing what seems to be a royal coat of arms, but you don't remember which. @ Guard: Halt! In the name of Calypso! @ Player: (What the-) @ Dave: Didn't expect to meetcha here. Gimme a sec.. @ *Dave and the Guard huddled up, to talk with each other in private.* @ Guard: You may approach, just this once. The guard withdraws his spear. @ Dave: Gist is, a very interesting proposal came up... @ Player: Sure, I need the gold. # Player: I got better things to do. @", 0);
+    FactoryCreateChoices(2, 3, "Head towards the white carriages. # Explore the hole.", "@Heading towards there, you see a weird insignia, getting closer. Bearing what seems to be a royal coat of arms, but you don't remember which. @ Guard: Halt! In the name of Calypso! @ Player: (What the-) @ Dave: Didn't expect to meetcha here. Gimme a sec.. @ *Dave and the Guard huddled up, to talk with each other in private.* @ Guard: You may approach, just this once. The guard withdraws his spear. @ Dave: Gist is, a very interesting proposal came up... #You went into the mysterious hole to explore. You saw a door in the middle of the caveand being the curious guy you are, you opened it. {Dungeon crawler mode} @ #@ Player: Sure, I need the gold. # Player: I got better things to do. @", 0);
     FactoryCreateChoices(2, 4, "Sure, I need the gold. # I got better things to do.", "Then, I'll be dropping this off with ya. @ (Quest to get 2 (Placeholder)) @ Speaking of which, is there anything you want for me? @ (Opens Shop) @ # Shame, a loss is a loss. @ If I can't interest ya in that, do ya want to get anything? @ (Opens Shop) @ Dave: Well then, see ya! We'll be making our way back from here. The trail of caravans disappear into the horizon. @ Options: Explore the Hole (2). @", 1);
 }
 
@@ -111,27 +111,21 @@ void Story::ShowWave(int wave) const
                 std::cout << "You are faced with choices:\n";
                 for (size_t i = 0; i < entry.choicetext.size(); i++)
                 {
-                    // each choice may have @ splits too
-                    std::stringstream ss(entry.choicetext[i]);
-                    std::string segment;
-                    std::cout << i + 1 << ". ";
-                    while (std::getline(ss, segment, '@'))
-                    {
-                        if (!segment.empty())
-                            std::cout << segment << "\n";
-                    }
+                    std::cout << i + 1 << ". " << entry.choicetext[i] << "\n";
                 }
 
                 // Let the player pick
                 int pick;
                 std::cout << "Enter choice number: ";
                 std::cin >> pick;
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // flush newline
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
                 if (pick > 0 && pick <= entry.results.size())
                 {
-                    // split result text by @
-                    std::stringstream ss(entry.results[pick - 1]);
+                    std::string resultText = entry.results[pick - 1];
+
+                    // --------- Show text in paragraphs (@) ---------
+                    std::stringstream ss(resultText);
                     std::string segment;
                     while (std::getline(ss, segment, '@'))
                     {
@@ -146,12 +140,14 @@ void Story::ShowWave(int wave) const
                         }
                     }
 
-                    // 🔑 Check if result itself has '#' (nested choices)
-                    // Example: "Do you want to fight? # Do you want to run?"
-                    if (entry.results[pick - 1].find('#') != std::string::npos)
+                    // --------- Nested branching (CHOICE:) ---------
+                    if (resultText.find("CHOICE:") != std::string::npos)
                     {
-                        auto nestedChoices = splitHash(entry.results[pick - 1]);
-                        if (nestedChoices.size() > 1)
+                        // isolate after CHOICE:
+                        std::string choiceBlock = resultText.substr(resultText.find("CHOICE:") + 7);
+                        auto nestedChoices = splitHash(choiceBlock);
+
+                        if (!nestedChoices.empty())
                         {
                             std::cout << "\nYou have new options:\n";
                             for (size_t i = 0; i < nestedChoices.size(); i++)
