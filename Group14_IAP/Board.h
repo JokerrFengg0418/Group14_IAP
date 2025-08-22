@@ -10,7 +10,7 @@ public:
 	~Board();
 	void selectEnemy(Entity* e);
 	//Getters//
-	char GetBoard() const;
+	char GetBoard(int row, int col) const;
 	//Setters//
 	
 	//Functions

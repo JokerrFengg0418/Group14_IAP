@@ -22,7 +22,7 @@ using namespace std;
 
 void Combat::FactoryCreateEntity(int CharacterType) {
 
-	int RandomTurf = rand() % 40;
+	int RandomTurf = rand() % 25;
 	switch (CharacterType) {
 	case 0:
 
@@ -30,7 +30,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List [i] = new Enemy(39, RandomTurf, EnemyType::Monster, 99, 99);
+				List [i] = new Enemy(24, RandomTurf, EnemyType::Monster, 99, 99);
 				return;
 
 			}
