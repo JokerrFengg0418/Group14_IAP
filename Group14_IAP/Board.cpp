@@ -181,3 +181,18 @@ void Board::clearBoard()
 
 	enemyCount = 0;
 }
+
+void Board::removeEnemy(Entity* e)
+{
+	for (int i = 0; i < enemyCount; i++)
+	{
+		if (enemies[i] == e)
+		{
+			enemies[i] = nullptr;
+			enemies[i] = enemies[--enemyCount]; // Move the last enemy to this position
+			enemies[enemyCount] = nullptr; // Clear the last position
+			return;
+		}
+	}
+	std::cout << "Enemy not found." << std::endl;
+}

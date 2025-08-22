@@ -31,8 +31,6 @@ public:
 	// Attack Function
 	void attack(Entity* Entity, Inventory* PlayerInventory);
 
-	void move();
-
 	void FactoryDestructor();
 
 	// Reward
