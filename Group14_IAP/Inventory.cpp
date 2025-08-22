@@ -1,18 +1,56 @@
-#include "Inventory.h"
+ï»¿#include "Inventory.h"
 #include "Item.h"
 #include <iostream>
 #include <string>
+#include <cctype>
 
+// ---- small helpers ---------------------------------------------------------
+
+static inline std::string toLowerCopy(std::string s) {
+    for (auto& c : s) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+    return s;
+}
+
+static inline bool looksLikeArmorName(const std::string& name) {
+    std::string n = toLowerCopy(name);
+    return (n.find("armor") != std::string::npos) ||
+        (n.find("shield") != std::string::npos) ||
+        (n.find("helmet") != std::string::npos);
+}
+
+static inline int firstEmptySlot(Item* inv[25]) {
+    for (int i = 0; i < 25; ++i) if (inv[i] == nullptr) return i;
+    return -1;
+}
+
+static inline int findSlotByExactName(Item* inv[25], const std::string& q) {
+    for (int i = 0; i < 25; ++i) {
+        if (inv[i] && inv[i]->GetItemWord('N') == q) return i;
+    }
+    return -1;
+}
+
+static inline int findSlotByNameContains(Item* inv[25], const std::string& q) {
+    for (int i = 0; i < 25; ++i) {
+        if (inv[i] && inv[i]->GetItemWord('N').find(q) != std::string::npos) return i;
+    }
+    return -1;
+}
+
+// ---- Inventory implementation ---------------------------------------------
 
 Inventory::Inventory()
-	: Currency(0), EquippedItem(nullptr)
+    : Currency(0),
+    EquippedItem(nullptr),          // legacy pointer (kept for compatibility)
+    EquippedWeapon(nullptr),
+    EquippedArmor(nullptr)
 {
-	for (int i = 0; i < 50; ++i) { ItemDatabase[i] = nullptr; MonsterItemDatabase[i] = nullptr; }
-	for (int i = 0; i < 10; ++i) { WeaponDatabase[i] = nullptr; }
-	for (int i = 0; i < 25; ++i) { inventory[i] = nullptr; }
+    for (int i = 0; i < 50; ++i) { ItemDatabase[i] = nullptr; MonsterItemDatabase[i] = nullptr; }
+    for (int i = 0; i < 10; ++i) { WeaponDatabase[i] = nullptr; }
+    for (int i = 0; i < 25; ++i) { inventory[i] = nullptr; }
 
-	// Build DB after arrays are null-inited
-	DatabaseInitialisation();
+    // Build DB after arrays are null-inited
+    DatabaseInitialisation();
 }
 
 Inventory::~Inventory()
@@ -20,307 +58,309 @@ Inventory::~Inventory()
 }
 
 //Drawing Inventory (UI Save Me)
-void Inventory::DrawInventory() const{
-	std::cout << "+--------------------------------------------------------------------------+\n";
-	for (int i = 0; i < 4; ++i) {
-		for (int j = 0; j < 5; ++j) {
-			int index = i * 5 + j;
-			if (inventory[index] != nullptr) {
-				std::cout << '|' << inventory[index]->GetItemWord('N');
-			}
-			else {
-				std::cout << '|' << "              ";
-			}
-		}
-		std::cout << '|' << std::endl;
-	}
-	std::cout << "+--------------------------------------------------------------------------+\n";
+void Inventory::DrawInventory() const {
+    std::cout << "+--------------------------------------------------------------------------+\n";
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 5; ++j) {
+            int index = i * 5 + j;
+            if (inventory[index] != nullptr) {
+                std::cout << '|' << inventory[index]->GetItemWord('N');
+            }
+            else {
+                std::cout << '|' << "              ";
+            }
+        }
+        std::cout << '|' << std::endl;
+    }
+    std::cout << "+--------------------------------------------------------------------------+\n";
 }
 
 //Draws Specifications of Inventory Item
 Item* Inventory::getInventory(std::string Name) const {
-	for (int i = 0; i < 25; ++i) {
-		Item* it = inventory[i];
-		if (it && it->GetItemWord('N') == Name) return it;
-	}
-	return nullptr;
+    for (int i = 0; i < 25; ++i) {
+        Item* it = inventory[i];
+        if (it && it->GetItemWord('N') == Name) return it;
+    }
+    return nullptr;
 }
 
-//Sets Item into Inventory
+//Sets Item into Inventory (adds 1 for stackables, places weapons into an empty slot)
 void Inventory::setInventory(std::string ItemName, int Number) {
-	if (Number <= 0) return;
+    if (Number <= 0) return;
 
-	// Is it already in inventory? (stack only if not a weapon)
-	for (int i = 0; i < 25; ++i) {
-		Item* it = inventory[i];
-		if (it && it->GetItemWord('N') == ItemName) {
-			bool isWeapon = (DrawDatabase('W', ItemName) != nullptr);
-			if (!isWeapon) {
-				int cur = it->GetItemValue('V');
-				it->SetItemValue('V', cur + Number);
-			}
-			return;
-		}
-	}
+    // classify item
+    const bool isWeapon = (DrawDatabase('W', ItemName) != nullptr);
+    const bool isArmor = (DrawDatabase('I', ItemName) != nullptr) && looksLikeArmorName(ItemName);
+    const bool isStackable = (!isWeapon && !isArmor); // only consumables stack
 
-	// Find the source pointer in DBs
-	Item* src = DrawDatabase('W', ItemName);
-	if (!src) src = DrawDatabase('I', ItemName);
-	if (!src) src = DrawDatabase('M', ItemName);
-	if (!src) {
-		std::cerr << "[Inventory] Unknown item: " << ItemName << "\n";
-		return;
-	}
+    // If already present:
+    for (int i = 0; i < 25; ++i) {
+        Item* it = inventory[i];
+        if (!it) continue;
+        if (it->GetItemWord('N') == ItemName) {
+            if (isStackable) {
+                int cur = it->GetItemValue('V');
+                it->SetItemValue('V', cur + Number);
+                return;
+            }
+            else {
+                // armor/weapon: non-stackable â†’ do NOT return; we will add new slots below
+                break;
+            }
+        }
+    }
 
-	// Put in first empty slot (player holds pointer owned by DB)
-	for (int i = 0; i < 25; ++i) {
-		if (inventory[i] == nullptr) { inventory[i] = src; return; }
-	}
-	std::cout << "Inventory is full.\n";
+    // Find the source pointer in DBs
+    Item* src = DrawDatabase('W', ItemName);
+    if (!src) src = DrawDatabase('I', ItemName);
+    if (!src) src = DrawDatabase('M', ItemName);
+    if (!src) {
+        std::cerr << "[Inventory] Unknown item: " << ItemName << "\n";
+        return;
+    }
+
+    // For non-stackables, add one slot per piece; for stackables, just place 1 slot
+    int copies = isStackable ? 1 : Number;
+    for (int k = 0; k < copies; ++k) {
+        int empty = -1;
+        for (int i = 0; i < 25; ++i) { if (inventory[i] == nullptr) { empty = i; break; } }
+        if (empty < 0) { std::cout << "Inventory is full.\n"; return; }
+        inventory[empty] = src;   // DB owns pointer; slot is just a reference/type token
+    }
 }
 
+// Removes Number from inventory for stackables; removes slot for weapons
 void Inventory::RemoveItemFromInventory(std::string ItemName, int Number) {
-	if (Number <= 0) return;
+    if (Number <= 0) return;
 
-	for (int i = 0; i < 25; ++i) {
-		Item* it = inventory[i];
-		if (!it) continue;
-		if (it->GetItemWord('N') == ItemName) {
-			bool isWeapon = (DrawDatabase('W', ItemName) != nullptr);
+    const bool isWeapon = (DrawDatabase('W', ItemName) != nullptr);
+    const bool isArmor = (DrawDatabase('I', ItemName) != nullptr) && looksLikeArmorName(ItemName);
+    const bool isStackable = (!isWeapon && !isArmor); // consumables only
 
-			if (isWeapon) {                 // non-stackable: just clear the slot
-				inventory[i] = nullptr;     // DO NOT delete; DB owns it
-				return;
-			}
+    for (int i = 0; i < 25; ++i) {
+        Item* it = inventory[i];
+        if (!it) continue;
+        if (it->GetItemWord('N') != ItemName) continue;
 
-			int cur = it->GetItemValue('V') - Number;
-			if (cur <= 0) inventory[i] = nullptr;
-			else          it->SetItemValue('V', cur);
-			return;
-		}
-	}
+        if (!isStackable) {
+            // weapon or armor â†’ remove one slot
+            inventory[i] = nullptr;   // DO NOT delete; DB owns it
+            return;
+        }
+
+        // stackable (consumables): subtract quantity
+        int cur = it->GetItemValue('V') - Number;
+        if (cur <= 0) inventory[i] = nullptr;
+        else          it->SetItemValue('V', cur);
+        return;
+    }
 }
 
 void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, int number, char DatabaseType) {
+    switch (DatabaseType) {
+    case 'W':
+        for (int i = 0; i < 10; i++) {
+            if (WeaponDatabase[i] == nullptr) {
+                WeaponDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue, number);
+                return;
+            }
+        }
+        break;
 
-	switch (DatabaseType) {
+    case 'I':
+        for (int i = 0; i < 50; i++) {
+            if (ItemDatabase[i] == nullptr) {
+                ItemDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue, number);
+                return;
+            }
+        }
+        break;
 
-	case 'W':
-
-		for (int i = 0; i < 10; i++) {
-
-			if (WeaponDatabase[i] == nullptr) {
-
-				WeaponDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue, number);
-
-				return;
-			}
-		}
-
-		break;
-
-	case 'I':
-
-		for (int i = 0; i < 50; i++) {
-
-			if (ItemDatabase[i] == nullptr) {
-
-				ItemDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue, number);
-
-				return;
-			}
-
-		}
-
-		break;
-
-	case 'M':
-
-		for (int i = 0; i < 50; i++) {
-
-			if (MonsterItemDatabase[i] == nullptr) {
-
-				MonsterItemDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue, number);
-
-				return;
-			}
-
-		}
-
-		break;
-
-	}
-
+    case 'M':
+        for (int i = 0; i < 50; i++) {
+            if (MonsterItemDatabase[i] == nullptr) {
+                MonsterItemDatabase[i] = new Item(ItemName, ItemDescription, Type, Value, ResaleValue, SaleValue, number);
+                return;
+            }
+        }
+        break;
+    }
 }
 
-Item* Inventory::FindItemByName(const std::string& itemName)
-{
-	for (int i = 0; i < 25; ++i) {
-		Item* it = inventory[i];
-		if (it) {
-			// The item name in your database has leading/trailing spaces.
-			// Using find() is a flexible way to check for a partial match.
-			// For example, "Broadsword" will match "  Broadsword  "
-			if (it->GetItemWord('N').find(itemName) != std::string::npos) {
-				return it;
-			}
-		}
-	}
-	return nullptr;
+Item* Inventory::FindItemByName(const std::string& itemName) {
+    for (int i = 0; i < 25; ++i) {
+        Item* it = inventory[i];
+        if (it) {
+            // DB names have spaces; partial match helps
+            if (it->GetItemWord('N').find(itemName) != std::string::npos) {
+                return it;
+            }
+        }
+    }
+    return nullptr;
 }
 
 void Inventory::DatabaseInitialisation() {
+    // ===== Weapons =====
+    FactoryCreateItem("  Broadsword  ", "A basic but reliable blade.", 'W', 50, 20, 30, 10, 'W');
+    FactoryCreateItem("  SlingShots  ", "A simple ranged weapon.", 'W', 50, 20, 30, 10, 'W');
+    FactoryCreateItem("Bow and Arrows", "Classic ranged weapon with arrows.", 'W', 80, 30, 50, 10, 'W');
+    FactoryCreateItem("     Mace     ", "A heavy blunt weapon.", 'W', 100, 40, 60, 5, 'W');
+    FactoryCreateItem("  Battle Axe  ", "Powerful for chopping and combat.", 'W', 250, 100, 150, 5, 'W');
+    FactoryCreateItem("   Crossbow   ", "Advanced ranged weapon.", 'W', 150, 60, 90, 5, 'W');
+    FactoryCreateItem("    Turret    ", "Stationary defense weapon.", 'W', 300, 120, 180, 2, 'W');
 
-	//FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, int number, char DatabaseType)
+    // ===== Armors ===== (stored in 'I' DB in your design)
+    FactoryCreateItem(" Wooden Armor ", "Basic protective armor.", 'A', 50, 20, 30, 10, 'I');
+    FactoryCreateItem(" Silver Armor ", "Strong armor for better defense.", 'A', 100, 40, 60, 5, 'I');
+    FactoryCreateItem("  Gold Armor  ", "Shiny and strong armor for better defense.", 'A', 150, 60, 90, 30, 'I');
+    FactoryCreateItem("Leather Armors", "Lightweight armor.", 'A', 10, 4, 6, 20, 'I');
+    FactoryCreateItem("    Shield    ", "Protects against attacks.", 'A', 100, 40, 60, 5, 'I');
+    FactoryCreateItem("    Helmet    ", "Protects your head.", 'A', 80, 30, 50, 5, 'I');
 
-	// ===== Weapons =====
-	FactoryCreateItem("  Broadsword  ", "A basic but reliable blade.", 'W', 50, 20, 30, 10, 'W');
-	FactoryCreateItem("  SlingShots  ", "A simple ranged weapon.", 'W', 50, 20, 30, 10, 'W');
-	FactoryCreateItem("Bow and Arrows", "Classic ranged weapon with arrows.", 'W', 80, 30, 50, 10, 'W');
-	FactoryCreateItem("     Mace     ", "A heavy blunt weapon.", 'W', 100, 40, 60, 5, 'W');
-	FactoryCreateItem("  Battle Axe  ", "Powerful for chopping and combat.", 'W', 250, 100, 150, 5, 'W');
-	FactoryCreateItem("   Crossbow   ", "Advanced ranged weapon.", 'W', 150, 60, 90, 5, 'W');
-	FactoryCreateItem("    Turret    ", "Stationary defense weapon.", 'W', 300, 120, 180, 2, 'W');
-
-	// ===== Armors =====
-	FactoryCreateItem(" Wooden Armor ", "Basic protective armor.", 'A', 50, 20, 30, 10, 'I');
-	FactoryCreateItem(" Silver Armor ", "Strong armor for better defense.", 'A', 100, 40, 60, 5, 'I');
-	FactoryCreateItem("  Gold Armor  ", "Shiny and strong armor for better defense.", 'A', 150, 60, 90, 30, 'I');
-	FactoryCreateItem("Leather Armors", "Lightweight armor.", 'A', 10, 4, 6, 20, 'I');
-	FactoryCreateItem("    Shield    ", "Protects against attacks.", 'A', 100, 40, 60, 5, 'I');
-	FactoryCreateItem("    Helmet    ", "Protects your head.", 'A', 80, 30, 50, 5, 'I');
-
-	// ===== Consumables / Other =====
-	FactoryCreateItem("Health Potions", "Restores health.", 'I', 50, 20, 30, 20, 'I');
+    // ===== Consumables / Other =====
+    FactoryCreateItem("Health Potions", "Restores health.", 'I', 50, 20, 30, 20, 'I');
 }
 
 //Draws Item from Database instead of Inventory//
 Item* Inventory::DrawDatabase(char DatabaseType, std::string ItemName) {
-	switch (DatabaseType) {
-	case 'W':
-		for (int i = 0; i < 10; ++i) {
-			Item* it = WeaponDatabase[i];
-			if (it && it->GetItemWord('N') == ItemName) return it;
-		}
-		break;
+    switch (DatabaseType) {
+    case 'W':
+        for (int i = 0; i < 10; ++i) {
+            Item* it = WeaponDatabase[i];
+            if (it && it->GetItemWord('N') == ItemName) return it;
+        }
+        break;
 
-	case 'I': // Items (consumables/armors)  <-- was wrong before
-		for (int i = 0; i < 50; ++i) {
-			Item* it = ItemDatabase[i];
-			if (it && it->GetItemWord('N') == ItemName) return it;
-		}
-		break;
+    case 'I': // Items (consumables/armors)
+        for (int i = 0; i < 50; ++i) {
+            Item* it = ItemDatabase[i];
+            if (it && it->GetItemWord('N') == ItemName) return it;
+        }
+        break;
 
-	case 'M': // Monster drops                <-- was wrong before
-		for (int i = 0; i < 50; ++i) {
-			Item* it = MonsterItemDatabase[i];
-			if (it && it->GetItemWord('N') == ItemName) return it;
-		}
-		break;
-	}
-	return nullptr;
+    case 'M': // Monster drops
+        for (int i = 0; i < 50; ++i) {
+            Item* it = MonsterItemDatabase[i];
+            if (it && it->GetItemWord('N') == ItemName) return it;
+        }
+        break;
+    }
+    return nullptr;
 }
 
 int Inventory::getCurrency() const {
-
-	return Currency;
-
+    return Currency;
 }
 
 void Inventory::setCurrency(int NewAmount) {
-
-	Currency = NewAmount;
+    Currency = NewAmount;
 }
 
-Item* Inventory::getEquippedItem() const {
-	return EquippedItem;
-}
+// --- Equipment getters (new) ------------------------------------------------
+Item* Inventory::getEquippedWeapon() const { return EquippedWeapon; }
+Item* Inventory::getEquippedArmor()  const { return EquippedArmor; }
 
-void Inventory::setEquippedItem(Item* SelectedItem) {
-	if (!SelectedItem) {
-		std::cout << "Invalid item selected." << std::endl;
-		return;
-	}
+// --- Backward-compat getter (returns weapon) --------------------------------
+Item* Inventory::getEquippedItem() const { return EquippedWeapon; }
 
-	// Check if the selected item exists in the WeaponDatabase.
-	// This correctly validates if the item is a weapon that can be equipped.
-	Item* w = DrawDatabase('W', SelectedItem->GetItemWord('N'));
-	if (w) {
-		EquippedItem = SelectedItem;
-		return;
-	}
-
-	Item* i = DrawDatabase('I', SelectedItem->GetItemWord('N'));
-	if (i) {
-		EquippedItem = SelectedItem;
-		return;
-	}
-
-	std::cout << "You can't equip this item!\n";
-}
-
-Item* Inventory::PullInventoryIndex(int Index) const {
-	if (Index < 0 || Index >= 25) return nullptr;
-	return inventory[Index];
-}
-
-void Inventory::unequip() {
-	if (!EquippedItem) {
-		std::cout << "Nothing is equipped.\n";
-		return;
-	}
-	// return to first empty slot
-	for (int i = 0; i < 25; ++i) {
-		if (inventory[i] == nullptr) {
-			std::cout << "Unequipped " << EquippedItem->GetItemWord('N') << " back into inventory.\n";
-			inventory[i] = EquippedItem;
-			EquippedItem = nullptr;
-			return;
-		}
-	}
-	std::cout << "Inventory full—cannot unequip.\n";
-}
-
+// --- Equip by NAME (high-level helpers) -------------------------------------
+// Route: weapon first, then armor
 bool Inventory::equipByName(const std::string& itemName) {
-	// find item (partial match OK if you keep your padded names)
-	int slot = -1;
-	Item* found = nullptr;
-	for (int i = 0; i < 25; ++i) {
-		Item* it = inventory[i];
-		if (it && it->GetItemWord('N').find(itemName) != std::string::npos) {
-			slot = i; found = it; break;
-		}
-	}
-	if (!found) {
-		std::cout << "Item not found in inventory: " << itemName << "\n";
-		return false;
-	}
+    if (equipWeaponByName(itemName)) return true;
+    return equipArmorByName(itemName);
+}
 
-	// If something is already equipped and it's different, put it back first
-	if (EquippedItem && EquippedItem != found) {
-		int freeIdx = -1;
-		for (int i = 0; i < 25; ++i) {
-			if (inventory[i] == nullptr) { freeIdx = i; break; }
-		}
-		if (freeIdx == -1) {
-			std::cout << "Inventory full—cannot swap equipped item.\n";
-			return false;
-		}
-		inventory[freeIdx] = EquippedItem;
-		EquippedItem = nullptr;
-	}
+// Equip weapon: removes the slot (weapons are non-stackable)
+bool Inventory::equipWeaponByName(const std::string& name) {
+    int slot = findSlotByNameContains(inventory, name);
+    if (slot < 0) { std::cout << "Item not found: " << name << "\n"; return false; }
 
-	// Try to equip (validates via your DB check inside setEquippedItem)
-	setEquippedItem(found);
+    Item* found = inventory[slot];
+    // Validate weapon by DB membership
+    if (!DrawDatabase('W', found->GetItemWord('N'))) {
+        std::cout << "This is not a weapon.\n"; return false;
+    }
 
-	if (EquippedItem == found) {
-		// remove from bag
-		inventory[slot] = nullptr;
-		std::cout << "Equipped " << found->GetItemWord('N') << ".\n";
-		return true;
-	}
-	else {
-		std::cout << "You can't equip that item.\n";
-		return false;
-	}
+    // Return currently equipped weapon (if any) to first empty slot
+    if (EquippedWeapon && EquippedWeapon != found) {
+        int freeIdx = firstEmptySlot(inventory);
+        if (freeIdx < 0) { std::cout << "Inventory fullâ€”cannot swap weapon.\n"; return false; }
+        inventory[freeIdx] = EquippedWeapon;
+    }
+
+    // Equip and remove from bag
+    EquippedWeapon = found;
+    EquippedItem = EquippedWeapon; // keep legacy pointer in sync
+    inventory[slot] = nullptr;
+
+    std::cout << "Equipped weapon: " << found->GetItemWord('N') << "\n";
+    return true;
+}
+
+// Equip armor: consume 1 from the stack (if V>1), or remove slot (if V==1)
+bool Inventory::equipArmorByName(const std::string& name) {
+    int slot = findSlotByNameContains(inventory, name);
+    if (slot < 0) { std::cout << "Item not found: " << name << "\n"; return false; }
+
+    Item* found = inventory[slot];
+
+    // Validate armor via DB membership + name heuristic
+    if (!DrawDatabase('I', found->GetItemWord('N')) || !looksLikeArmorName(found->GetItemWord('N'))) {
+        std::cout << "This is not an armor piece.\n"; return false;
+    }
+
+    // If another armor is equipped, put it back to first empty slot (no stacking)
+    if (EquippedArmor && EquippedArmor != found) {
+        int freeIdx = firstEmptySlot(inventory);
+        if (freeIdx < 0) {
+            std::cout << "Inventory fullâ€”cannot swap armor.\n";
+            return false;
+        }
+        inventory[freeIdx] = EquippedArmor;
+    }
+
+    // Equip and remove the inventory slot (non-stackable behavior)
+    EquippedArmor = found;
+    inventory[slot] = nullptr;
+
+    std::cout << "Equipped armor: " << EquippedArmor->GetItemWord('N') << "\n";
+    return true;
+}
+
+// --- Equip by POINTER (compat): route to weapon or armor by DB/name ---------
+void Inventory::setEquippedItem(Item* SelectedItem) {
+    if (!SelectedItem) { std::cout << "Invalid item selected.\n"; return; }
+    const std::string nm = SelectedItem->GetItemWord('N');
+
+    if (DrawDatabase('W', nm)) { equipWeaponByName(nm); return; }
+    if (looksLikeArmorName(nm) && DrawDatabase('I', nm)) { equipArmorByName(nm); return; }
+
+    std::cout << "You can't equip this item!\n";
+}
+
+// --- Unequip (compat = weapon) ----------------------------------------------
+void Inventory::unequip() { unequipWeapon(); }
+
+// --- Unequip weapon: moves the pointer back to the first empty slot ----------
+void Inventory::unequipWeapon() {
+    if (!EquippedWeapon) { std::cout << "No weapon equipped.\n"; return; }
+    int freeIdx = firstEmptySlot(inventory);
+    if (freeIdx < 0) { std::cout << "Inventory fullâ€”cannot unequip weapon.\n"; return; }
+    std::cout << "Unequipped weapon: " << EquippedWeapon->GetItemWord('N') << "\n";
+    inventory[freeIdx] = EquippedWeapon;
+    EquippedWeapon = nullptr;
+    EquippedItem = nullptr; // keep legacy pointer in sync
+}
+
+// --- Unequip armor: adds 1 back into the stack (or creates a slot) ----------
+void Inventory::unequipArmor() {
+    if (!EquippedArmor) { std::cout << "No armor equipped.\n"; return; }
+    int freeIdx = firstEmptySlot(inventory);
+    if (freeIdx < 0) { std::cout << "Inventory fullâ€”cannot unequip armor.\n"; return; }
+
+    std::cout << "Unequipped armor: " << EquippedArmor->GetItemWord('N') << "\n";
+    inventory[freeIdx] = EquippedArmor;
+
+    EquippedArmor = nullptr;
 }
