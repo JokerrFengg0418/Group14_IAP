@@ -11,6 +11,9 @@
 #include <algorithm>  
 #include <cstdlib>
 #include <vector>
+#include <limits>
+#include <string>
+#include <cctype>
 #include <conio.h>
 #include <Windows.h>
 
@@ -124,6 +127,63 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 	}
 }
 
+// simple local helper
+static void clearCinLocal() {
+	std::cin.clear();
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+// Open inventory while in combat. Returns when user presses E.
+static void openInventoryDuringCombat(Inventory* inv) {
+	if (!inv) return;
+
+	constexpr int ROWS = 4;
+	constexpr int COLS = 5;
+
+	bool running = true;
+	while (running) {
+		std::cout << "\n=== INVENTORY (Combat) ===\n";
+		inv->DrawInventory();
+		std::cout << "Equip: enter 'row col'  |  [U]nequip  |  [E]xit\n> ";
+
+		std::string first;
+		if (!(std::cin >> first)) {
+			clearCinLocal();
+			std::cout << "Invalid input.\n";
+			continue;
+		}
+
+		if (first.size() == 1) {
+			char c = static_cast<char>(std::tolower(first[0]));
+			if (c == 'e') { running = false; break; }
+			if (c == 'u') { inv->unequip(); continue; }
+		}
+
+		// try to parse row
+		int row;
+		try { row = std::stoi(first); }
+		catch (...) { std::cout << "Invalid row.\n"; clearCinLocal(); continue; }
+
+		int col;
+		if (!(std::cin >> col)) { std::cout << "Invalid col.\n"; clearCinLocal(); continue; }
+
+		if (row < 0 || row >= ROWS || col < 0 || col >= COLS) {
+			std::cout << "Out of range.\n";
+			continue;
+		}
+
+		const int index = row * COLS + col;
+		Item* item = inv->PullInventoryIndex(index);
+		if (!item) {
+			std::cout << "No item in that slot.\n";
+			continue;
+		}
+
+		inv->setEquippedItem(item);  // respects your “must be a weapon” rule
+		std::cout << "Equipped " << item->GetItemWord('N') << ".\n";
+	}
+}
+
 // External enemy list if used elsewhere
 extern Entity* List[20];
 
@@ -188,6 +248,30 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 	// ------------- PLAYER TURN -------------
 	if (entity1->getEntityType() == 'P') {
 		if (!playerInv) { std::cout << "[Combat] Player inventory is null.\n"; std::cout << "=== Combat End ===\n"; return; }
+
+		// TURN MENU
+		while (true) {
+			std::cout << "\nYour turn: [A]ttack  [I]nventory  [E]nd\n";
+			int key = _getch();
+			key = std::tolower(key);
+
+			if (key == 'i') {
+				openInventoryDuringCombat(playerInv);   // <-- new
+				// after returning, let the player choose again (maybe they’ll attack now)
+				continue;
+			}
+			else if (key == 'e') {
+				std::cout << "You end your turn.\n";
+				std::cout << "=== Combat End ===\n";
+				return;
+			}
+			else if (key == 'a') {
+				break; // proceed to your attack selection below
+			}
+			else {
+				std::cout << "Invalid key.\n";
+			}
+		}
 
 		// Determine attack range
 		int range = 1; // default melee

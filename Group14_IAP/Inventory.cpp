@@ -263,3 +263,8 @@ Item* Inventory::PullInventoryIndex(int Index) const {
 	if (Index < 0 || Index >= 25) return nullptr;
 	return inventory[Index];
 }
+
+void Inventory::unequip() {
+	EquippedItem = nullptr;
+	std::cout << "You unequipped your weapon.\n";
+}
