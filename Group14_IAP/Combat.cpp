@@ -138,14 +138,19 @@ void Combat::attack(Entity* Entity1, Inventory* PlayerInventory) {
 	if (Entity1->getEntityType() == 'E') {
 
 		for (int i = 0; i < 20; i++) {
-			if (List[i]->getEntityType() == 'P') {
-				distance = calculateDistance(Entity1->getPosition(), List[i]->getPosition());
-				player = List[i];
-				break;
+			if (List[i] != nullptr) {
+				if (List[i]->getEntityType() == 'P') {
+					distance = calculateDistance(Entity1->getPosition(), List[i]->getPosition());
+					player = List[i];
+					break;
 
+				}
 			}
 		}
-
+		if (player == nullptr) {
+			std::cout << "Player can't be found \n";
+			return;
+		}
 		
 		// ============ Enemy's Turn ============
 		Enemy* enemyReference = dynamic_cast<Enemy*>(Entity1);
@@ -329,7 +334,7 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 		}
 		firstTurn++;
 		
-		Sleep(2000);
+		Sleep(250);
 		system("cls");
 	}
 
