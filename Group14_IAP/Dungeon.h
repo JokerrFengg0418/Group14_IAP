@@ -10,5 +10,5 @@ public:
 private:
     Board board; // The Dungeon class owns the Board object
     Player player;
-    
+    bool dungeonInited = false;
 };

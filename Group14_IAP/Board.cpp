@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include "Board.h"
 #include "Enemy.h"
+#include <fstream>
 
 // Define ANSI color codes
 const char* const YELLOW = "\x1b[33m";
@@ -132,33 +133,43 @@ void Board::drawBoard()
 	std::cout << Template;
 }
 
-// Function to draw Dungeon Layout
-void Board::drawDungeon()
-{
+void Board::initializeDungeonXGrid() {
+	for (int i = 0; i < 5; ++i)
+		for (int j = 0; j < 5; ++j)
+			board[i][j] = 'X';           // fill with X
+
+	board[4][4] = ' '; // spawn cell blank (bottom-right)
+}
+
+void Board::setCellContentDungeon(int r, int c, char ch) { board[r][c] = ch; }
+char Board::getCellContentDungeon(int r, int c) const { return board[r][c]; }
+
+void Board::drawDungeon() {
 	std::cout << "+---------+ \n";
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			char cell = Board::board[i][j];
-			if (cell == ' ' || cell == '\0') {
-				std::cout << '|' << 'X'; // gap → X
-			}
-			else {
-				std::cout << '|' << cell; // keep actual content
-			}
+	for (int i = 0; i < 5; ++i) {
+		for (int j = 0; j < 5; ++j) {
+			char cell = board[i][j];
+			std::cout << '|' << (cell ? cell : ' ');
 		}
-		std::cout << '|';
-		std::cout << std::endl;
+		std::cout << "|\n";
 	}
 	std::cout << "+---------+ \n";
 }
 
-
-void Board::setCellContentDungeon(int row, int col, char content)
-{
-	if (row >= 0 && row < 5 && col >= 0 && col < 5) {
-		board[row][col] = content;
-	}
+bool Board::save(const char* path) const {
+	std::ofstream out(path, std::ios::binary);
+	if (!out) return false;
+	out.write(reinterpret_cast<const char*>(board), sizeof(board));
+	return true;
 }
+
+bool Board::load(const char* path) {
+	std::ifstream in(path, std::ios::binary);
+	if (!in) return false;
+	in.read(reinterpret_cast<char*>(board), sizeof(board));
+	return in.good();
+}
+
 
 char Board::GetBoard() const
 {
