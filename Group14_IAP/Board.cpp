@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include "Board.h"
 #include "Enemy.h"
 
@@ -135,22 +135,28 @@ void Board::drawBoard()
 // Function to draw Dungeon Layout
 void Board::drawDungeon()
 {
-	std::cout << std::endl;
+	std::cout << "+---------+ \n";
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 5; j++) {
-			std::cout << '|' << Board::board[i][j];
+			char cell = Board::board[i][j];
+			if (cell == ' ' || cell == '\0') {
+				std::cout << '|' << 'X'; // gap → X
+			}
+			else {
+				std::cout << '|' << cell; // keep actual content
+			}
 		}
 		std::cout << '|';
 		std::cout << std::endl;
 	}
+	std::cout << "+---------+ \n";
+}
 
 
-	for (int row = 0; row < 5; row++)
-	{
-		for (int col = 0; col < 5; col++)
-		{
-			board[row][col] = ' ';
-		}
+void Board::setCellContentDungeon(int row, int col, char content)
+{
+	if (row >= 0 && row < 5 && col >= 0 && col < 5) {
+		board[row][col] = content;
 	}
 }
 

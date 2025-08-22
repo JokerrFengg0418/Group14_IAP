@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <limits>
+#include "Dungeon.h"
 
 using std::cin;
 using std::cout;
@@ -44,20 +45,26 @@ void Option::runMainMenu() {
         clearCin(); // clean trailing junk/newlines
 
         switch (choice) {
-        case 1:
+        case 1: {
+
             openInventory();
             waitForEnter();
             break;
-        case 2:
+        }
+        case 2: {
             shopOption(PlayerInventoryPointer);
             break;
-        case 3:
-            
+        }
+        case 3: {
+            Dungeon dungeon; // Create a Dungeon object
+            dungeon.dungeonOption(); // Call its dungeonOption() function
             break;
-        case 4:
+        }
+        case 4: {
             cout << "Exiting...\n";
             running = false;
             break;
+        }
         case 5: // DEBUG GIVE
             if (PlayerInventoryPointer) {
                 PlayerInventoryPointer->setCurrency(
@@ -74,21 +81,6 @@ void Option::runMainMenu() {
             cout << "Invalid choice, try again.\n";
             waitForEnter();
             break;
-        }
-    }
-}
-
-void Option::handleInput() {
-    char input;
-    std::cout << "Press 'E' to open/close inventory.\n";
-    std::cin >> input;
-
-    if (input == 'E' || input == 'e') {
-        if (!inventoryOpen) {
-            openInventory();
-        }
-        else {
-            closeInventory();
         }
     }
 }
@@ -128,6 +120,12 @@ void Option::openInventory() {
 void Option::closeInventory() {
     inventoryOpen = false;
     std::cout << "Inventory closed.\n";
+}
+
+void Option::closeDungeon()
+{
+    dungeonOpen = false;
+    std::cout << "Dungeon closed.\n";
 }
 
 // Shop Menu

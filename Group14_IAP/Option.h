@@ -6,10 +6,12 @@
 
 class Option
 {
+
 private:
     Inventory PlayerInventory;
     Inventory* PlayerInventoryPointer; // pointer to the player’s inventory
     bool inventoryOpen;         // track if inventory is open
+    bool dungeonOpen;
 
     void shopOption(Inventory* inventory);  // Opens the shop and keeps looping until the player chooses to exit
 
@@ -23,8 +25,9 @@ public:
     Inventory* getPlayerInventory() const;
     void runMainMenu();         // The single menu loop
 
-    void handleInput();         // check input (E to toggle inventory)
     void openInventory();       // open and interact with inventory
     void closeInventory();      // close inventory
+
+    void closeDungeon();
 
 };

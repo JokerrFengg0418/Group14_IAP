@@ -17,6 +17,7 @@ public:
 	void drawBoard();
 	void drawDungeon();
 	void clearBoard();
+	void setCellContentDungeon(int row, int col, char content);
 
 	// Function to add Entity
 	void addPlayer(Entity* p);
