@@ -454,8 +454,12 @@ void Combat::FactoryDestructor() {
 		if (List[i] != nullptr) {
 			if (List[i]->getHealth() <= 0) {
 				std::cout << "Enemy Health:" << List[i]->getHealth() << "\n";
+				board.removeEnemy(List[i]);
 				delete List[i];
 				List[i] = nullptr;
+				
+
+			
 			}
 		}
 	}

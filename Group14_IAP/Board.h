@@ -22,6 +22,7 @@ public:
 	void addPlayer(Entity* p);
 	void addEnemy(Entity* e);
 	void printBoardCellColor(int row, int col);
+	void removeEnemy(Entity* e);
 
 private:
 	char board [40][40];
