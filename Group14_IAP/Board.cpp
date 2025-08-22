@@ -21,7 +21,7 @@ Board::Board() : Player(nullptr), enemyCount(0), selectedEnemy(nullptr)
 		}
 	}
 
-	std::cout << "Map created";
+	std::cout << "Map created\n";
 }
 Board::~Board()
 {
