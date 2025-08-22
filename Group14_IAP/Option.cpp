@@ -1,4 +1,8 @@
 ﻿#include "Option.h"
+#include "Inventory.h"
+#include "Item.h"
+#include <iostream>
+#include <string>
 #include <limits>
 
 using std::cin;
@@ -91,57 +95,31 @@ void Option::handleInput() {
 void Option::openInventory() {
     inventoryOpen = true;
 
-    constexpr int ROWS = 4;
-    constexpr int COLS = 5;
-
     while (inventoryOpen) {
         std::cout << "\n=== INVENTORY ===\n";
         PlayerInventory.DrawInventory();
-        std::cout << "Enter coordinates (row col) e.g (0 0) to equip item, or 'E' to close: ";
+        std::cout << "Enter the name of the item to equip, or 'E' to close: ";
 
-        std::string first;
-        if (!(std::cin >> first)) {
-            clearCin();
+        std::string itemName;
+        std::getline(std::cin >> std::ws, itemName);
+
+        if (itemName.empty()) {
             std::cout << "Invalid input, try again.\n";
             continue;
         }
 
-        if (first == "E" || first == "e") {
+        if (itemName == "E" || itemName == "e") {
             closeInventory();
             break;
         }
 
-        int row;
-        try {
-            row = std::stoi(first);
-        }
-        catch (...) {
-            std::cout << "Invalid input, try again.\n";
-            clearCin();
-            continue;
-        }
-
-        int col;
-        if (!(std::cin >> col)) {
-            std::cout << "Invalid input, try again.\n";
-            clearCin();
-            continue;
-        }
-
-        if (row < 0 || row >= ROWS || col < 0 || col >= COLS) {
-            std::cout << "Invalid coordinates, try again.\n";
-            continue;
-        }
-
-        const int index = row * COLS + col;
-
-        Item* item = PlayerInventory.PullInventoryIndex(index);
+        Item* item = PlayerInventory.FindItemByName(itemName);
         if (item) {
             PlayerInventory.setEquippedItem(item);
             std::cout << "Equipped " << item->GetItemWord('N') << "!\n";
         }
         else {
-            std::cout << "No item at those coordinates.\n";
+            std::cout << "No item with that name found in your inventory.\n";
         }
     }
 }

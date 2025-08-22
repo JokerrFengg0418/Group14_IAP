@@ -155,6 +155,22 @@ void Inventory::FactoryCreateItem(std::string ItemName, std::string ItemDescript
 
 }
 
+Item* Inventory::FindItemByName(const std::string& itemName)
+{
+	for (int i = 0; i < 25; ++i) {
+		Item* it = inventory[i];
+		if (it) {
+			// The item name in your database has leading/trailing spaces.
+			// Using find() is a flexible way to check for a partial match.
+			// For example, "Broadsword" will match "  Broadsword  "
+			if (it->GetItemWord('N').find(itemName) != std::string::npos) {
+				return it;
+			}
+		}
+	}
+	return nullptr;
+}
+
 void Inventory::DatabaseInitialisation() {
 
 	//FactoryCreateItem(std::string ItemName, std::string ItemDescription, char Type, int Value, int ResaleValue, int SaleValue, int number, char DatabaseType)
@@ -222,14 +238,19 @@ Item* Inventory::getEquippedItem() const {
 }
 
 void Inventory::setEquippedItem(Item* SelectedItem) {
-	if (!SelectedItem) return;
-	for (int i = 0; i < 10; ++i) {
-		Item* w = WeaponDatabase[i];
-		if (w && w->GetItemWord('N') == SelectedItem->GetItemWord('N')) {
-			EquippedItem = SelectedItem;
-			return;
-		}
+	if (!SelectedItem) {
+		std::cout << "Invalid item selected." << std::endl;
+		return;
 	}
+
+	// Check if the selected item exists in the WeaponDatabase.
+	// This correctly validates if the item is a weapon that can be equipped.
+	Item* w = DrawDatabase('W', SelectedItem->GetItemWord('N'));
+	if (w) {
+		EquippedItem = SelectedItem;
+		return;
+	}
+
 	std::cout << "You can't equip this item!\n";
 }
 
