@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Inventory.h"
 #include "Option.h"
+#include "Turret.h"
 #include <iostream>
 #include <cmath>
 #include <algorithm>  
@@ -294,6 +295,40 @@ int Combat::WinCondition()
 	}
 	return 1;
 
+}
+
+void Combat::placeTurret(Inventory* playerInventory, Entity* List[], int entityCount)
+{
+	Item* turretItem = playerInventory->DrawDatabase('W', "Turret");
+	if (!turretItem) {
+		std::cout << "You don't have a turret to place!" << std::endl;
+		return;
+	}
+
+	std::cout << "Enter row and column to place the turret: ";
+	int row, col;
+	std::cin >> row >> col;
+
+	if (row < 0 || row >= 40 || col < 0 || col >= 40) {
+		std::cout << "Invalid position for turret!" << std::endl;
+		return;
+	}
+
+	for (int i = 0; i < entityCount;) {
+		if (List[i] != nullptr && List[i]->getRow() == row && List[i]->getCol() == col) {
+			std::cout << "Cannot place turret here, position is occupied!" << std::endl;
+			return;
+		}
+	}
+
+	if (entityCount < 20) {
+		List[entityCount] = new Turret(row, col, turretItem->GetItemValue('V'));
+		playerInventory->RemoveItemFromInventory("    Turret    ", 1);
+		std::cout << "Turret placed at (" << row << ", " << col << ")!" << std::endl;
+	}
+	else {
+		std::cout << "Cannot place turret, maximum entities reached!" << std::endl;
+	}
 }
 
 void Combat::TurnOrder(Inventory* PlayerInventory)
