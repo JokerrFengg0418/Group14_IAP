@@ -57,7 +57,7 @@ void Option::runMainMenu() {
             if (PlayerInventoryPointer) {
                 PlayerInventoryPointer->setCurrency(
                     PlayerInventoryPointer->getCurrency() + 50000);
-                PlayerInventoryPointer->setInventory("Broadsword", 1);
+                PlayerInventoryPointer->setInventory("  Broadsword  ", 1);
                 cout << "[Debug] Added 50,000 gold and a Broadsword to your inventory.\n";
             }
             else {
@@ -186,7 +186,7 @@ void Option::handleChoice(int choice, Inventory* inventory) {
     case 5: // DEBUG GIVE
         if (inventory) {
             inventory->setCurrency(inventory->getCurrency() + 50000);
-            inventory->setInventory("Broadsword", 1);
+            inventory->setInventory("  Broadsword  ", 1);
             cout << "[Debug] Added 50,000 gold and a Broadsword to your inventory.\n";
         }
         else {
