@@ -141,6 +141,7 @@
     <ClInclude Include="Quest.h" />
     <ClInclude Include="Shop.h" />
     <ClInclude Include="Story.h" />
+    <ClInclude Include="Turret.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="Quest.cpp" />
     <ClCompile Include="Shop.cpp" />
     <ClCompile Include="Story.cpp" />
+    <ClCompile Include="Turret.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
