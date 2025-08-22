@@ -1,33 +1,42 @@
-﻿
-#include "Dungeon.h"
+﻿#include "Dungeon.h"
 #include <iostream>
 #include <conio.h>
+
 #ifdef _WIN32
+#define CLEAR_SCREEN() system("cls")
+#else
+#define CLEAR_SCREEN() (std::cout << "\x1b[2J\x1b[H")
 #endif
 
 void Dungeon::dungeonOption() {
-    bool DungeonOpen = true;
+    bool running = true;
 
-    // Set the player's starting position to the bottom-right corner (row 4, col 4)
-    player.setRow(4);
-    player.setCol(4);
+    // start in bottom-right of 5x5
+    player->setRow(4);
+    player->setCol(4);
 
-    while (DungeonOpen) {
+    int prevR = -1, prevC = -1;
 
-        system("cls");
+    auto render = [&]() {
+        CLEAR_SCREEN();
+        board.drawDungeon();
+        std::cout << "\n=== DUNGEON ===\n"
+            << "Move (W/A/S/D) or 'E' to Exit: ";
+        };
 
-        board.clearBoard();
+    while (running) {
+        // erase previous P
+        if (prevR >= 0 && prevC >= 0)
+            board.setCellContentDungeon(prevR, prevC, ' ');
 
-        board.setCellContentDungeon(player.getRow(), player.getCol(), 'P');
+        const int r = player->getRow();
+        const int c = player->getCol();
+        board.setCellContentDungeon(r, c, 'P');
 
-        this->board.drawDungeon();
+        prevR = r; prevC = c;
+        render();
 
-        std::cout << "\n=== DUNGEON ===\n";
-        std::cout << "Move (W/A/S/D) or 'E' to Exit: ";
-
-        if (player.moveDungeon()) { // if true → exit
-            DungeonOpen = false;
-        }
-
+        if (player->moveDungeon())  // returns true on 'E'
+            running = false;
     }
 }

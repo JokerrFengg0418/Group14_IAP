@@ -27,8 +27,6 @@ public:
 
 	Item* getInventory(std::string Name) const;
 
-	Item* PullInventoryIndex(int Index) const;
-
 	void setInventory(std::string ItemName, int Number);
 
 	Item* getEquippedItem() const;
@@ -37,13 +35,13 @@ public:
 
 	Item* getEquippedArmor() const;
 
-	bool  equipWeaponByName(const std::string& name);
+	bool equipWeaponByName(const std::string& name);
 
-	bool  equipArmorByName(const std::string& name);
+	bool equipArmorByName(const std::string& name);
 
-	void  unequipWeapon();
+	void unequipWeapon();
 
-	void  unequipArmor();
+	void unequipArmor();
 
 	void unequip();
 
