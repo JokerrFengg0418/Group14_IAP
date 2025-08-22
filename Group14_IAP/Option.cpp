@@ -178,7 +178,14 @@ void Option::handleChoice(int choice, Inventory* inventory) {
 }
 
 void Option::shopOption(Inventory* inventory) {
+    if (!inventory) {
+        cout << "[Shop] Player inventory is null.\n";
+        return;
+    }
+
     Shop shop(inventory);   // uses the player's DBs
+
+    int refreshesLeft = 3;  // ← limit per visit
 
     bool keepShopping = true;
     while (keepShopping) {
@@ -190,27 +197,35 @@ void Option::shopOption(Inventory* inventory) {
         // Show current stock
         shop.displayItems();
 
-        // New actions, including Refresh
-        cout << "\nActions: [B]uy   [R]efresh stock   [E]xit\n";
+        // Actions
+        cout << "\nActions: [B]uy   [R]efresh stock (" << refreshesLeft << " left)   [E]xit\n";
         cout << "Enter action: ";
 
         std::string action;
-        cin >> action;
+        if (!(cin >> action)) {         // handle stream failure
+            clearCin();
+            cout << "Invalid input. Try again.\n";
+            continue;
+        }
 
-        if (action.size() == 1) {
+        if (!action.empty()) {
             char a = static_cast<char>(std::tolower(action[0]));
             if (a == 'b') {
-                // Shop handles prompting for item index internally
-                shop.buyItem(inventory);
+                shop.buyItem(inventory);     // Shop handles 0 to cancel, etc.
                 continue;
             }
             else if (a == 'r') {
-                // NEW: refresh stock
-                shop.refreshStock();      // requires Shop::refreshStock() (see below)
-                cout << "Shop stock refreshed!\n";
+                if (refreshesLeft > 0) {
+                    shop.refreshStock();
+                    --refreshesLeft;
+                    cout << "Shop stock refreshed! (" << refreshesLeft << " left)\n";
+                }
+                else {
+                    cout << "No refreshes left. Come back after next wave.\n";
+                }
                 continue;
             }
-            else if (a == 'e') {
+            else if (a == 'e' || a == '0') {
                 keepShopping = false;
                 break;
             }

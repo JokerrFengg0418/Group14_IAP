@@ -178,13 +178,14 @@ void Inventory::DatabaseInitialisation() {
 	FactoryCreateItem("  SlingShots  ", "A simple ranged weapon.", 'W', 50, 20, 30, 10, 'W');
 	FactoryCreateItem("Bow and Arrows", "Classic ranged weapon with arrows.", 'W', 80, 30, 50, 10, 'W');
 	FactoryCreateItem("     Mace     ", "A heavy blunt weapon.", 'W', 100, 40, 60, 5, 'W');
-	FactoryCreateItem("     Axee     ", "Powerful for chopping and combat.", 'W', 250, 100, 150, 5, 'W');
+	FactoryCreateItem("  Battle Axe  ", "Powerful for chopping and combat.", 'W', 250, 100, 150, 5, 'W');
 	FactoryCreateItem("   Crossbow   ", "Advanced ranged weapon.", 'W', 150, 60, 90, 5, 'W');
 	FactoryCreateItem("    Turret    ", "Stationary defense weapon.", 'W', 300, 120, 180, 2, 'W');
 
 	// ===== Armors =====
 	FactoryCreateItem(" Wooden Armor ", "Basic protective armor.", 'A', 50, 20, 30, 10, 'I');
 	FactoryCreateItem(" Silver Armor ", "Strong armor for better defense.", 'A', 100, 40, 60, 5, 'I');
+	FactoryCreateItem("  Gold Armor  ", "Shiny and strong armor for better defense.", 'A', 150, 60, 90, 30, 'I');
 	FactoryCreateItem("Leather Armors", "Lightweight armor.", 'A', 10, 4, 6, 20, 'I');
 	FactoryCreateItem("    Shield    ", "Protects against attacks.", 'A', 100, 40, 60, 5, 'I');
 	FactoryCreateItem("    Helmet    ", "Protects your head.", 'A', 80, 30, 50, 5, 'I');
