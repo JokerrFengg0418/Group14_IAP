@@ -33,6 +33,8 @@ public:
 
 	void unequip();
 
+	bool equipByName(const std::string& itemName);
+
 	void setEquippedItem(Item* ItemSelect);
 
 	void RemoveItemFromInventory(std::string ItemName, int Number);

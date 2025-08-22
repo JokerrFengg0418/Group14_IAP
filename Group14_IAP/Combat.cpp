@@ -134,53 +134,24 @@ static void clearCinLocal() {
 }
 
 // Open inventory while in combat. Returns when user presses E.
-static void openInventoryDuringCombat(Inventory* inv) {
+static void openInventoryDuringCombatByName(Inventory* inv) {
 	if (!inv) return;
 
-	constexpr int ROWS = 4;
-	constexpr int COLS = 5;
-
-	bool running = true;
-	while (running) {
+	while (true) {
 		std::cout << "\n=== INVENTORY (Combat) ===\n";
 		inv->DrawInventory();
-		std::cout << "Equip: enter 'row col'  |  [U]nequip  |  [E]xit\n> ";
+		std::cout << "Type item name to equip (partial ok), or:\n";
+		std::cout << "  U = Unequip   |   E = Exit\n> ";
 
-		std::string first;
-		if (!(std::cin >> first)) {
-			clearCinLocal();
-			std::cout << "Invalid input.\n";
-			continue;
-		}
+		std::string line;
+		std::getline(std::cin >> std::ws, line);   // eat leading whitespace, then read line
+		if (line.empty()) continue;
 
-		if (first.size() == 1) {
-			char c = static_cast<char>(std::tolower(first[0]));
-			if (c == 'e') { running = false; break; }
-			if (c == 'u') { inv->unequip(); continue; }
-		}
+		char c0 = static_cast<char>(std::tolower(line[0]));
+		if (line.size() == 1 && c0 == 'e') return;
+		if (line.size() == 1 && c0 == 'u') { inv->unequip(); continue; }
 
-		// try to parse row
-		int row;
-		try { row = std::stoi(first); }
-		catch (...) { std::cout << "Invalid row.\n"; clearCinLocal(); continue; }
-
-		int col;
-		if (!(std::cin >> col)) { std::cout << "Invalid col.\n"; clearCinLocal(); continue; }
-
-		if (row < 0 || row >= ROWS || col < 0 || col >= COLS) {
-			std::cout << "Out of range.\n";
-			continue;
-		}
-
-		const int index = row * COLS + col;
-		Item* item = inv->PullInventoryIndex(index);
-		if (!item) {
-			std::cout << "No item in that slot.\n";
-			continue;
-		}
-
-		inv->setEquippedItem(item);  // respects your “must be a weapon” rule
-		std::cout << "Equipped " << item->GetItemWord('N') << ".\n";
+		inv->equipByName(line);
 	}
 }
 
@@ -249,15 +220,15 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 	if (entity1->getEntityType() == 'P') {
 		if (!playerInv) { std::cout << "[Combat] Player inventory is null.\n"; std::cout << "=== Combat End ===\n"; return; }
 
-		// TURN MENU
+		// Player turn menu
 		while (true) {
 			std::cout << "\nYour turn: [A]ttack  [I]nventory  [E]nd\n";
 			int key = _getch();
 			key = std::tolower(key);
 
 			if (key == 'i') {
-				openInventoryDuringCombat(playerInv);   // <-- new
-				// after returning, let the player choose again (maybe they’ll attack now)
+				openInventoryDuringCombatByName(playerInv);  // <-- new flow
+				// After returning, let the player choose again (they might now attack)
 				continue;
 			}
 			else if (key == 'e') {
@@ -266,7 +237,7 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 				return;
 			}
 			else if (key == 'a') {
-				break; // proceed to your attack selection below
+				break; // proceed to your target selection + damage flow
 			}
 			else {
 				std::cout << "Invalid key.\n";

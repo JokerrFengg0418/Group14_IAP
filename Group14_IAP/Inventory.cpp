@@ -265,6 +265,62 @@ Item* Inventory::PullInventoryIndex(int Index) const {
 }
 
 void Inventory::unequip() {
-	EquippedItem = nullptr;
-	std::cout << "You unequipped your weapon.\n";
+	if (!EquippedItem) {
+		std::cout << "Nothing is equipped.\n";
+		return;
+	}
+	// return to first empty slot
+	for (int i = 0; i < 25; ++i) {
+		if (inventory[i] == nullptr) {
+			std::cout << "Unequipped " << EquippedItem->GetItemWord('N') << " back into inventory.\n";
+			inventory[i] = EquippedItem;
+			EquippedItem = nullptr;
+			return;
+		}
+	}
+	std::cout << "Inventory full—cannot unequip.\n";
+}
+
+bool Inventory::equipByName(const std::string& itemName) {
+	// find item (partial match OK if you keep your padded names)
+	int slot = -1;
+	Item* found = nullptr;
+	for (int i = 0; i < 25; ++i) {
+		Item* it = inventory[i];
+		if (it && it->GetItemWord('N').find(itemName) != std::string::npos) {
+			slot = i; found = it; break;
+		}
+	}
+	if (!found) {
+		std::cout << "Item not found in inventory: " << itemName << "\n";
+		return false;
+	}
+
+	// If something is already equipped and it's different, put it back first
+	if (EquippedItem && EquippedItem != found) {
+		int freeIdx = -1;
+		for (int i = 0; i < 25; ++i) {
+			if (inventory[i] == nullptr) { freeIdx = i; break; }
+		}
+		if (freeIdx == -1) {
+			std::cout << "Inventory full—cannot swap equipped item.\n";
+			return false;
+		}
+		inventory[freeIdx] = EquippedItem;
+		EquippedItem = nullptr;
+	}
+
+	// Try to equip (validates via your DB check inside setEquippedItem)
+	setEquippedItem(found);
+
+	if (EquippedItem == found) {
+		// remove from bag
+		inventory[slot] = nullptr;
+		std::cout << "Equipped " << found->GetItemWord('N') << ".\n";
+		return true;
+	}
+	else {
+		std::cout << "You can't equip that item.\n";
+		return false;
+	}
 }
