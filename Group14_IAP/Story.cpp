@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "Story.h"
 #include "StoryEntry.h"
+#include "Quest.h"
 
 
 Story::Story() 
@@ -68,7 +69,7 @@ void Story::DatabaseInitialisation()
     FactoryCreateChoices(1, 1,
         "What do you sell? (Opens Shop) # I'm fine for now. # Do you travel here often? # What happened?",
         "@Mysterious Person: That depends, what're ya looking to buy? @ # @Mysterious Person: Alright, suit yourself. Nights are cold, so stay warm. @ # @Nay, you're lucky. I travel here once in a few months. @ # @Better question: What happened to you? Nobody wakes up with no memory. @",
-        0, nullptr, 0  // ✅ no next choices
+        0, nullptr, 0  
     );
 
     FactoryCreateStory(1, "@Dave: I'm a wandering traveler. Name's Dave. @");
@@ -83,7 +84,7 @@ void Story::DatabaseInitialisation()
     FactoryCreateChoices(2, 2,
         "Wander around until you find a point of interest # Find Water # Survey the area",
         "@After walking, you find a mysterious hole by a well. You notice white carriages traveling. Seems there was civilization here, before whatever happened. @ # @After walking, you find a mysterious hole by a well. You notice white carriages traveling. Seems there was civilization here, before whatever happened. @ # @After walking, you find a mysterious hole by a well. You notice white carriages traveling. Seems there was civilization here, before whatever happened. @",
-        0, next2, 3  // ✅ using array
+        0, next2, 3 
     );
 
     // Choice 3
@@ -91,37 +92,36 @@ void Story::DatabaseInitialisation()
     FactoryCreateChoices(2, 3,
         "Head towards the white carriages. # Explore the hole.",
         "@Heading towards the carriages, you see a royal insignia. @ Guard: Halt! @ Player: (What the-) @ Dave: Didn't expect to meetcha. @ *Dave and Guard talk privately.* @ Guard: You may approach. @ Dave: Proposal coming up...",
-        0, next3, 2  // ✅ using array
+        0, next3, 2  
     );
 
     int next31[] = { 5, 6 };
     FactoryCreateChoices(2, 8,
         "Sure, I need the gold. # I got better things to do.",
-        "@Heading towards the white carriages, you see a royal insignia. @ Guard: Halt! @ Player: (What the-) @ Dave: Didn't expect to meetcha. @ *Dave and Guard talk privately.* @ Guard: You may approach. @ Dave: Proposal coming up...",
+        "",
         0, next31, 2
     );
 
-
     // Choice 4
-    int next4[] = { 7, 8 };
+    int next4[] = { 7 };
     FactoryCreateChoices(2, 4,
         "Explore the hole.",
         "@You went into the mysterious hole. Saw a door in the cave and opened it. {Dungeon crawler mode} @",
-        0, next4, 2  // ✅ using array
+        0, next4, 1  
     );
 
     // Choice 5 — no next choices
     FactoryCreateChoices(2, 5,
         "Sure, I need the gold.",
         "Then, I'll be dropping this off with ya. @ (Quest placeholder) @ Speaking of which, anything you want? @ (Opens Shop)",
-        1, nullptr, 0  // ✅ no next choices
+        1, nullptr, 0  
     );
-
+ 
     // Choice 6
     FactoryCreateChoices(2, 6,
         "Shame, a loss is a loss. ",
         "@ If I can't interest ya, want anything? @ Dave: See ya! The trail disappears.",
-        0, nullptr, 0 // ✅ no next choices
+        0, nullptr, 0 
     );
 
     // Choice 7
@@ -129,8 +129,19 @@ void Story::DatabaseInitialisation()
     FactoryCreateChoices(2, 7,
         "Get out of the cave and return to the trail.",
         "Getting out of the cave, the caravans are still there, just resting. You head towards the trail.",
-        0, next7, 1 
+        0, next7, 1
     );
+
+    FactoryCreateStory(3, "It's getting pretty late now, time for you to have a nice sleep, once the local wildlife stops bothering you of course. As you drift into slumber, you are jolted awake by the weird groans from afar. Standing up, you prepare yourself to fight as you see a hoard of zombies creeping towards you. @");
+    FactoryCreateStory(3, "As you lower your weapon, you look at the rotten corpses that were once roaming the forests. The fatigue has set in and now you lay down in the sea of bodies. @ The line of carriages is back, along with Dave. They approach where you once laid down.@ Dave: So ya back are ya? And with so many bodies as well. ");
+    while (quest1 != false)
+    {
+        FactoryCreateChoices(3, 9,
+            "",
+            "",
+            0, nullptr, 0);
+        quest1 = false;
+    }
 }
 
 // --- ShowWave ---
@@ -165,6 +176,7 @@ void Story::ShowWave(int wave, int choiceId) const
                 std::cout << "You are faced with choices:\n";
                 for (size_t i = 0; i < entry.choicetext.size(); i++)
                     std::cout << i + 1 << ". " << entry.choicetext[i] << "\n";
+                //check quest number//
 
                 int pick;
                 std::cout << "Enter choice number: ";
