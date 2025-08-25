@@ -31,7 +31,7 @@ public:
 	// Attack Function
 	void attack(Entity* Entity, Inventory* PlayerInventory);
 
-	void FactoryDestructor();
+	void FactoryDestructor(Inventory* playerInv);
 
 	void placeTurret(Inventory* playerInventory, Entity* List[], int entityCount);
 

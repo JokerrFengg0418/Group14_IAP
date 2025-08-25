@@ -19,6 +19,19 @@
 
 using namespace std;
 
+// Map enemy type -> drop name (must match your DB exactly)
+static const char* lootNameFor(EnemyType t) {
+	switch (t) {
+	case EnemyType::Rat:       return "    Rat Tail    ";
+	case EnemyType::Hellhound: return "      Fang      ";
+	case EnemyType::Zombie:    return "  Rotten Flesh  ";
+	case EnemyType::Goblin:    return "     Dagger     ", "   Mana Cores   ";
+	case EnemyType::Bat:       return "    Bat Wing    ";
+	case EnemyType::Skeleton:  return "      Bone      ";
+	case EnemyType::Witch:     return "  Flying Broom  ";
+	default:                   return ""; // no drop
+	}
+}
 
 void Combat::FactoryCreateEntity(int CharacterType) {
 
@@ -30,7 +43,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List [i] = new Enemy(24, RandomTurf, EnemyType::Monster, 99, 99);
+				List [i] = new Enemy(24, RandomTurf, EnemyType::Rat, 3, 5);
 				return;
 
 			}
@@ -41,7 +54,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(0, RandomTurf, EnemyType::Hellhound, 99, 99);
+				List[i] = new Enemy(0, RandomTurf, EnemyType::Hellhound, 5, 6);
 				return;
 
 			}
@@ -52,7 +65,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(0 , RandomTurf, EnemyType::Zombie, 99, 99);
+				List[i] = new Enemy(0 , RandomTurf, EnemyType::Zombie, 10, 6);
 				return;
 
 			}
@@ -63,7 +76,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(0, RandomTurf, EnemyType::Goblin, 99, 99);
+				List[i] = new Enemy(0, RandomTurf, EnemyType::Goblin, 8, 7);
 				return;
 
 			}
@@ -74,7 +87,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(0, RandomTurf, EnemyType::Bat, 99, 99);
+				List[i] = new Enemy(0, RandomTurf, EnemyType::Bat, 4, 4);
 				return;
 
 			}
@@ -85,7 +98,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(0, RandomTurf, EnemyType::Skeleton, 99, 99);
+				List[i] = new Enemy(0, RandomTurf, EnemyType::Skeleton, 7, 5);
 				return;
 
 			}
@@ -96,7 +109,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(0, RandomTurf, EnemyType::Gargoyle, 99, 99);
+				List[i] = new Enemy(0, RandomTurf, EnemyType::Witch, 25, 15);
 				return;
 
 			}
@@ -107,7 +120,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(0, RandomTurf, EnemyType::Boss, 99, 99);
+				List[i] = new Enemy(0, RandomTurf, EnemyType::Boss, 125, 30);
 				return;
 
 			}
@@ -118,7 +131,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Player(0, 0, 100, 50);
+				List[i] = new Player(0, 0, 100, 1);
 				return;
 
 			}
@@ -209,12 +222,12 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 		if (!enemyRef) { std::cout << "[Combat] Bad enemy cast.\n"; std::cout << "=== Combat End ===\n"; return; }
 
 		EnemyType type = enemyRef->getType();
-		bool canMelee = (type == EnemyType::Monster || type == EnemyType::Hellhound ||
+		bool canMelee = (type == EnemyType::Rat || type == EnemyType::Hellhound ||
 			type == EnemyType::Zombie || type == EnemyType::Goblin ||
 			type == EnemyType::Bat || type == EnemyType::Skeleton ||
 			type == EnemyType::Boss);
 
-		bool canRange = (type == EnemyType::Gargoyle || type == EnemyType::Boss);
+		bool canRange = (type == EnemyType::Witch || type == EnemyType::Boss);
 
 		// Armor mitigation (flat; tweak as you like)
 		int mitigation = 0;
@@ -358,30 +371,22 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 
 int Combat::WinCondition()
 {
-	bool PlayerCheck = false;
-	bool EnemyCheck = false;
-	for (int i = 0; i < 20; i++)
-	{
-		if (List[i] == nullptr) continue;
-		if (List[i]->getEntityType() == 'E') {
-			EnemyCheck = true;
-		}
-		if (List[i]->getEntityType() == 'P') {
-			PlayerCheck = true;
-		}
-		if (PlayerCheck == true && EnemyCheck == true) {
-			return 0;
-		} 
+	bool hasPlayer = false;
+	bool hasEnemy = false;
 
-		
+	for (int i = 0; i < 20; ++i) {
+		if (!List[i]) continue;
+		char t = List[i]->getEntityType();
+		if (t == 'P') hasPlayer = true;
+		else if (t == 'E') hasEnemy = true;
+
+		if (hasPlayer && hasEnemy) {
+			return 0; // keep fighting
+		}
 	}
 
-	for (int i = 0; i < 20; i++) {
-		delete List[i];
-		List[i] = nullptr;
-	}
-	return 1;
-
+	// If we get here, either no player or no enemies
+	return 1; // combat over
 }
 
 void Combat::placeTurret(Inventory* playerInventory, Entity* List[], int entityCount)
@@ -396,7 +401,7 @@ void Combat::placeTurret(Inventory* playerInventory, Entity* List[], int entityC
 	int row, col;
 	std::cin >> row >> col;
 
-	if (row < 0 || row >= 40 || col < 0 || col >= 40) {
+	if (row < 0 || row >= 25 || col < 0 || col >= 25) {
 		std::cout << "Invalid position for turret!" << std::endl;
 		return;
 	}
@@ -420,33 +425,40 @@ void Combat::placeTurret(Inventory* playerInventory, Entity* List[], int entityC
 
 void Combat::TurnOrder(Inventory* PlayerInventory)
 {
-    firstTurn = 1;
+	firstTurn = 1;
 	while (WinCondition() == 0)
 	{
 		std::cout << "Turn Number: " << firstTurn << "\n";
 		board.drawBoard();
-		for (int i = 0; i < 20; i++)
+
+		for (int i = 0; i < 20; ++i)
 		{
-			if (List[i] != nullptr)
-			{
-				
-				List[i]->move(List);
-				attack(List[i], PlayerInventory);
-				FactoryDestructor();
-				
-			}
+			if (!List[i]) continue;
+
+			List[i]->move(List);
+			attack(List[i], PlayerInventory);
+			FactoryDestructor(PlayerInventory); // ok to prune *dead* things here
 		}
-		firstTurn++;
-		
+
+		++firstTurn;
 		Sleep(200);
 		system("cls");
-		
 	}
 
-	    std::cout << "Combat Ended \n";
-		return;
-}
+	// Final cleanup AFTER the loop ends
+	for (int i = 0; i < 20; ++i) {
+		if (List[i]) {
+			// If it's an enemy, also remove from board’s internal list.
+			if (List[i]->getEntityType() == 'E') {
+				board.removeEnemy(List[i]);
+			}
+			delete List[i];
+			List[i] = nullptr;
+		}
+	}
 
+	std::cout << "Combat Ended \n";
+}
 
 void Combat::startCombat(char CombatScenario) {
 
@@ -462,16 +474,10 @@ void Combat::startCombat(char CombatScenario) {
 		board.addEnemy(List[3]);
 		break;
 	}
-
-
 }
 
-void Combat::earnGold(int amount, Inventory* Inventory) {
-
-	int CurrentAmount = Inventory->getCurrency();
-	CurrentAmount + amount;
-	Inventory->setCurrency(CurrentAmount);
-
+void Combat::earnGold(int amount, Inventory* inv) {
+	inv->setCurrency(inv->getCurrency() + amount); 
 }
 
 int Combat::getGold(Inventory* PlayerInventory) const {
@@ -480,20 +486,25 @@ int Combat::getGold(Inventory* PlayerInventory) const {
 
 }
 
-void Combat::FactoryDestructor() {
+void Combat::FactoryDestructor(Inventory* playerInv) {
+	for (int i = 0; i < 20; ++i) {
+		if (!List[i]) continue;
+		if (List[i]->getHealth() > 0) continue;
 
-	for (int i = 0; i < 20; i++) {
-		if (List[i] != nullptr) {
-			if (List[i]->getHealth() <= 0) {
-				std::cout << "Enemy Health:" << List[i]->getHealth() << "\n";
-				board.removeEnemy(List[i]);
-				delete List[i];
-				List[i] = nullptr;
-				
-
-			
+		// If it's an enemy, award loot before removing
+		if (List[i]->getEntityType() == 'E') {
+			if (Enemy* e = dynamic_cast<Enemy*>(List[i])) {
+				const char* drop = lootNameFor(e->getType());
+				if (playerInv && drop && drop[0] != '\0') {
+					playerInv->setInventory(drop, 1); // stackable sellable items
+					std::cout << "You obtained: " << drop << "!\n";
+				}
+				board.removeEnemy(List[i]); // keep board in sync
 			}
 		}
-	}
 
+		delete List[i];
+		List[i] = nullptr;
+	}
 }
+
