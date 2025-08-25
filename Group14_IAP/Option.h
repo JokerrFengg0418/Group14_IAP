@@ -28,6 +28,4 @@ public:
     void openInventory();       // open and interact with inventory
     void closeInventory();      // close inventory
 
-    void closeDungeon();
-
 };

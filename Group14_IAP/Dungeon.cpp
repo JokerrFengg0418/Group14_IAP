@@ -1,7 +1,11 @@
 ﻿#include "Dungeon.h"
 #include <iostream>
 #include <conio.h>
+
 #ifdef _WIN32
+#define CLEAR_SCREEN() system("cls")
+#else
+#define CLEAR_SCREEN() (std::cout << "\x1b[2J\x1b[H")
 #endif
 
 // Persist the dungeon grid for the whole program run
@@ -12,7 +16,7 @@ static bool  sInited = false;
 Dungeon::Dungeon() {}
 
 void Dungeon::dungeonOption() {
-    bool DungeonOpen = true;
+    bool running = true;
 
     // One-time setup per program run (no disk save/load)
     if (!sInited) {
@@ -34,8 +38,9 @@ void Dungeon::dungeonOption() {
 
         sBoard.drawDungeon();
 
-        std::cout << "\n=== DUNGEON ===\n";
-        std::cout << "Move (W/A/S/D) or 'E' to Exit: ";
+        const int r = player->getRow();
+        const int c = player->getCol();
+        board.setCellContentDungeon(r, c, 'P');
 
         // restore underlying cell before moving
         sBoard.setCellContentDungeon(pr, pc, under);
