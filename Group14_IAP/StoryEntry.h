@@ -22,4 +22,8 @@ public:
     StoryEntry(int w, int choiceId, const std::vector<std::string>& c,
         const std::vector<std::string>& r, int q,
         const std::vector<int>& nextChoices);  // ✅ Default ONLY here
+
+    StoryEntry(int w, int choiceId, const std::vector<std::string>& c,
+        const std::vector<std::string>& r, int q,
+        const int* nextArr, size_t nextSize);
 };

@@ -57,9 +57,10 @@ void Logic::TurnOrder() {
 
 	while (GameEndState == false) {
 		
-		/*story.ShowWave(0,0);
-		story.ShowWave(1,0);
-		story.ShowWave(2,0);*/
+		story.ShowWave(0, 0);
+		story.ShowWave(1, 0);
+		story.ShowWave(2, 0);
+		story.ShowWave(3, 0);
 		GameOption.runMainMenu();
 		CombatHandler.startCombat('A');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
