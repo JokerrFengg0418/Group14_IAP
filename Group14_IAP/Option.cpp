@@ -55,8 +55,8 @@ void Option::runMainMenu() {
             break;
         }
         case 3: {
-            Dungeon dungeon; // Create a Dungeon object
-            dungeon.dungeonOption(); // Call its dungeonOption() function
+            Dungeon dungeon(&mainPlayer);   // pass a pointer to your player
+            dungeon.dungeonOption();
             waitForEnter();
             break;
         }

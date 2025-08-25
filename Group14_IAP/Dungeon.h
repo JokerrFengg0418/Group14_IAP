@@ -1,16 +1,14 @@
+#pragma once
 #include "Board.h"
 #include "Player.h"
-#include "Entity.h"
-#include <iostream>
 
 class Dungeon {
-
 public:
-    Dungeon();
+    explicit Dungeon(Player* p) : player(p) {}   // non-owning pointer
     void dungeonOption();
 
 private:
-    Board board;        // board should also be non-owning (no deletes)
-    Player* player;     // non-owning pointer
+    Board board;               // non-owning of entities
+    Player* player;            // non-owning; must be valid for the session
     bool dungeonInited = false;
 };
