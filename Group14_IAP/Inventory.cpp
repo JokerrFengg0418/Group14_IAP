@@ -204,6 +204,10 @@ Item* Inventory::FindItemByName(const std::string& itemName) {
 }
 
 void Inventory::DatabaseInitialisation() {
+
+
+    //ItemName, Description, Character type,Integer Value (Number of items) if its an armour or a weapon, its dmg value/hp value, Resale Value, Sale Value, 
+
     // ===== Weapons (DB 'W') =====
     FactoryCreateItem("   Broadsword   ", "A basic but reliable blade.", 'W', 50, 20, 30, 10, 'W');
     FactoryCreateItem("   SlingShots   ", "A simple ranged weapon.", 'W', 50, 20, 30, 10, 'W');
