@@ -32,11 +32,13 @@ void Dungeon::dungeonOption() {
 
     // One-time setup of the 5x5 dungeon grid (per program run)
     if (!sInited) {
+        // Fill with breakables
         for (int r = 0; r < 5; ++r)
             for (int c = 0; c < 5; ++c)
-                sBoard.setCellContentDungeon(r, c, 'X'); // fill with breakables
+                sBoard.setCellContentDungeon(r, c, 'X');
 
-        sBoard.setCellContentDungeon(4, 4, ' '); // start cell empty
+        // Start cell empty
+        sBoard.setCellContentDungeon(4, 4, ' ');
         sRubyCollected = false;
 
         // Pick ONE random X as the Ruby tile (not the start cell)
@@ -44,9 +46,10 @@ void Dungeon::dungeonOption() {
         candidates.reserve(25);
         for (int r = 0; r < 5; ++r) {
             for (int c = 0; c < 5; ++c) {
-                if (r == 4 && c == 4) continue;
-                if (sBoard.getCellContentDungeon(r, c) == 'X')
+                if (r == 4 && c == 4) continue; // skip start
+                if (sBoard.getCellContentDungeon(r, c) == 'X') {
                     candidates.emplace_back(r, c);
+                }
             }
         }
         if (!candidates.empty()) {
@@ -63,48 +66,39 @@ void Dungeon::dungeonOption() {
     player->setRow(4);
     player->setCol(4);
 
-    // Helper to render the frame (optionally with a status message)
-    auto renderFrame = [&](const char* msg = nullptr) {
+    bool running = true;
+    while (running) {
         CLEAR_SCREEN();
 
+        // --- draw with a temporary 'P' ---
         int pr = player->getRow(), pc = player->getCol();
         char under = sBoard.getCellContentDungeon(pr, pc);
         sBoard.setCellContentDungeon(pr, pc, 'P');
-
         sBoard.drawDungeon();
-
         std::cout << "\n=== DUNGEON ===\n";
-        if (msg) std::cout << msg << '\n';
         std::cout << "Move (W/A/S/D) or 'E' to Exit: ";
-
-        // restore underlying tile after drawing
-        sBoard.setCellContentDungeon(pr, pc, under);
-    };
-
-    bool running = true;
-    while (running) {
-        // Draw current state first
-        renderFrame();
+        sBoard.setCellContentDungeon(pr, pc, under); // restore
 
         // Move (return true to exit)
         if (player->moveDungeon()) {
+            running = false;
             break;
         }
 
-        // After moving: update tile the player stepped on
-        int pr = player->getRow();
-        int pc = player->getCol();
+        // After moving, if we stepped on an X, delete it
+        pr = player->getRow();
+        pc = player->getCol();
         if (sBoard.getCellContentDungeon(pr, pc) == 'X') {
             sBoard.setCellContentDungeon(pr, pc, ' ');
         }
 
-        // If this was the ruby tile, show message immediately this frame
+        // Check Ruby pickup (only once)
         if (!sRubyCollected && pr == sRubyRow && pc == sRubyCol) {
             sRubyCollected = true;
-            renderFrame("Collected red Ruby!");
-            _getch(); // pause so it doesn't disappear on next CLEAR_SCREEN()
+            std::cout << "\nCollected red Ruby!\n";
+            // (Optional) pause for a key:
+            _getch();
         }
     }
 }
-
 

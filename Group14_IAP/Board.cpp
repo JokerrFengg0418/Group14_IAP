@@ -9,15 +9,15 @@ static const char* const RESET = "\x1b[0m";
 Board::Board()
     : Player(nullptr), selectedEnemy(nullptr), enemyCount(0)
 {
-    // Init enemies array fully
+    static bool printed = false;
+    if (!printed) {
+        std::cout << "Map created\n";
+        printed = true;
+    }
     for (int i = 0; i < maxEnemies; ++i) enemies[i] = nullptr;
-
-    // Init board cells
     for (int r = 0; r < ROWS; ++r)
         for (int c = 0; c < COLS; ++c)
             board[r][c] = ' ';
-
-    std::cout << "Map created\n";
 }
 
 Board::~Board()
