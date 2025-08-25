@@ -531,6 +531,19 @@ void Combat::startCombat(char CombatScenario) {
 		FactoryCreateEntity(0);
 		board.addEnemy(List[3]);
 		break;
+	case 'T':
+		FactoryCreateEntity(8);
+		board.addPlayer(List[0]);
+		FactoryCreateEntity(0);
+		board.addEnemy(List[1]);
+		FactoryCreateEntity(0);
+		board.addEnemy(List[2]);
+		FactoryCreateEntity(0);
+		board.addEnemy(List[3]);
+		FactoryCreateEntity(0);
+		board.addEnemy(List[4]);
+		FactoryCreateEntity(0);
+		board.addEnemy(List[5]);
 	}
 
 

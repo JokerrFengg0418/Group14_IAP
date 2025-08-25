@@ -196,13 +196,14 @@ char Board::getCellContentDungeon(int row, int col) const
 
 void Board::drawDungeon()
 {
-    std::cout << '\n';
+    std::cout << ("+---------+ \n");
     for (int i = 0; i < 5; ++i) {
         for (int j = 0; j < 5; ++j) {
             std::cout << '|' << board[i][j];
         }
         std::cout << "|\n";
     }
+    std::cout << ("+---------+ \n");
 }
 
 // --- Accessor ---
