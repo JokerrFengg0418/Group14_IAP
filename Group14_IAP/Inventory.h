@@ -10,6 +10,7 @@ private:
 	char InventorySlots[4][5];
 	Item* inventory[25];
 	Item* ItemDatabase[50];
+	Item* ArmorDatabase[50];
 	Item* EquippedItem;
 	Item* EquippedWeapon = nullptr;
 	Item* EquippedArmor = nullptr;
