@@ -11,12 +11,14 @@ public:
 
 	// Overloaded Con
 	Turret(int r, int c, int dmg);
-	
+
 	// Destructor
 	~Turret();
 
+	// Turrets don't move, so this function is empty
+	void move(Entity* List[]) override {}
+
 	void Update(Entity* enemies[], int enemyCount);
+	bool turretSelect = false;
 
-	
 };
-

@@ -203,6 +203,7 @@ int Combat::calculateDistance(const Position& a, const Position& b) {
 }
 
 void Combat::attack(Entity* entity1, Inventory* playerInv) {
+
 	if (!entity1) return;
 	std::cout << "\n=== Combat Start ===\n";
 
@@ -366,6 +367,45 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 		}
 	}
 
+	if (entity1->getEntityType() == 'T') {
+
+		// Turret turn order
+		// Turret Dynamic Cast
+		Turret* turret = dynamic_cast<Turret*>(entity1);
+
+		// Enemy Dynamic Cast
+		
+
+		if (!turret) return;
+
+		// set attack range for turret
+		const int AttackRange = 10;
+		int turretRow = turret->getRow();
+		int turretCol = turret->getCol();
+
+
+		// loops through list to find enemies and attack if in range
+		for (int i = 0; i < 20; ++i) {
+			Entity* enemy = List[i];
+			Enemy* enemy1 = dynamic_cast<Enemy*>(enemy);
+			if (enemy1 != nullptr && enemy1->getEntityType() == 'E') {
+				int enemyRow = enemy->getRow();
+				int enemyCol = enemy->getCol();
+
+				// calculate distance
+				int distance = std::max(std::abs(turretRow - enemyRow), std::abs(turretCol - enemyCol));
+
+				if (distance <= AttackRange) {
+					enemy1->takeDamage(turret->getDamage());
+					std::cout << "Turret at (" << turretRow << ", " << turretCol
+						<< ") attacked enemy at (" << enemyRow << ", " << enemyCol
+						<< ") for " << turret->getDamage() << " damage.\n";
+					return;
+				}
+			}
+		}
+	}
+
 	std::cout << "=== Combat End ===\n";
 }
 
@@ -389,39 +429,89 @@ int Combat::WinCondition()
 	return 1; // combat over
 }
 
-void Combat::placeTurret(Inventory* playerInventory, Entity* List[], int entityCount)
+void Combat::placeTurret(Inventory* playerInventory, Entity* List[])
 {
-	Item* turretItem = playerInventory->DrawDatabase('W', "Turret");
+	turretSelect = true;
+	Item* turretItem = playerInventory->getInventory("    Turret    ");
 	if (!turretItem) {
 		std::cout << "You don't have a turret to place!" << std::endl;
 		return;
 	}
 
-	std::cout << "Enter row and column to place the turret: ";
-	int row, col;
-	std::cin >> row >> col;
+	// current position
+	int row = 0;
+	int col = 0;
+
+	// target position starts as current
+	int newRow = row;
+	int newCol = col;
+
+	const int ROWS = 25;
+	const int COLS = 25;
+
+	while (turretSelect == true) {
+		const char input = _getch();
+		switch (input) {
+		case 'w': case 'W':
+			newRow = newRow - 1;
+			std::cout << "Move Up\n";
+			break;
+		case 's': case 'S':
+			newRow = newRow + 1;
+			std::cout << "Move Down\n";
+			break;
+		case 'a': case 'A':
+			newCol = newCol - 1;
+			std::cout << "Move Left\n";
+			break;
+		case 'd': case 'D':
+			newCol = newCol + 1;
+			std::cout << "Move Right\n";
+			break;
+		case'\r':
+			turretSelect = false;
+			std::cout << "Placing turret at (" << newRow << ", " << newCol << ")\n";
+			break;
+		default:
+			std::cout << "invalid input\n";
+			return; // don't move on invalid input
+		}
+		// bounds check (both axes)
+		if (newRow < 0) { newRow + 1; }
+		if (newRow >= ROWS) { newRow - 1; }
+		if (newCol < 0) { newCol + 1; }
+		if (newCol >= COLS) { newCol - 1; }
 
 	if (row < 0 || row >= 25 || col < 0 || col >= 25) {
 		std::cout << "Invalid position for turret!" << std::endl;
 		return;
 	}
 
-	for (int i = 0; i < entityCount;) {
-		if (List[i] != nullptr && List[i]->getRow() == row && List[i]->getCol() == col) {
+	Turret* newTurret = new Turret(newRow, newCol, turretItem->GetItemValue('V'));
+	board.addTurret(newTurret);
+	std::cout << "Turret placed at (" << newRow << ", " << newCol << ")!" << std::endl;
+
+
+	for (int i = 0; i < 20; i++) {
+		if (List[i] != nullptr && List[i]->getRow() == newRow && List[i]->getCol() == newCol) {
 			std::cout << "Cannot place turret here, position is occupied!" << std::endl;
 			return;
 		}
 	}
 
-	if (entityCount < 20) {
-		List[entityCount] = new Turret(row, col, turretItem->GetItemValue('V'));
-		playerInventory->RemoveItemFromInventory("    Turret    ", 1);
-		std::cout << "Turret placed at (" << row << ", " << col << ")!" << std::endl;
+	for (int i = 0; i < 20; i++) {
+		if (List[i] == nullptr) {
+			List[i] = new Turret(newRow, newCol, turretItem->GetItemValue('V'));
+			playerInventory->RemoveItemFromInventory("    Turret    ", 1);
+			std::cout << "Turret placed at (" << newRow << ", " << newCol << ")!" << std::endl;
+
+			return;
+		}
 	}
-	else {
-		std::cout << "Cannot place turret, maximum entities reached!" << std::endl;
-	}
+
+
 }
+
 
 void Combat::TurnOrder(Inventory* PlayerInventory)
 {
@@ -473,6 +563,19 @@ void Combat::startCombat(char CombatScenario) {
 		FactoryCreateEntity(0);
 		board.addEnemy(List[3]);
 		break;
+	case 'T':
+		FactoryCreateEntity(8);
+		board.addPlayer(List[0]);
+		FactoryCreateEntity(0);
+		board.addEnemy(List[1]);
+		FactoryCreateEntity(0);
+		board.addEnemy(List[2]);
+		FactoryCreateEntity(0);
+		board.addEnemy(List[3]);
+		FactoryCreateEntity(0);
+		board.addEnemy(List[4]);
+		FactoryCreateEntity(0);
+		board.addEnemy(List[5]);
 	}
 }
 

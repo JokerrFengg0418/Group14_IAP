@@ -2,59 +2,56 @@
 #include "Combat.h"
 #include <iostream>
 #include <cmath>
+#include <algorithm>
 
-Turret::Turret() {
+Turret::Turret() : Entity(0, 0)
+{
+	setHealth(50);
+	setDamage(0);
+	setEntityType('T');
 	std::cout << "Turret Created\n";
 }
 
-Turret::Turret(int r, int c, int dmg) : Entity(r, c) {
+Turret::Turret(int r, int c, int dmg) : Entity(r, c)
+{
+	setRow(r);
+	setCol(c);
+	setHealth(50);
 	setDamage(dmg);
+	setEntityType('T');
 }
 
-Turret::~Turret() {
+Turret::~Turret()
+{
 	std::cout << "Turret Destroyed\n";
 }
 
-void Turret::Update(Entity* enemies[], int enemyCount) {
+void Turret::Update(Entity* enemies[], int enemyCount)
+{
 	const int AttackRange = 10;
 	int turretRow = getRow();
 	int turretCol = getCol();
 
-	for (int i = 0; i < enemyCount < i++;) {
+	for (int i = 0; i < 20; ++i)
+	{
 		Entity* enemy = enemies[i];
-		if (enemy && enemy->isAlive()) {
+		if (enemy != nullptr && enemy->getEntityType() == 'E')
+		{
+
+
 			int enemyRow = enemy->getRow();
 			int enemyCol = enemy->getCol();
 
-			// Check if enemy is same column as turret
-			if (turretCol == enemyCol) {
-				int distance = std::abs(turretRow - enemyRow);
-				// Check if enemy is within attack range
-				if (distance <= AttackRange) {
-					enemy->takeDamage(getDamage());
-					std::cout << "Turret at (" << turretRow << ", " << turretCol
-						<< ") attacked enemy at (" << enemyRow << ", " << enemyCol
-						<< ") for " << getDamage() << " damage.\n";
-					return;
-				}
-			}
-			else if (turretRow = enemyRow) {
-				int distance = std::abs(turretCol - enemyCol);
-				// Check if enemy is within attack range
-				if (distance <= AttackRange) {
-					enemy->takeDamage(getDamage());
-					std::cout << "Turret at (" << turretRow << ", " << turretCol
-						<< ") attacked enemy at (" << enemyRow << ", " << enemyCol
-						<< ") for " << getDamage() << " damage.\n";
-					return;
-				}
+			int distance = std::max(std::abs(turretRow - enemyRow), std::abs(turretCol - enemyCol));
+
+			if (distance <= AttackRange)
+			{
+				enemy->takeDamage(getDamage());
+				std::cout << "Turret at (" << turretRow << ", " << turretCol
+					<< ") attacked enemy at (" << enemyRow << ", " << enemyCol
+					<< ") for " << getDamage() << " damage.\n";
+				return;
 			}
 		}
 	}
 }
-
-// how to check if turret and entity is within 10 range 
-// of each other 
-// 1. Loop to check if enemy is alive
-// 2. Loop to check if enemy and turret = same Col & Row
-
