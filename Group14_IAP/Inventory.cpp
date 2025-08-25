@@ -52,7 +52,7 @@ Inventory::~Inventory()
 
 //Drawing Inventory (UI Save Me)
 void Inventory::DrawInventory() const {
-    std::cout << "+--------------------------------------------------------------------------+\n";
+    std::cout << "+------------------------------------------------------------------------------------+\n";
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 5; ++j) {
             int index = i * 5 + j;
@@ -60,12 +60,12 @@ void Inventory::DrawInventory() const {
                 std::cout << '|' << inventory[index]->GetItemWord('N');
             }
             else {
-                std::cout << '|' << "              ";
+                std::cout << '|' << "                ";
             }
         }
         std::cout << '|' << std::endl;
     }
-    std::cout << "+--------------------------------------------------------------------------+\n";
+    std::cout << "+------------------------------------------------------------------------------------+\n";
 }
 
 //Draws Specifications of Inventory Item
@@ -228,7 +228,6 @@ void Inventory::DatabaseInitialisation() {
     FactoryCreateItem("    Rat Tail    ", "A tail from a rat (Sellable).", 'M', 1, 3, 0, 0, 'M');
     FactoryCreateItem("      Fang      ", "A fang from a hellhound (Sellable/Quest Item).", 'M', 1, 20, 0, 0, 'M');
     FactoryCreateItem("  Rotten Flesh  ", "A rotten flesh from a zombie (Sellable).", 'M', 1, 5, 0, 0, 'M');
-    FactoryCreateItem("     Dagger     ", "A dagger from a goblin (Sellable).", 'M', 1, 10, 0, 0, 'M');
     FactoryCreateItem("   Mana Cores   ", "A mana core from a goblin (Sellable/Quest Item).", 'M', 1, 15, 0, 0, 'M');
     FactoryCreateItem("    Bat Wing    ", "A wing from a bat (Sellable).", 'M', 1, 7, 0, 0, 'M');
     FactoryCreateItem("      Bone      ", "A bone from a skeleton (Sellable).", 'M', 1, 8, 0, 0, 'M');

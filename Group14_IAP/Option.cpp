@@ -69,7 +69,7 @@ void Option::runMainMenu() {
             if (PlayerInventoryPointer) {
                 PlayerInventoryPointer->setCurrency(
                     PlayerInventoryPointer->getCurrency() + 50000);
-                PlayerInventoryPointer->setInventory("  Broadsword  ", 1);
+                PlayerInventoryPointer->setInventory("   Broadsword   ", 1);
                 cout << "[Debug] Added 50,000 gold and a Broadsword to your inventory.\n";
             }
             else {
@@ -89,7 +89,7 @@ void Option::openInventory() {
     inventoryOpen = true;
 
     while (inventoryOpen) {
-        std::cout << "\n================================ INVENTORY ================================= \n";
+        std::cout << "\n===================================== INVENTORY ====================================== \n";
         PlayerInventory.DrawInventory();
         std::cout << "Enter the name of the item to equip, or 'E' to close: ";
 
