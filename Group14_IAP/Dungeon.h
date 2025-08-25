@@ -6,6 +6,7 @@
 class Dungeon {
 
 public:
+    Dungeon();
     void dungeonOption();
 private:
     Board board; // The Dungeon class owns the Board object

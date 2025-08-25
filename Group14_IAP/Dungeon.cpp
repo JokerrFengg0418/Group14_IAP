@@ -1,19 +1,23 @@
-﻿
-#include "Dungeon.h"
+﻿#include "Dungeon.h"
 #include <iostream>
 #include <conio.h>
 #ifdef _WIN32
 #endif
 
+// Persist the dungeon grid for the whole program run
+static Board sBoard;
+static bool  sInited = false;
+
+// Do NOT re-initialize here; constructor stays empty
+Dungeon::Dungeon() {}
+
 void Dungeon::dungeonOption() {
     bool DungeonOpen = true;
 
-    // Try to load; if no save exists yet, init fresh
-    if (!dungeonInited) {
-        if (!board.load("dungeon.dat")) {
-            board.initializeDungeonXGrid();
-        }
-        dungeonInited = true;
+    // One-time setup per program run (no disk save/load)
+    if (!sInited) {
+        sBoard.initializeDungeonXGrid();  // fill with 'X', blank at (4,4)
+        sInited = true;
     }
 
     // spawn player (bottom-right)
@@ -25,32 +29,26 @@ void Dungeon::dungeonOption() {
 
         // draw with temporary 'P'
         int pr = player.getRow(), pc = player.getCol();
-        char under = board.getCellContentDungeon(pr, pc);
-        board.setCellContentDungeon(pr, pc, 'P');
+        char under = sBoard.getCellContentDungeon(pr, pc);
+        sBoard.setCellContentDungeon(pr, pc, 'P');
 
-        board.drawDungeon();
+        sBoard.drawDungeon();
 
         std::cout << "\n=== DUNGEON ===\n";
         std::cout << "Move (W/A/S/D) or 'E' to Exit: ";
 
         // restore underlying cell before moving
-        board.setCellContentDungeon(pr, pc, under);
+        sBoard.setCellContentDungeon(pr, pc, under);
 
+        // handle input/move; E exits dungeon (no saving)
         if (player.moveDungeon()) {
-            // Save board state and leave
-            board.save("dungeon.dat");
             break;
         }
 
         // delete X when stepped on it
         pr = player.getRow(); pc = player.getCol();
-        if (board.getCellContentDungeon(pr, pc) == 'X') {
-            board.setCellContentDungeon(pr, pc, ' ');
+        if (sBoard.getCellContentDungeon(pr, pc) == 'X') {
+            sBoard.setCellContentDungeon(pr, pc, ' ');
         }
     }
-
-    // Also save when loop ends normally
-    board.save("dungeon.dat");
 }
-
-

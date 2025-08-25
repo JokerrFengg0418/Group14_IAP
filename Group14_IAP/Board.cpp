@@ -175,8 +175,7 @@ bool Board::load(const char* path) {
 	return in.good();
 }
 
-
-char Board::GetBoard() const
+char Board::GetBoard(int row, int col) const
 {
     if (!inBounds(row, col)) return ' ';
     return board[row][col];
