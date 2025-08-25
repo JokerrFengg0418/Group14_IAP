@@ -37,6 +37,8 @@ void Turret::Update(Entity* enemies[], int enemyCount)
 		Entity* enemy = enemies[i];
 		if (enemy != nullptr && enemy->getEntityType() == 'E')
 		{
+
+
 			int enemyRow = enemy->getRow();
 			int enemyCol = enemy->getCol();
 

@@ -1,4 +1,4 @@
-#define NOMINMAX
+﻿#define NOMINMAX
 #include "Combat.h"
 #include "Entity.h"
 #include "Enemy.h"
@@ -190,6 +190,7 @@ int Combat::calculateDistance(const Position& a, const Position& b) {
 }
 
 void Combat::attack(Entity* entity1, Inventory* playerInv) {
+
 	if (!entity1) return;
 	std::cout << "\n=== Combat Start ===\n";
 
@@ -353,6 +354,45 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 		}
 	}
 
+	if (entity1->getEntityType() == 'T') {
+
+		// Turret turn order
+		// Turret Dynamic Cast
+		Turret* turret = dynamic_cast<Turret*>(entity1);
+
+		// Enemy Dynamic Cast
+		
+
+		if (!turret) return;
+
+		// set attack range for turret
+		const int AttackRange = 10;
+		int turretRow = turret->getRow();
+		int turretCol = turret->getCol();
+
+
+		// loops through list to find enemies and attack if in range
+		for (int i = 0; i < 20; ++i) {
+			Entity* enemy = List[i];
+			Enemy* enemy1 = dynamic_cast<Enemy*>(enemy);
+			if (enemy1 != nullptr && enemy1->getEntityType() == 'E') {
+				int enemyRow = enemy->getRow();
+				int enemyCol = enemy->getCol();
+
+				// calculate distance
+				int distance = std::max(std::abs(turretRow - enemyRow), std::abs(turretCol - enemyCol));
+
+				if (distance <= AttackRange) {
+					enemy1->takeDamage(turret->getDamage());
+					std::cout << "Turret at (" << turretRow << ", " << turretCol
+						<< ") attacked enemy at (" << enemyRow << ", " << enemyCol
+						<< ") for " << turret->getDamage() << " damage.\n";
+					return;
+				}
+			}
+		}
+	}
+
 	std::cout << "=== Combat End ===\n";
 }
 
@@ -401,8 +441,8 @@ void Combat::placeTurret(Inventory* playerInventory, Entity* List[])
 	int newRow = row;
 	int newCol = col;
 
-	const int ROWS = 40;  // adjust to your board size
-	const int COLS = 40;
+	const int ROWS = 25;
+	const int COLS = 25;
 
 	while (turretSelect == true) {
 		const char input = _getch();
