@@ -29,6 +29,11 @@ void Board::selectEnemy(Entity* e) {
     selectedEnemy = e;
 }
 
+void Board::addTurret(Entity* t)
+{
+    this->Turret = Turret;
+}
+
 void Board::addPlayer(Entity* p)
 {
     Player = p; // non-owning
@@ -77,18 +82,54 @@ void Board::printBoardCellColor(int row, int col)
     std::cout << "+--------------------------------------------------+\n";
 }
 
-void Board::drawBoard()
+
+void Board::selectTurretHighlight(int row, int col)
+{
+    system("cls");
+
+    board[row][col] = 'T';
+    std::cout << "+-------------------------------------------------------------------------------+ \n";
+
+    for (int i = 0; i < 25; i++) {
+        for (int j = 0; j < 25; j++) {
+            std::cout << "|";
+            if (i == row && j == col) {
+                std::cout << YELLOW << board[row][col] << RESET;
+            }
+            else {
+                std::cout << board[i][j];
+            }
+        }
+        std::cout << '|';
+        std::cout << '\n';
+    }
+    std::cout << "+-------------------------------------------------------------------------------+ \n";
+    board[row][col] = ' ';
+}
+
+
+
+void Board::drawBoard(Entity* List[])
 {
     // Clear board tiles
     for (int r = 0; r < ROWS; ++r)
         for (int c = 0; c < COLS; ++c)
             board[r][c] = ' ';
 
-    // Place player
+    // Place entities on the board using their coordinates
     if (Player) {
-        int pr = Player->getRow();
-        int pc = Player->getCol();
-        if (inBounds(pr, pc)) board[pr][pc] = 'P';
+        board[Player->getRow()][Player->getCol()] = 'P'; // P = Player
+    }
+
+    for (int i = 0; i < 20; i++) {
+
+        if (List[i] != nullptr && List[i]->getEntityType() == 'T') {
+            Turret = List[i];
+        }
+    }
+
+    if (Turret) {
+        board[Turret->getRow()][Turret->getCol()] = 'T'; // T = Turret
     }
 
     // Place enemies
@@ -103,21 +144,33 @@ void Board::drawBoard()
         board[r][c] = static_cast<Enemy*>(e)->getTypeName();
     }
 
-    // Render
-    std::string out;
-    out.reserve((ROWS + 2) * (COLS * 2 + 4));
-    out += "+--------------------------------------------------+\n";
-    for (int i = 0; i < ROWS; ++i) {
-        for (int j = 0; j < COLS; ++j) {
-            out.push_back('|');
-            out.push_back(board[i][j]);
+    for (int i = 0; i < 20; i++) {
+        // If the slot is not empty, get its position and character type
+        if (List[i] != nullptr) {
+            int row = List[i]->getRow();
+            int col = List[i]->getCol();
+
+            char type = List[i]->getEntityType();
         }
-        out.push_back('|');
-        out.push_back('\n');
     }
-    out += "+--------------------------------------------------+\n";
-    std::cout << out;
+
+    std::string Template;
+
+    // Print out Board
+    Template.append("+-------------------------------------------------------------------+ \n");
+
+    for (int i = 0; i < 25; i++) {
+        for (int j = 0; j < 25; j++) {
+            Template.append("|");
+            Template.append(1, board[i][j]);
+        }
+        Template.append(1, '|');
+        Template.append(1, '\n');
+    }
+    Template.append("+--------------------------------------------------------------------+ \n");
+    std::cout << Template;
 }
+
 
 // --- Dungeon 5x5 helpers over the same board region (0..4,0..4) ---
 

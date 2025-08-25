@@ -14,7 +14,7 @@ public:
     char GetBoard(int row, int col) const;
 
     // Main board (25x25)
-    void drawBoard();
+    void drawBoard(Entity* List[]);
 
     // Dungeon (5x5) helpers + render
     void initializeDungeonXGrid();                 // clears 5x5 area
@@ -27,12 +27,15 @@ public:
     bool load(const char* path);
 
     // Entity registration (non-owning)
+	void addTurret(Entity* t);
     void addPlayer(Entity* p);
     void addEnemy(Entity* e);
     void removeEnemy(Entity* e);
+    Entity* Turret;
 
     // Visual helper to highlight a cell
     void printBoardCellColor(int row, int col);
+	void selectTurretHighlight(int row, int col);
 
     // Clears only the board tiles and references (non-owning)
     void clearBoard();

@@ -371,9 +371,9 @@ int Combat::WinCondition()
 		}
 		if (PlayerCheck == true && EnemyCheck == true) {
 			return 0;
-		} 
+		}
 
-		
+
 	}
 
 	for (int i = 0; i < 20; i++) {
@@ -384,68 +384,138 @@ int Combat::WinCondition()
 
 }
 
-void Combat::placeTurret(Inventory* playerInventory, Entity* List[], int entityCount)
+void Combat::placeTurret(Inventory* playerInventory, Entity* List[])
 {
-	Item* turretItem = playerInventory->DrawDatabase('W', "Turret");
+	turretSelect = true;
+	Item* turretItem = playerInventory->getInventory("    Turret    ");
 	if (!turretItem) {
 		std::cout << "You don't have a turret to place!" << std::endl;
 		return;
 	}
 
-	std::cout << "Enter row and column to place the turret: ";
-	int row, col;
-	std::cin >> row >> col;
+	// current position
+	int row = 0;
+	int col = 0;
 
-	if (row < 0 || row >= 40 || col < 0 || col >= 40) {
-		std::cout << "Invalid position for turret!" << std::endl;
-		return;
+	// target position starts as current
+	int newRow = row;
+	int newCol = col;
+
+	const int ROWS = 40;  // adjust to your board size
+	const int COLS = 40;
+
+	while (turretSelect == true) {
+		const char input = _getch();
+		switch (input) {
+		case 'w': case 'W':
+			newRow = newRow - 1;
+			std::cout << "Move Up\n";
+			break;
+		case 's': case 'S':
+			newRow = newRow + 1;
+			std::cout << "Move Down\n";
+			break;
+		case 'a': case 'A':
+			newCol = newCol - 1;
+			std::cout << "Move Left\n";
+			break;
+		case 'd': case 'D':
+			newCol = newCol + 1;
+			std::cout << "Move Right\n";
+			break;
+		case'\r':
+			turretSelect = false;
+			std::cout << "Placing turret at (" << newRow << ", " << newCol << ")\n";
+			break;
+		default:
+			std::cout << "invalid input\n";
+			return; // don't move on invalid input
+		}
+		// bounds check (both axes)
+		if (newRow < 0) { newRow + 1; }
+		if (newRow >= ROWS) { newRow - 1; }
+		if (newCol < 0) { newCol + 1; }
+		if (newCol >= COLS) { newCol - 1; }
+
+		board.selectTurretHighlight(newRow, newCol);
 	}
 
-	for (int i = 0; i < entityCount;) {
-		if (List[i] != nullptr && List[i]->getRow() == row && List[i]->getCol() == col) {
+	Turret* newTurret = new Turret(newRow, newCol, turretItem->GetItemValue('V'));
+	board.addTurret(newTurret);
+	std::cout << "Turret placed at (" << newRow << ", " << newCol << ")!" << std::endl;
+
+
+	for (int i = 0; i < 20; i++) {
+		if (List[i] != nullptr && List[i]->getRow() == newRow && List[i]->getCol() == newCol) {
 			std::cout << "Cannot place turret here, position is occupied!" << std::endl;
 			return;
 		}
 	}
 
-	if (entityCount < 20) {
-		List[entityCount] = new Turret(row, col, turretItem->GetItemValue('V'));
-		playerInventory->RemoveItemFromInventory("    Turret    ", 1);
-		std::cout << "Turret placed at (" << row << ", " << col << ")!" << std::endl;
+	for (int i = 0; i < 20; i++) {
+		if (List[i] == nullptr) {
+			List[i] = new Turret(newRow, newCol, turretItem->GetItemValue('V'));
+			playerInventory->RemoveItemFromInventory("    Turret    ", 1);
+			std::cout << "Turret placed at (" << newRow << ", " << newCol << ")!" << std::endl;
+
+			return;
+		}
 	}
-	else {
-		std::cout << "Cannot place turret, maximum entities reached!" << std::endl;
-	}
+
+
 }
+
 
 void Combat::TurnOrder(Inventory* PlayerInventory)
 {
-    firstTurn = 1;
+	firstTurn = 1;
+	board.drawBoard(List);
+	placeTurret(PlayerInventory, List);
+
+	Entity* turret = nullptr;
+	for (int i = 0; i < 20; ++i) {
+		if (List[i] == nullptr) { continue; }
+		if (List[i]->getEntityType() == 'T') {
+			turret = List[i];
+			break;
+		}
+	}
+
+	Sleep(500);
+	system("cls");
+
 	while (WinCondition() == 0)
 	{
 		std::cout << "Turn Number: " << firstTurn << "\n";
-		board.drawBoard();
+		board.drawBoard(List);
 		for (int i = 0; i < 20; i++)
 		{
 			if (List[i] != nullptr)
 			{
-				
-				List[i]->move(List);
-				attack(List[i], PlayerInventory);
-				FactoryDestructor();
-				
+				if (List[i]->getEntityType() == 'T') {
+					// turret logic
+					Turret* turret = dynamic_cast<Turret*>(List[i]);
+					turret->Update(List, 20);
+				}
+				else {
+					List[i]->move(List);
+					attack(List[i], PlayerInventory);
+				}
+
 			}
+
 		}
 		firstTurn++;
-		
+
 		Sleep(200);
 		system("cls");
-		
+
 	}
 
-	    std::cout << "Combat Ended \n";
-		return;
+	std::cout << "Combat Ended \n";
+	return;
 }
+
 
 
 void Combat::startCombat(char CombatScenario) {

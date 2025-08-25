@@ -33,7 +33,8 @@ public:
 
 	void FactoryDestructor();
 
-	void placeTurret(Inventory* playerInventory, Entity* List[], int entityCount);
+	void placeTurret(Inventory* playerInventory, Entity* List[]);
+	bool turretSelect = false;
 
 	// Reward
 	void earnGold(int amount, Inventory* Inventory);
