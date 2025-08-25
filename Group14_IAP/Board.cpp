@@ -1,38 +1,28 @@
 ﻿#include <iostream>
-#include <iomanip>
 #include "Board.h"
 #include "Enemy.h"
-#include <fstream>
 
-// ANSI color (works on Win10+ if VT enabled)
+// ANSI colors
 static const char* const YELLOW = "\x1b[33m";
 static const char* const RESET = "\x1b[0m";
 
-static constexpr int ROWS = 25;
-static constexpr int COLS = 25;
-
 Board::Board()
-    : Player(nullptr),
-    enemyCount(0),
-    selectedEnemy(nullptr)
+    : Player(nullptr), selectedEnemy(nullptr), enemyCount(0)
 {
-    // Init enemy slots
-    for (int i = 0; i < maxEnemies; ++i) {
-        enemies[i] = nullptr;
-    }
+    // Init enemies array fully
+    for (int i = 0; i < maxEnemies; ++i) enemies[i] = nullptr;
+
     // Init board cells
-    for (int r = 0; r < ROWS; ++r) {
-        for (int c = 0; c < COLS; ++c) {
+    for (int r = 0; r < ROWS; ++r)
+        for (int c = 0; c < COLS; ++c)
             board[r][c] = ' ';
-        }
-    }
+
     std::cout << "Map created\n";
 }
 
 Board::~Board()
 {
-    // Non-owning: do NOT delete Player or enemies here
-    // If Board is the owner in your design, re-enable deletes carefully.
+    // NON-OWNING: do not delete Player or enemies here
 }
 
 void Board::selectEnemy(Entity* e) {
@@ -41,21 +31,17 @@ void Board::selectEnemy(Entity* e) {
 
 void Board::addPlayer(Entity* p)
 {
-    Player = p;
+    Player = p; // non-owning
 }
 
 void Board::addEnemy(Entity* e)
 {
     if (enemyCount < maxEnemies) {
-        enemies[enemyCount++] = e;
+        enemies[enemyCount++] = e; // non-owning
     }
     else {
         std::cout << "Max enemies reached.\n";
     }
-}
-
-static inline bool inBounds(int r, int c) {
-    return (r >= 0 && r < ROWS && c >= 0 && c < COLS);
 }
 
 void Board::printBoardCellColor(int row, int col)
@@ -64,66 +50,62 @@ void Board::printBoardCellColor(int row, int col)
 
     bool isSelected = false;
     for (int k = 0; k < enemyCount; ++k) {
-        if (enemies[k] &&
-            enemies[k]->getRow() == row &&
-            enemies[k]->getCol() == col) {
+        if (!enemies[k]) continue;
+        if (enemies[k]->getRow() == row && enemies[k]->getCol() == col) {
             isSelected = true;
             break;
         }
     }
 
-    if (isSelected) {
-        system("cls"); // Windows-only. Remove if not desired.
-        std::cout << "+--------------------------------------------------+\n";
-        for (int i = 0; i < ROWS; ++i) {
-            for (int j = 0; j < COLS; ++j) {
-                std::cout << '|';
-                if (i == row && j == col) {
-                    std::cout << YELLOW << board[i][j] << RESET;
-                }
-                else {
-                    std::cout << board[i][j];
-                }
-            }
-            std::cout << "|\n";
+#ifdef _WIN32
+    system("cls");
+#else
+    std::cout << "\x1b[2J\x1b[H";
+#endif
+
+    std::cout << "+--------------------------------------------------+\n";
+    for (int i = 0; i < ROWS; ++i) {
+        for (int j = 0; j < COLS; ++j) {
+            std::cout << '|';
+            if (isSelected && i == row && j == col)
+                std::cout << YELLOW << board[i][j] << RESET;
+            else
+                std::cout << board[i][j];
         }
-        std::cout << "+--------------------------------------------------+\n";
+        std::cout << "|\n";
     }
-    else {
-        std::cout << board[row][col];
-    }
+    std::cout << "+--------------------------------------------------+\n";
 }
 
 void Board::drawBoard()
 {
-    // Clear board
-    for (int r = 0; r < ROWS; ++r) {
-        for (int c = 0; c < COLS; ++c) {
+    // Clear board tiles
+    for (int r = 0; r < ROWS; ++r)
+        for (int c = 0; c < COLS; ++c)
             board[r][c] = ' ';
-        }
-    }
 
-    // Place Player
+    // Place player
     if (Player) {
-        int pr = Player->getRow(), pc = Player->getCol();
+        int pr = Player->getRow();
+        int pc = Player->getCol();
         if (inBounds(pr, pc)) board[pr][pc] = 'P';
     }
 
-    // Place Enemies
+    // Place enemies
     for (int i = 0; i < enemyCount; ++i) {
-        if (!enemies[i]) continue;
-        int r = enemies[i]->getRow();
-        int c = enemies[i]->getCol();
+        Entity* e = enemies[i];
+        if (!e) continue;
+        int r = e->getRow();
+        int c = e->getCol();
         if (!inBounds(r, c)) continue;
 
-        // getTypeName() must return a single char marker for this to work.
-        board[r][c] = static_cast<Enemy*>(enemies[i])->getTypeName();
+        // getTypeName() must return a single-character code for this to print correctly
+        board[r][c] = static_cast<Enemy*>(e)->getTypeName();
     }
 
-    // Render once into a string (less flicker)
+    // Render
     std::string out;
     out.reserve((ROWS + 2) * (COLS * 2 + 4));
-
     out += "+--------------------------------------------------+\n";
     for (int i = 0; i < ROWS; ++i) {
         for (int j = 0; j < COLS; ++j) {
@@ -134,78 +116,70 @@ void Board::drawBoard()
         out.push_back('\n');
     }
     out += "+--------------------------------------------------+\n";
-
     std::cout << out;
 }
 
-void Board::initializeDungeonXGrid() {
-	for (int i = 0; i < 5; ++i)
-		for (int j = 0; j < 5; ++j)
-			board[i][j] = 'X';           // fill with X
+// --- Dungeon 5x5 helpers over the same board region (0..4,0..4) ---
 
-	board[4][4] = ' '; // spawn cell blank (bottom-right)
+void Board::initializeDungeonXGrid()
+{
+    for (int r = 0; r < 5; ++r)
+        for (int c = 0; c < 5; ++c)
+            board[r][c] = ' ';
 }
 
-void Board::setCellContentDungeon(int r, int c, char ch) { board[r][c] = ch; }
-char Board::getCellContentDungeon(int r, int c) const { return board[r][c]; }
-
-void Board::drawDungeon() {
-	std::cout << "+---------+ \n";
-	for (int i = 0; i < 5; ++i) {
-		for (int j = 0; j < 5; ++j) {
-			char cell = board[i][j];
-			std::cout << '|' << (cell ? cell : ' ');
-		}
-		std::cout << "|\n";
-	}
-	std::cout << "+---------+ \n";
+void Board::setCellContentDungeon(int row, int col, char content)
+{
+    if (row >= 0 && row < 5 && col >= 0 && col < 5)
+        board[row][col] = content;
 }
 
-bool Board::save(const char* path) const {
-	std::ofstream out(path, std::ios::binary);
-	if (!out) return false;
-	out.write(reinterpret_cast<const char*>(board), sizeof(board));
-	return true;
+char Board::getCellContentDungeon(int row, int col) const
+{
+    if (row >= 0 && row < 5 && col >= 0 && col < 5)
+        return board[row][col];
+    return ' ';
 }
 
-bool Board::load(const char* path) {
-	std::ifstream in(path, std::ios::binary);
-	if (!in) return false;
-	in.read(reinterpret_cast<char*>(board), sizeof(board));
-	return in.good();
+void Board::drawDungeon()
+{
+    std::cout << '\n';
+    for (int i = 0; i < 5; ++i) {
+        for (int j = 0; j < 5; ++j) {
+            std::cout << '|' << board[i][j];
+        }
+        std::cout << "|\n";
+    }
 }
 
+// --- Accessor ---
 
-char Board::GetBoard() const
+char Board::GetBoard(int row, int col) const
 {
     if (!inBounds(row, col)) return ' ';
     return board[row][col];
 }
 
+// --- Clear (non-owning): only tiles and references ---
+
 void Board::clearBoard()
 {
-    // Clear board cells
-    for (int r = 0; r < ROWS; ++r) {
-        for (int c = 0; c < COLS; ++c) {
+    for (int r = 0; r < ROWS; ++r)
+        for (int c = 0; c < COLS; ++c)
             board[r][c] = ' ';
-        }
-    }
 
-    // Non-owning: just drop references
     Player = nullptr;
     selectedEnemy = nullptr;
-
-    for (int i = 0; i < enemyCount; ++i) {
-        enemies[i] = nullptr;
-    }
+    for (int i = 0; i < enemyCount; ++i) enemies[i] = nullptr;
     enemyCount = 0;
 }
+
+// --- Remove enemy reference ---
 
 void Board::removeEnemy(Entity* e)
 {
     for (int i = 0; i < enemyCount; ++i) {
         if (enemies[i] == e) {
-            // Move last into this slot (if not already last)
             enemies[i] = enemies[--enemyCount];
             enemies[enemyCount] = nullptr;
             return;
@@ -213,3 +187,8 @@ void Board::removeEnemy(Entity* e)
     }
     std::cout << "Enemy not found.\n";
 }
+
+// --- Save/Load stubs (implement if you need them) ---
+
+bool Board::save(const char* /*path*/) const { return false; }
+bool Board::load(const char* /*path*/) { return false; }
