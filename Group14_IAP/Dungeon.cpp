@@ -8,23 +8,27 @@
 #define CLEAR_SCREEN() (std::cout << "\x1b[2J\x1b[H")
 #endif
 
+// ---------- Persist for the whole process (resets when program exits) ----------
+static Board sBoard;       // shared 5x5 dungeon grid for this process
+static bool  sInited = false; // one-time init guard
+// -----------------------------------------------------------------------------
+
 void Dungeon::dungeonOption() {
     if (!player) {
         std::cout << "[Dungeon] No player provided.\n";
         return;
     }
 
-    // One-time setup of the 5x5 dungeon grid
-    if (!dungeonInited) {
-        // Fill 5x5 with 'X' (breakable tiles), clear start cell (4,4)
+    // One-time setup of the 5x5 dungeon grid (per program run)
+    if (!sInited) {
         for (int r = 0; r < 5; ++r)
             for (int c = 0; c < 5; ++c)
-                board.setCellContentDungeon(r, c, 'X');
-        board.setCellContentDungeon(4, 4, ' ');
-        dungeonInited = true;
+                sBoard.setCellContentDungeon(r, c, 'X'); // fill with breakables
+        sBoard.setCellContentDungeon(4, 4, ' ');         // start cell empty
+        sInited = true;
     }
 
-    // Spawn player at bottom-right
+    // Spawn player at bottom-right for each entry
     player->setRow(4);
     player->setCol(4);
 
@@ -32,30 +36,27 @@ void Dungeon::dungeonOption() {
     while (running) {
         CLEAR_SCREEN();
 
-        // Draw with a temporary 'P' on top of whatever is in that cell
+        // --- draw with a temporary 'P' ---
         int pr = player->getRow(), pc = player->getCol();
-        char under = board.getCellContentDungeon(pr, pc);
-        board.setCellContentDungeon(pr, pc, 'P');
-
-        board.drawDungeon();
-
+        char under = sBoard.getCellContentDungeon(pr, pc);
+        sBoard.setCellContentDungeon(pr, pc, 'P');
+        sBoard.drawDungeon();
         std::cout << "\n=== DUNGEON ===\n";
         std::cout << "Move (W/A/S/D) or 'E' to Exit: ";
+        // restore underlying tile after drawing
+        sBoard.setCellContentDungeon(pr, pc, under);
 
-        // Restore the underlying tile after drawing
-        board.setCellContentDungeon(pr, pc, under);
-
-        // Read input and move (player->moveDungeon() should return true to exit)
-        if (player->moveDungeon()) {
+        // Move (ensure your moveDungeon() updates (row,col) only — no board reset)
+        if (player->moveDungeon()) { // return true to exit
             running = false;
             break;
         }
 
-        // After moving, if we stepped on an X, delete it
+        // After moving, if we stepped on an X, delete it permanently
         pr = player->getRow();
         pc = player->getCol();
-        if (board.getCellContentDungeon(pr, pc) == 'X') {
-            board.setCellContentDungeon(pr, pc, ' ');
+        if (sBoard.getCellContentDungeon(pr, pc) == 'X') {
+            sBoard.setCellContentDungeon(pr, pc, ' ');
         }
     }
 }
