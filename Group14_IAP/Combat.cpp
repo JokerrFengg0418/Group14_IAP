@@ -1,4 +1,4 @@
-#define NOMINMAX
+﻿#define NOMINMAX
 #include "Combat.h"
 #include "Entity.h"
 #include "Enemy.h"
@@ -43,7 +43,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List [i] = new Enemy(24, RandomTurf, EnemyType::Rat, 3, 5);
+				List[i] = new Enemy(24, RandomTurf, EnemyType::Rat, 3, 5);
 				return;
 
 			}
@@ -65,7 +65,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(0 , RandomTurf, EnemyType::Zombie, 10, 6);
+				List[i] = new Enemy(0, RandomTurf, EnemyType::Zombie, 10, 6);
 				return;
 
 			}
@@ -448,7 +448,7 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 	// Final cleanup AFTER the loop ends
 	for (int i = 0; i < 20; ++i) {
 		if (List[i]) {
-			// If it's an enemy, also remove from board�s internal list.
+			// If it's an enemy, also remove from board’s internal list.
 			if (List[i]->getEntityType() == 'E') {
 				board.removeEnemy(List[i]);
 			}
@@ -477,7 +477,7 @@ void Combat::startCombat(char CombatScenario) {
 }
 
 void Combat::earnGold(int amount, Inventory* inv) {
-	inv->setCurrency(inv->getCurrency() + amount); 
+	inv->setCurrency(inv->getCurrency() + amount);
 }
 
 int Combat::getGold(Inventory* PlayerInventory) const {
