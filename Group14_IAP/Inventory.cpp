@@ -209,24 +209,36 @@ void Inventory::DatabaseInitialisation() {
     //ItemName, Description, Character type,Integer Value (Number of items) if its an armour or a weapon, its dmg value/hp value, Resale Value, Sale Value, 
 
     // ===== Weapons (DB 'W') =====
-    FactoryCreateItem("  Broadsword  ", "A basic but reliable blade.", 'W', 50, 20, 30, 10, 'W');
-    FactoryCreateItem("  SlingShots  ", "A simple ranged weapon.", 'W', 50, 20, 30, 10, 'W');
-    FactoryCreateItem("Bow and Arrows", "Classic ranged weapon.", 'W', 80, 30, 50, 10, 'W');
-    FactoryCreateItem("     Mace     ", "A heavy blunt weapon.", 'W', 100, 40, 60, 5, 'W');
-    FactoryCreateItem("  Battle Axe  ", "For chopping and combat.", 'W', 250, 100, 150, 5, 'W');
-    FactoryCreateItem("   Crossbow   ", "Advanced ranged weapon.", 'W', 150, 60, 90, 5, 'W');
-    FactoryCreateItem("    Turret    ", "Stationary defense weapon.", 'W', 300, 120, 180, 2, 'W');
+    FactoryCreateItem("   Broadsword   ", "A basic but reliable blade.", 'W', 50, 20, 30, 10, 'W');
+    FactoryCreateItem("   SlingShots   ", "A simple ranged weapon.", 'W', 50, 20, 30, 10, 'W');
+    FactoryCreateItem(" Bow and Arrows ", "Classic ranged weapon.", 'W', 80, 30, 50, 10, 'W');
+    FactoryCreateItem("      Mace      ", "A heavy blunt weapon.", 'W', 100, 40, 60, 5, 'W');
+    FactoryCreateItem("   Battle Axe   ", "For chopping and combat.", 'W', 250, 100, 150, 5, 'W');
+    FactoryCreateItem("    Crossbow    ", "Advanced ranged weapon.", 'W', 150, 60, 90, 5, 'W');
+    FactoryCreateItem("     Turret     ", "Stationary defense weapon.", 'W', 5, 120, 180, 2, 'W');
 
     // ===== Armors (DB 'A') =====
-    FactoryCreateItem(" Wooden Armor ", "Basic protective armor.", 'A', 50, 20, 30, 10, 'A');
-    FactoryCreateItem(" Silver Armor ", "Stronger defense.", 'A', 100, 40, 60, 5, 'A');
-    FactoryCreateItem("  Gold Armor  ", "Shiny and strong.", 'A', 150, 60, 90, 30, 'A');
-    FactoryCreateItem("Leather Armors", "Lightweight armor.", 'A', 10, 4, 6, 20, 'A');
-    FactoryCreateItem("    Shield    ", "Protects against attacks.", 'A', 100, 40, 60, 5, 'A');
-    FactoryCreateItem("    Helmet    ", "Protects your head.", 'A', 80, 30, 50, 5, 'A');
+    FactoryCreateItem("  Wooden Armor  ", "Basic protective armor.", 'A', 50, 20, 30, 10, 'A');
+    FactoryCreateItem("  Silver Armor  ", "Stronger defense.", 'A', 100, 40, 60, 5, 'A');
+    FactoryCreateItem("   Gold Armor   ", "Shiny and strong.", 'A', 150, 60, 90, 30, 'A');
+    FactoryCreateItem(" Leather Armors ", "Lightweight armor.", 'A', 10, 4, 6, 20, 'A');
+    FactoryCreateItem("     Shield     ", "Protects against attacks.", 'A', 100, 40, 60, 5, 'A');
+    FactoryCreateItem("     Helmet     ", "Protects your head.", 'A', 80, 30, 50, 5, 'A');
 
     // ===== Consumables / Other (DB 'I') =====
-    FactoryCreateItem("Health Potions", "Restores health.", 'I', 50, 20, 30, 20, 'I');
+    FactoryCreateItem(" Health Potions ", "Restores health.", 'I', 1, 20, 30, 20, 'I');
+
+    // ===== Monster/Dungeon Drop Items / Other (DB 'M') =====
+    FactoryCreateItem("    Rat Tail    ", "A tail from a rat (Sellable).", 'M', 1, 3, 0, 0, 'M');
+    FactoryCreateItem("      Fang      ", "A fang from a hellhound (Sellable/Quest Item).", 'M', 1, 20, 0, 0, 'M');
+    FactoryCreateItem("  Rotten Flesh  ", "A rotten flesh from a zombie (Sellable).", 'M', 1, 5, 0, 0, 'M');
+    FactoryCreateItem("     Dagger     ", "A dagger from a goblin (Sellable).", 'M', 1, 10, 0, 0, 'M');
+    FactoryCreateItem("   Mana Cores   ", "A mana core from a goblin (Sellable/Quest Item).", 'M', 1, 15, 0, 0, 'M');
+    FactoryCreateItem("    Bat Wing    ", "A wing from a bat (Sellable).", 'M', 1, 7, 0, 0, 'M');
+    FactoryCreateItem("      Bone      ", "A bone from a skeleton (Sellable).", 'M', 1, 8, 0, 0, 'M');
+    FactoryCreateItem("  Flying Broom  ", "A flying broom from a witch (Sellable).", 'M', 1, 50, 0, 0, 'M');
+    FactoryCreateItem("Crystal of Power", "A flying broom from a witch (Sellable).", 'M', 1, 50, 0, 0, 'M');
+    FactoryCreateItem("    Red Ruby    ", "A flying broom from a witch (Sellable).", 'M', 1, 50, 0, 0, 'M');
 }
 
 //Draws Item from Database instead of Inventory//
@@ -261,6 +273,11 @@ Item* Inventory::DrawDatabase(char DatabaseType, std::string ItemName) {
         break;
     }
     return nullptr;
+}
+
+Item* Inventory::PullInventoryIndex(int Index) const {
+    if (Index < 0 || Index >= 25) return nullptr;
+    return inventory[Index];
 }
 
 // --- Currency ---------------------------------------------------------------

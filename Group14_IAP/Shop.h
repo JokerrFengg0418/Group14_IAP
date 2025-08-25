@@ -21,5 +21,8 @@ public:
     void displayItems();
     void buyItem(Inventory* PlayerInventory);
     void refreshStock();
+
+    // in class Shop
+    void sellItem(Inventory* PlayerInventory);
 };
 

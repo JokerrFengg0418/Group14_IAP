@@ -144,35 +144,29 @@ void Option::shopOption(Inventory* inventory) {
         // Show current stock
         shop.displayItems();
 
-        // Actions
-        cout << "\nActions: [B]uy   [R]efresh stock (" << refreshesLeft << " left)   [E]xit\n";
+        // New actions, including Refresh and Sell
+        cout << "\nActions: [B]uy   [S]ell   [R]efresh stock   [E]xit\n";
         cout << "Enter action: ";
 
         std::string action;
-        if (!(cin >> action)) {         // handle stream failure
-            clearCin();
-            cout << "Invalid input. Try again.\n";
-            continue;
-        }
+        cin >> action;
 
-        if (!action.empty()) {
+        if (action.size() == 1) {
             char a = static_cast<char>(std::tolower(action[0]));
             if (a == 'b') {
-                shop.buyItem(inventory);     // Shop handles 0 to cancel, etc.
+                shop.buyItem(inventory);
+                continue;
+            }
+            else if (a == 's') {
+                shop.sellItem(inventory);     // <-- NEW
                 continue;
             }
             else if (a == 'r') {
-                if (refreshesLeft > 0) {
-                    shop.refreshStock();
-                    --refreshesLeft;
-                    cout << "Shop stock refreshed! (" << refreshesLeft << " left)\n";
-                }
-                else {
-                    cout << "No refreshes left. Come back after next wave.\n";
-                }
+                shop.refreshStock();
+                cout << "Shop stock refreshed!\n";
                 continue;
             }
-            else if (a == 'e' || a == '0') {
+            else if (a == 'e') {
                 keepShopping = false;
                 break;
             }

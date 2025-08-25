@@ -8,13 +8,13 @@ class Player;
 
 // define different types of Enemies with enum
 enum class EnemyType {
-	Monster, // M
+	Rat, // R
 	Hellhound, // H
 	Zombie, // Z
 	Goblin, // G
 	Bat, // B
 	Skeleton, // S
-	Gargoyle, // G
+	Witch, // W
 	Boss // B
 };
 
