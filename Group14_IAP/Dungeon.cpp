@@ -97,7 +97,7 @@ void Dungeon::dungeonOption() {
             sRubyCollected = true;
             std::cout << "\nCollected red Ruby!\n";
             // (Optional) pause for a key:
-            _getch();
+            (void)_getch();
         }
     }
 }
