@@ -482,44 +482,43 @@ void Combat::placeTurret(Inventory* playerInventory, Entity* List[])
 		if (newCol < 0) { newCol + 1; }
 		if (newCol >= COLS) { newCol - 1; }
 
-	if (row < 0 || row >= 25 || col < 0 || col >= 25) {
-		std::cout << "Invalid position for turret!" << std::endl;
-		return;
-	}
-
-	Turret* newTurret = new Turret(newRow, newCol, turretItem->GetItemValue('V'));
-	board.addTurret(newTurret);
-	std::cout << "Turret placed at (" << newRow << ", " << newCol << ")!" << std::endl;
-
-
-	for (int i = 0; i < 20; i++) {
-		if (List[i] != nullptr && List[i]->getRow() == newRow && List[i]->getCol() == newCol) {
-			std::cout << "Cannot place turret here, position is occupied!" << std::endl;
+		if (row < 0 || row >= 25 || col < 0 || col >= 25) {
+			std::cout << "Invalid position for turret!" << std::endl;
 			return;
 		}
-	}
 
-	for (int i = 0; i < 20; i++) {
-		if (List[i] == nullptr) {
-			List[i] = new Turret(newRow, newCol, turretItem->GetItemValue('V'));
-			playerInventory->RemoveItemFromInventory("    Turret    ", 1);
-			std::cout << "Turret placed at (" << newRow << ", " << newCol << ")!" << std::endl;
+		Turret* newTurret = new Turret(newRow, newCol, turretItem->GetItemValue('V'));
+		board.addTurret(newTurret);
+		std::cout << "Turret placed at (" << newRow << ", " << newCol << ")!" << std::endl;
 
-			return;
+
+		for (int i = 0; i < 20; i++) {
+			if (List[i] != nullptr && List[i]->getRow() == newRow && List[i]->getCol() == newCol) {
+				std::cout << "Cannot place turret here, position is occupied!" << std::endl;
+				return;
+			}
 		}
+
+		for (int i = 0; i < 20; i++) {
+			if (List[i] == nullptr) {
+				List[i] = new Turret(newRow, newCol, turretItem->GetItemValue('V'));
+				playerInventory->RemoveItemFromInventory("    Turret    ", 1);
+				std::cout << "Turret placed at (" << newRow << ", " << newCol << ")!" << std::endl;
+
+				return;
+			}
+		}
+
 	}
-
-
 }
 
 
-void Combat::TurnOrder(Inventory* PlayerInventory)
-{
+void Combat::TurnOrder(Inventory * PlayerInventory) {
 	firstTurn = 1;
 	while (WinCondition() == 0)
 	{
 		std::cout << "Turn Number: " << firstTurn << "\n";
-		board.drawBoard();
+		board.drawBoard(List);
 
 		for (int i = 0; i < 20; ++i)
 		{
