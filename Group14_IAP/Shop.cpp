@@ -44,12 +44,13 @@ void Shop::populateShop()
         {'W', "   Crossbow   "},
         {'W', "    Turret    "},
 
-        {'I', " Wooden Armor "},
-        {'I', " Silver Armor "},
-        {'I', "  Gold Armor  "},
-        {'I', "Leather Armors"},
-        {'I', "    Shield    "},
-        {'I', "    Helmet    "},
+        {'A', " Wooden Armor "},
+        {'A', " Silver Armor "},
+        {'A', "  Gold Armor  "},
+        {'A', "Leather Armors"},
+        {'A', "    Shield    "},
+        {'A', "    Helmet    "},
+
         {'I', "Health Potions"},
     };
 

@@ -10,6 +10,7 @@ private:
 	char InventorySlots[4][5];
 	Item* inventory[25];
 	Item* ItemDatabase[50];
+	Item* ArmorDatabase[50];
 	Item* EquippedItem;
 	Item* EquippedWeapon = nullptr;
 	Item* EquippedArmor = nullptr;
@@ -27,8 +28,6 @@ public:
 
 	Item* getInventory(std::string Name) const;
 
-	Item* PullInventoryIndex(int Index) const;
-
 	void setInventory(std::string ItemName, int Number);
 
 	Item* getEquippedItem() const;
@@ -37,13 +36,13 @@ public:
 
 	Item* getEquippedArmor() const;
 
-	bool  equipWeaponByName(const std::string& name);
+	bool equipWeaponByName(const std::string& name);
 
-	bool  equipArmorByName(const std::string& name);
+	bool equipArmorByName(const std::string& name);
 
-	void  unequipWeapon();
+	void unequipWeapon();
 
-	void  unequipArmor();
+	void unequipArmor();
 
 	void unequip();
 

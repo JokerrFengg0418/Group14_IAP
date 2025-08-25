@@ -46,7 +46,6 @@ void Option::runMainMenu() {
 
         switch (choice) {
         case 1: {
-
             openInventory();
             waitForEnter();
             break;
@@ -56,8 +55,9 @@ void Option::runMainMenu() {
             break;
         }
         case 3: {
-            Dungeon dungeon; // Create a Dungeon object
-            dungeon.dungeonOption(); // Call its dungeonOption() function
+            Dungeon dungeon(&mainPlayer);   // pass a pointer to your player
+            dungeon.dungeonOption();
+            waitForEnter();
             break;
         }
         case 4: {
@@ -120,12 +120,6 @@ void Option::openInventory() {
 void Option::closeInventory() {
     inventoryOpen = false;
     std::cout << "Inventory closed.\n";
-}
-
-void Option::closeDungeon()
-{
-    dungeonOpen = false;
-    std::cout << "Dungeon closed.\n";
 }
 
 // Shop Menu

@@ -13,6 +13,8 @@ private:
     bool inventoryOpen;         // track if inventory is open
     bool dungeonOpen;
 
+    Player mainPlayer;
+
     void shopOption(Inventory* inventory);  // Opens the shop and keeps looping until the player chooses to exit
 
     // Small helpers
@@ -27,7 +29,5 @@ public:
 
     void openInventory();       // open and interact with inventory
     void closeInventory();      // close inventory
-
-    void closeDungeon();
 
 };
