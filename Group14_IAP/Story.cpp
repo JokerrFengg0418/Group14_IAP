@@ -102,8 +102,8 @@ void Story::DatabaseInitialisation()
         // Choice 4
         int next4[] = { 7 };
         FactoryCreateChoices(2, 4,
-            "Explore the hole.",
-            "@You went into the mysterious hole. Saw a door in the cave and opened it. {Dungeon crawler mode} @",
+            "Explore the hole. (Dungeon Crawler)",
+            "@You went into the mysterious hole. Saw a door in the cave and opened it.@",
             0, next4, 1
         );
 
@@ -121,12 +121,25 @@ void Story::DatabaseInitialisation()
         FactoryCreateStory(3, "As you lower your weapon, you look at the rotten corpses that were once roaming the forests. The fatigue has set in and now you lay down in the sea of bodies. @ The line of carriages is back, along with Dave. They approach where you once laid down.@ Dave: So ya back are ya? And with so many bodies as well. @Didja find find any of them thingymajiggies whilst you’re here?");
         FactoryCreateChoices(3, 8,
             "Offer the 2 Fangs#Hide them",
-            "Dave: Perfect! That'll keep em satisfied, lemme just~ @Mysterious voice: Pass them over!@Rather on the small side, a woman approached them, as she left the carriage. Several assistants rush over, helping her carry other equipment, whether it be microscopes, or weird tablets.@The person quickly snatches the fangs away from you, she lowers a monocle, staring it.@Rude Mysterious Person: Mana Quality isn't dropping like most embedded objects. Check the Mh/P for me.@An assistant rushes over, poking a stick into it@Assistant: 150 over 20. Stable as well.@Mysterious Person: Did they temporarily stabilize the internal mana core using a van wiltz circle?@Assistant: Unlikely, there seems to be no residual leakage.@Mysterious Person: Odd, we'd need to bring this back for testing.. See if we can substitute the mana type for windless, or fire. If we can stimulate the channels here in any way, this area can get back to healing.@You: What is this girl yapping about.@Dave: Ya gotta greet guests ya know?@Mysterious girl: Oh yes. Yes, that's right. Call me Camilla, I'm a researcher in the institute of magic. By all means, I'm your contractor.@You: Right, so.@Camilla: Anyways, collect some Mana Core for me. The more the better, darkness types are always troublesome to unblock, especially when you need a natural mana conduit to do it with…@The girl starts quietly mumbling to herself as she walks away with her assistants.@Dave: Well don't mind ya, now that ya met ma boss now. So, as per normal, do ya accept the quest?@You: Sure, why not @Dave: Perfect, I'll get that sorted for ya. (Open Shop)#Dave: Shame, well everyday can't be winning. Keep a lookout for em though.",
+            "Dave: Perfect! That'll keep em satisfied, lemme just~ @Mysterious voice: Pass them over!@Rather on the small side, a woman approached them, as she left the carriage. Several assistants rush over, helping her carry other equipment, whether it be microscopes, or weird tablets.@The person quickly snatches the fangs away from you, she lowers a monocle, staring it.@Rude Mysterious Person: Mana Quality isn't dropping like most embedded objects. Check the Mh/P for me.@An assistant rushes over, poking a stick into it@Assistant: 150 over 20. Stable as well.@Mysterious Person: Did they temporarily stabilize the internal mana core using a van wiltz circle?@Assistant: Unlikely, there seems to be no residual leakage.@Mysterious Person: Odd, we'd need to bring this back for testing.. See if we can substitute the mana type for windless, or fire. If we can stimulate the channels here in any way, this area can get back to healing.@You: What is this girl yapping about.@Dave: Ya gotta greet guests ya know?@Mysterious girl: Oh yes. Yes, that's right. Call me Camilla, I'm a researcher in the institute of magic. By all means, I'm your contractor.@You: Right, so.@Camilla: Anyways, collect some Mana Core for me. The more the better, darkness types are always troublesome to unblock, especially when you need a natural mana conduit to do it with…@The girl starts quietly mumbling to herself as she walks away with her assistants.@Dave: Well don't mind ya, now that ya met ma boss now. So, as per normal, do ya accept the quest?@You: Sure, why not @Dave: Perfect, I'll get that sorted for ya. @#Dave: Shame, well everyday can't be winning. Keep a lookout for em though.@",
             0, nullptr, 0);
-        FactoryCreateStory(3, "The carriage strides away, disappearing as they get further and further away. Till they blend into the background. @");
-        FactoryCreateStory(3, "The sun sets once again and you start to get weary of your surroundings. As you expected, another monster rises from the shadows. This time it is a huge gang of goblins rushing towards you as you ready yourself to fight. @ ");
+        FactoryCreateChoices(3, 81,
+            "(Open Shop)",
+            "",
+            0, nullptr, 0);
+        FactoryCreateChoices(3, 82,
+            "Continue story...",
+            "The carriage strides away, disappearing as they get further and further away. Till they blend into the background. @The sun sets once again and you start to get weary of your surroundings. As you expected, another monster rises from the shadows. This time it is a huge gang of goblins rushing towards you as you ready yourself to fight. @ ",
+            0, nullptr, 0);
         FactoryCreateStory(4, "You slowly let yourself down as you think to yourself about the cycle of violence that has fallen upon you and wonder when will all of these come to an end.@ The caravan from the previous day has arrived, this time, hauling an extra carriage. It was a sleek black color, standing out from the rest of the white carriages. @ Dave: New day, new start, are ya buying anything this time? @");
-        FactoryCreateStory(4, "After another harsh battle, the sun sets and it is time for you to rest. However this time, you expect that another wave of monster is rushing towards you, hence you don't rest. As expected, a swarm of mutated bats rush towards you and this time you are prepared to defend yourself.@");
+        FactoryCreateChoices(4, 9,
+            "(Open Shop)",
+            "",
+            0, nullptr, 0);
+        FactoryCreateChoices(4, 10,
+            "Continue story...",
+            "After another harsh battle, the sun sets and it is time for you to rest. However this time, you expect that another wave of monster is rushing towards you, hence you don't rest. As expected, a swarm of mutated bats rush towards you and this time you are prepared to defend yourself.@",
+            0, nullptr, 0);
         FactoryCreateStory(5, "After a long harsh battle, you can finally rest.You think to yourself if you could ever escape from this nightmare. @You wake up to Dave's foot nudging your stomach.@Dave: Well I'll be darned.How're ye still up and kickin after all this? Look 'ere, boss wants to talk to ya'.@Camilla: After careful consideration, I have confirmed your reliability and strength which has been proved to be useful time and time again. What I'm saying is, I'd like to offer you a stable job.@...@Camilla: So, what will it be?@");
         FactoryCreateChoices(5, 11,
             "Handshake hire # Reject",
@@ -163,6 +176,13 @@ void Story::DatabaseInitialisation()
             "Ending A: Rebuilder@You join Camilla and helped to start rebuilding the civilization.@Thus is the story you have chosen. The Last Soldier of the war became the first of a new era.@GAME END: Rebuilding#Ending B: The Wanderer@You step back, crossing your arms@John: That's not the life I want to lead. I appreciate the offer, but I will have to turn you down.@Camilla: Ah, well..: I suppose this is the end of our meeting then.@Dave: Last time we’ll meet ya, before we go to our next destination.@John: Suppose so.@Camilla: We’ll get going then. Will this be the last time I’ll meet you?@John: Let the fates decide on that.@Camilla: Fates..@Camilla: Hah, alright then.@Dave: Have a nice journey, wherever ya end up.@Camilla and Dave walk back to the caravan.@GAME END: Wandering",
             0, nullptr, 0);
 }
+
+enum class StoryAction {
+    None,
+    OpenShop,
+    OpenDungeon,
+    GameEnd
+};
 
 // --- ShowWave ---
 int Story::ShowWave(int wave, int choiceId) const
@@ -233,13 +253,21 @@ int Story::ShowWave(int wave, int choiceId) const
                     int nextChoiceId = entry.nextChoices[pick - 1];
                     return ShowWave(wave, nextChoiceId);
                 }
+
+                if (entry.choicetext[pick - 1].find("Crawler") != std::string::npos)
+                {
+                    return 2; 
+                }
+
+                if (pick > 0 && pick <= entry.nextChoices.size())
+                {
+                    int nextChoiceId = entry.nextChoices[pick - 1];
+                    return ShowWave(wave, nextChoiceId);
+                }
             }
         }
     }
-    return 0; // nothing special
+    return 0; 
 }
-enum class StoryAction {
-    None,
-    OpenShop,
-    GameEnd
-};
+
+

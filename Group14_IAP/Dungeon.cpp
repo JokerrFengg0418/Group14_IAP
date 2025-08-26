@@ -234,3 +234,7 @@ void Dungeon::dungeonOption() {
     }
 }
 
+Dungeon::Dungeon()
+{
+
+}

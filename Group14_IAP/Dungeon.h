@@ -4,6 +4,7 @@
 
 class Dungeon {
 public:
+    Dungeon();
     Dungeon(Player* p, Inventory* inv) : player(p), PlayerInventory(inv) {}   // non-owning pointer
     void dungeonOption();
 
