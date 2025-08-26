@@ -11,9 +11,6 @@ private:
 
 	//End Condition of the Game//
 	bool GameEndState;
-
-	Combat* CombatLogic;
-	Option* Optionlogic;
 	
 public:
 
@@ -34,12 +31,6 @@ public:
 
 	//Turn Order//
 	void TurnOrder();
-
-	void SetDungeonSeed(Option* InventorySave, Combat* Combathandler);
-
-	Option* GetDungeonOption();
-
-	Combat* GetDungeonCombat();
 
 };
 
