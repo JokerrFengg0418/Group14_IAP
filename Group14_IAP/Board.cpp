@@ -90,8 +90,8 @@ void Board::selectTurretHighlight(int row, int col)
     board[row][col] = 'T';
     std::cout << "+------------------------------------------------------+ \n";
 
-    for (int i = 0; i < 25; i++) {
-        for (int j = 0; j < 25; j++) {
+    for (int i = 0; i < 20; i++) {
+        for (int j = 0; j < 20; j++) {
             std::cout << "|";
             if (i == row && j == col) {
                 std::cout << YELLOW << board[row][col] << RESET;
@@ -159,8 +159,8 @@ void Board::drawBoard(Entity* List[], int size)
     // Print out Board
     Template.append("+-------------------------------------------------+ \n");
 
-    for (int i = 0; i < 25; i++) {
-        for (int j = 0; j < 25; j++) {
+    for (int i = 0; i < 20; i++) {
+        for (int j = 0; j < 20; j++) {
             Template.append("|");
             Template.append(1, board[i][j]);
         }

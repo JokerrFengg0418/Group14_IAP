@@ -64,15 +64,16 @@ void Story::DatabaseInitialisation()
         FactoryCreateStory(1, "... @");
         FactoryCreateStory(1, "Someone approaches while you are starving. They give you food and water. @");
         FactoryCreateStory(1, "Mysterious Person: Huh, you're up... What are you doing out in a death zone? @");
-
+        FactoryCreateChoices(1, 0,
+            "I'm John, I found myself laying in a pile of rubble and I.. uh. (calm)#Who are you and what are ye lookin at! (aggressive)#You ready your sword. 'Who are you?!' (defensive)",
+            "Mysterious Person: Hah! Knocked out by a pile of rubble, what a piece of work you are!@Mysterious Person: I’ve taken the courtesy to patch anything that you broke, but that’ll be your last help.@#Mysterious Person: I’m looking atcha, if ya cant tell. And if ya want ma name, well ask it properly yerself. No way to introduce yourself to yer savior.@#Mysterious Person: Woah woah woah… Bud, Calm down ye. I am just tryna help you. Put that sword away before I fold ya in half. Isn't it common courtesy to introduce yourself to your savior instead of tryna kill them?@Mysterious Person: If ya can't tell, I'm a wandering traveller.@Mysterious Person:  know I know, it's rare...but we do what we can to get by.@Mysterious Person: Name's Dave, for your convenience. @",
+            0, nullptr, 0);
         int next[] = { 1, 2, 1, 1 };
         FactoryCreateChoices(1, 1,
             "What do you sell? (Opens Shop) # I'm fine for now. # Do you travel here often? # What happened?",
             "@Mysterious Person: That depends, what're ya looking to buy? @ # @Mysterious Person: Alright, suit yourself. Nights are cold, so stay warm. @ # @Mysterious Person: Nay, you're lucky. I travel here once in a few months. @ # @Mysterious Person: Better question is, what happened to you? Nobody wakes up with no memory. @",
             0, next, 4
         );
-
-        FactoryCreateStory(1, "@Dave: I'm a wandering traveler. Name's Dave. @");
 
         // Wave 2
         FactoryCreateStory(2, "The sun wanes, as day turns to night. Tonight, you are not alone. Beasts growl as they look and see, hellhounds, should they believe. Hunting out, they shall tonight, watching for your very fright.@");
