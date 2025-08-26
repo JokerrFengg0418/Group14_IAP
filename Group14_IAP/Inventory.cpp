@@ -293,8 +293,25 @@ Item* Inventory::getEquippedItem() const { return EquippedWeapon; }
 // --- Equip by NAME (high-level helpers) -------------------------------------
 // Route: weapon first, then armor
 bool Inventory::equipByName(const std::string& itemName) {
-    if (equipWeaponByName(itemName)) return true;
-    return equipArmorByName(itemName);
+    // Find what the user typed in the bag first (partial match ok)
+    int slot = findSlotByNameContains(inventory, itemName);
+    if (slot < 0) {
+        std::cout << "Item not found: " << itemName << "\n";
+        return false;
+    }
+
+    Item* found = inventory[slot];
+    const std::string nm = found->GetItemWord('N');
+
+    // HARD BLOCK: monster drops cannot be equipped
+    if (DrawDatabase('M', nm)) {
+        std::cout << "Monster drop items/Quest Items cannot be equipped.\n";
+        return false;
+    }
+
+    // Try weapon, then armor
+    if (equipWeaponByName(nm)) return true;
+    return equipArmorByName(nm);
 }
 
 // Equip weapon: removes the slot (weapons are non-stackable)
@@ -303,9 +320,12 @@ bool Inventory::equipWeaponByName(const std::string& name) {
     if (slot < 0) { std::cout << "Item not found: " << name << "\n"; return false; }
 
     Item* found = inventory[slot];
+    const std::string nm = found->GetItemWord('N');
+
     // Validate weapon by DB membership
-    if (!DrawDatabase('W', found->GetItemWord('N'))) {
-        std::cout << "This is not a weapon.\n"; return false;
+    if (!DrawDatabase('W', nm)) {
+        std::cout << "This is not a weapon.\n";
+        return false;
     }
 
     // Return currently equipped weapon (if any) to first empty slot
@@ -320,7 +340,7 @@ bool Inventory::equipWeaponByName(const std::string& name) {
     EquippedItem = EquippedWeapon; // keep legacy pointer in sync
     inventory[slot] = nullptr;
 
-    std::cout << "Equipped weapon: " << found->GetItemWord('N') << "\n";
+    std::cout << "Equipped weapon: " << nm << "\n";
     return true;
 }
 
@@ -330,10 +350,12 @@ bool Inventory::equipArmorByName(const std::string& name) {
     if (slot < 0) { std::cout << "Item not found: " << name << "\n"; return false; }
 
     Item* found = inventory[slot];
+    const std::string nm = found->GetItemWord('N');
 
     // Validate armor via DB membership
-    if (!DrawDatabase('A', found->GetItemWord('N'))) {
-        std::cout << "This is not an armor piece.\n"; return false;
+    if (!DrawDatabase('A', nm)) {
+        std::cout << "This is not an armor piece.\n";
+        return false;
     }
 
     // If another armor is equipped, put it back to first empty slot (no stacking)
@@ -350,17 +372,27 @@ bool Inventory::equipArmorByName(const std::string& name) {
     EquippedArmor = found;
     inventory[slot] = nullptr;
 
-    std::cout << "Equipped armor: " << EquippedArmor->GetItemWord('N') << "\n";
+    std::cout << "Equipped armor: " << nm << "\n";
     return true;
 }
 
 // --- Equip by POINTER (compat): route to weapon or armor by DB --------------
 void Inventory::setEquippedItem(Item* SelectedItem) {
-    if (!SelectedItem) { std::cout << "Invalid item selected.\n"; return; }
+    if (!SelectedItem) {
+        std::cout << "Invalid item selected.\n";
+        return;
+    }
     const std::string nm = SelectedItem->GetItemWord('N');
 
+    // Only these two categories are equippable
     if (DrawDatabase('W', nm)) { equipWeaponByName(nm); return; }
     if (DrawDatabase('A', nm)) { equipArmorByName(nm);  return; }
+
+    // Explicitly block Monster DB items
+    if (DrawDatabase('M', nm)) {
+        std::cout << "Monster drop items/Quest items cannot be equipped.\n";
+        return;
+    }
 
     std::cout << "You can't equip this item!\n";
 }
