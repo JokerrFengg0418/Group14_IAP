@@ -15,8 +15,6 @@ private:
 
     Player mainPlayer;
 
-    void shopOption(Inventory* inventory);  // Opens the shop and keeps looping until the player chooses to exit
-
     // Small helpers
     void waitForEnter() const;
     void clearCin() const;
@@ -29,5 +27,5 @@ public:
 
     void openInventory();       // open and interact with inventory
     void closeInventory();      // close inventory
-
+    void shopOption(Inventory* inventory);
 };
