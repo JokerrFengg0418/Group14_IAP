@@ -217,20 +217,20 @@ void Dungeon::dungeonOption() {
         // Combat trigger tiles — run actual combat once per tile
         auto it = std::find(sCombatTiles.begin(), sCombatTiles.end(), std::make_pair(pr, pc));
         if (it != sCombatTiles.end()) {
-            // consume so it won't re-trigger
             sCombatTiles.erase(it);
 
-            // Launch combat like your main game flow
             CLEAR_SCREEN();
             std::cout << "\n=== DUNGEON ===\nEnemies approach! Entering combat...\n";
 
-            Combat combat;                           // create a combat instance
-            combat.startCombat('Z');                 // pick a scenario (same as Logic.cpp)
-            combat.TurnOrder(PlayerInventory);       // pass the SAME inventory pointer
+            Combat combat;
+            // spawn a single random type, with a random count 2..6; set true if you want rare bosses
+            combat.startDungeonOneTypeRandom(2, 6, /*allowBoss=*/false);
+            combat.TurnOrder(PlayerInventory);
 
             std::cout << "Leaving combat. Press any key to continue...";
             (void)_getch();
         }
+
     }
 }
 

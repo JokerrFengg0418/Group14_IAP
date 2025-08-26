@@ -19,6 +19,41 @@
 
 using namespace std;
 
+constexpr int BOARD_ROWS = 20;
+constexpr int BOARD_COLS = 20;
+
+static bool isOccupiedCell(int r, int c, Entity* list[]) {
+	for (int i = 0; i < 20; ++i) {
+		if (list[i] && list[i]->getRow() == r && list[i]->getCol() == c) return true;
+	}
+	return false;
+}
+
+// Avoids (avoidR, avoidC) explicitly AND any occupied cell in List[]
+static bool findRandomFreeCellAvoiding(int& outR, int& outC, Entity* list[],
+	int rows = BOARD_ROWS, int cols = BOARD_COLS,
+	int maxTries = 200,
+	int avoidR = 0, int avoidC = 0)
+{
+	// random attempts
+	for (int t = 0; t < maxTries; ++t) {
+		int r = rand() % rows;
+		int c = rand() % cols;
+		if ((r == avoidR && c == avoidC)) continue;     // never top-left
+		if (!isOccupiedCell(r, c, list)) { outR = r; outC = c; return true; }
+	}
+	// fallback linear scan
+	for (int r = 0; r < rows; ++r) {
+		for (int c = 0; c < cols; ++c) {
+			if ((r == avoidR && c == avoidC)) continue; // never top-left
+			if (!isOccupiedCell(r, c, list)) { outR = r; outC = c; return true; }
+		}
+	}
+	return false; // grid full
+}
+
+
+
 // Map enemy type -> drop name (must match your DB exactly)
 static const char* lootNameFor(EnemyType t) {
 	switch (t) {
@@ -607,6 +642,7 @@ void Combat::startCombat(char CombatScenario) {
 		board.addEnemy(List[4]);
 		FactoryCreateEntity(0);
 		board.addEnemy(List[5]);
+
 	}
 }
 
@@ -619,6 +655,89 @@ int Combat::getGold(Inventory* PlayerInventory) const {
 	return PlayerInventory->getCurrency();
 
 }
+
+void Combat::startDungeonOneTypeRandom(int minEnemies, int maxEnemies, bool /*allowBoss*/)
+{
+	// --- sanitize inputs ---
+	if (minEnemies < 1)  minEnemies = 1;
+	if (maxEnemies > 19) maxEnemies = 19;   // keep a slot for player
+	if (minEnemies > maxEnemies) std::swap(minEnemies, maxEnemies);
+
+	// --- clear this combat instance's entities ---
+	for (int i = 0; i < 20; ++i) {
+		if (List[i]) { delete List[i]; List[i] = nullptr; }
+	}
+
+	// --- add the player using your factory (keeps normal behavior) ---
+	FactoryCreateEntity(8);
+	board.addPlayer(List[0]); // spawns your Player as usual
+
+	// --- choose ONE non-boss enemy type (0..6) ---
+	int typeIndex = rand() % 7; // Rat..Witch (no Boss)
+
+	// --- how many enemies? ---
+	int toSpawn = minEnemies + (rand() % (maxEnemies - minEnemies + 1));
+	if (toSpawn > 19) toSpawn = 19;
+
+	// helper: HP/DMG per type
+	auto hpFor = [](int t) {
+		switch (t) {
+		case 0: return 3;   // Rat
+		case 1: return 5;   // Hellhound
+		case 2: return 10;  // Zombie
+		case 3: return 8;   // Goblin
+		case 4: return 4;   // Bat
+		case 5: return 7;   // Skeleton
+		case 6: return 25;  // Witch
+		default: return 5;
+		}
+	};
+	auto dmgFor = [](int t) {
+		switch (t) {
+		case 0: return 5;
+		case 1: return 6;
+		case 2: return 6;
+		case 3: return 7;
+		case 4: return 4;
+		case 5: return 5;
+		case 6: return 15;
+		default: return 5;
+		}
+	};
+
+	auto etFor = [](int t) -> EnemyType {
+		switch (t) {
+		case 0: return EnemyType::Rat;
+		case 1: return EnemyType::Hellhound;
+		case 2: return EnemyType::Zombie;
+		case 3: return EnemyType::Goblin;
+		case 4: return EnemyType::Bat;
+		case 5: return EnemyType::Skeleton;
+		case 6: return EnemyType::Witch;
+		default: return EnemyType::Rat;
+		}
+	};
+
+	// --- spawn that many of the chosen type at RANDOM FREE CELLS ---
+	for (int k = 0; k < toSpawn; ++k) {
+		int r, c;
+		// avoid (0,0) where the player spawns, and avoid any occupied cell
+		if (!findRandomFreeCellAvoiding(r, c, this->List, BOARD_ROWS, BOARD_COLS, 200, /*avoidR=*/0, /*avoidC=*/0)) {
+			std::cout << "[Dungeon] No free cell to spawn more enemies.\n";
+			break;
+		}
+
+		// find a free slot in List
+		int slot = -1;
+		for (int i = 0; i < 20; ++i) { if (!List[i]) { slot = i; break; } }
+		if (slot == -1) { std::cout << "[Dungeon] Entity list full.\n"; break; }
+
+		List[slot] = new Enemy(r, c, etFor(typeIndex), hpFor(typeIndex), dmgFor(typeIndex));
+		board.addEnemy(List[slot]);
+	}
+}
+
+
 
 void Combat::FactoryDestructor(Inventory* playerInv) {
 	for (int i = 0; i < 20; ++i) {
@@ -641,4 +760,7 @@ void Combat::FactoryDestructor(Inventory* playerInv) {
 		List[i] = nullptr;
 	}
 }
+
+
+
 
