@@ -7,9 +7,10 @@
 #include "Quest.h"
 
 
-Story::Story() 
+Story::Story(Inventory* PlayerInventory)
 {
     DatabaseInitialisation(); 
+    PlayerInventoryPointer = PlayerInventory;
 }
 Story::~Story()
 {
@@ -35,13 +36,6 @@ static std::vector<std::string> splitHash(const std::string& s)
         if (!seg.empty()) out.push_back(seg);
     }
     return out;
-}
-
-void Story::FactoryCreateChoices(int wave, int choice, const std::string& choicetext, const std::string& results, int quest, std::vector<int> nextChoices)
-{
-    auto choiceList = splitHash(choicetext);
-    auto resultList = splitHash(results);
-    database.emplace_back(wave, choice, choiceList, resultList, quest, nextChoices);
 }
 
 void Story::FactoryCreateChoices(int wave, int choice, const std::string& choicetext,
@@ -162,7 +156,7 @@ void Story::DatabaseInitialisation()
 }
 
 // --- ShowWave ---
-void Story::ShowWave(int wave, int choiceId) const
+void Story::ShowWave(int wave, int choiceId)
 {
     for (const auto& entry : database)
     {
@@ -171,6 +165,7 @@ void Story::ShowWave(int wave, int choiceId) const
             // Story text
             if (!entry.text.empty())
             {
+
                 std::stringstream ss(entry.text);
                 std::string segment;
                 while (std::getline(ss, segment, '@'))
@@ -193,40 +188,131 @@ void Story::ShowWave(int wave, int choiceId) const
                 std::cout << "You are faced with choices:\n";
                 for (size_t i = 0; i < entry.choicetext.size(); i++)
                     std::cout << i + 1 << ". " << entry.choicetext[i] << "\n";
-                //check quest number//
-                
+
+
                 int pick;
                 std::cout << "Enter choice number: ";
                 std::cin >> pick;
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                QuestHandler(wave, choiceId, pick);
 
-                if (pick > 0 && pick <= entry.results.size())
-                {
-                    std::string resultText = entry.results[pick - 1];
-                    std::stringstream ss(resultText);
-                    std::string segment;
-                    /*entry.quest[choiceId];*/
-                    while (std::getline(ss, segment, '@'))
+                //Quest Check
+                if (entry.quest != -1) {
+                    for (const auto& quest : QuestDatabase) {
+                        if (quest.GetQuestID() == entry.choice) {
+                            if (quest.CheckQuestState() != 2) {
+                                pick = 2; // force second option
+
+                            }
+
+
+                        }
+                    }
+
+                    if (pick > 0 && pick <= entry.results.size())
                     {
-                        if (!segment.empty())
+                        std::string resultText = entry.results[pick - 1];
+                        std::stringstream ss(resultText);
+                        std::string segment;
+                        /*entry.quest[choiceId];*/
+                        while (std::getline(ss, segment, '@'))
                         {
-                            std::cout << segment << "\n";
-                            if (!ss.eof())
+                            if (!segment.empty())
                             {
-                                std::cout << "Press Enter to continue...\n";
-                                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                                std::cout << segment << "\n";
+                                if (!ss.eof())
+                                {
+                                    std::cout << "Press Enter to continue...\n";
+                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                                }
                             }
                         }
                     }
-                }
 
-                if (pick > 0 && pick <= entry.nextChoices.size())
-                {
-                    int nextChoiceId = entry.nextChoices[pick - 1];
-                    ShowWave(wave, nextChoiceId); // recurse into next choice
-                    return;
+                    if (pick > 0 && pick <= entry.nextChoices.size())
+                    {
+                        int nextChoiceId = entry.nextChoices[pick - 1];
+                        ShowWave(wave, nextChoiceId); // recurse into next choice
+                        return;
+                    }
                 }
             }
         }
     }
 }
+
+void Story::StartQuest(int wave, int ChoiceID) {
+
+    for (int i = 0; i < QuestDatabase.size(); i++) {
+        if(QuestDatabase[i].GetWave() == wave && ChoiceID == QuestDatabase[i].GetQuestID()) {
+            QuestDatabase[i].ChangeQuestState(1);
+  
+        }
+	}
+
+}
+
+void Story::CompleteQuest(int wave, int ChoiceID) {
+
+    for (int i = 0; i < QuestDatabase.size(); i++) {
+        if(QuestDatabase[i].GetWave() == wave && ChoiceID == QuestDatabase[i].GetQuestID()) {
+            std::string QuestItem;
+            int QuestItemNum;
+            QuestItem = QuestDatabase[i].GetQuestRequirement().ItemName;
+            QuestItemNum = QuestDatabase[i].GetQuestRequirement().Count;
+            auto* PlayerItem = PlayerInventoryPointer->getInventory(QuestItem);
+
+            if (PlayerItem && PlayerItem->GetItemValue('V') >= QuestItemNum) {
+                QuestDatabase[i].ChangeQuestState(2);
+                PlayerInventoryPointer->RemoveItemFromInventory(QuestItem, QuestItemNum);
+                std::cout << "Quest Completed: " << QuestDatabase[i].GetName() << "\n";
+            }
+        }
+    }
+
+}
+
+void Story::FactoryCreateQuest(int Wave, int ID, std::string& Name, std::string& ItemName, int ItemCount)
+{
+    QuestDatabase.emplace_back(Wave, ID, Name, ItemName, ItemCount);
+}
+
+void Story::ForceEndQuest(int wave, int ChoiceID) {
+
+       for (int i = 0; i < QuestDatabase.size(); i++) {
+
+        
+           if(QuestDatabase[i].GetWave() == wave && ChoiceID == QuestDatabase[i].GetQuestID()) {
+
+            
+               QuestDatabase[i].ChangeQuestState(0);
+  
+           }
+	   }
+}
+
+void Story::CreateNode(std::string Instructions, int wave, int ChoiceID, int Choice) {
+
+	NodeDatabase.emplace_back(Instructions, wave, ChoiceID, Choice);
+
+
+}
+
+void Story::QuestHandler(int wave, int ChoiceID, int Choice) {
+    for (int i = 0; i < NodeDatabase.size(); i++) {
+        if (NodeDatabase[i].wave == wave && ChoiceID == NodeDatabase[i].ChoiceID && NodeDatabase[i].Choice == Choice) {
+            std::string Instructions;
+            Instructions = NodeDatabase[i].Instruction;
+            if (Instructions == "StartQuest") {
+                StartQuest(wave, ChoiceID);
+            }
+            else if (Instructions == "CheckQuest") {
+                CompleteQuest(wave, ChoiceID);
+            }
+            else if (Instructions == "ForceEndQuest") {
+                ForceEndQuest(wave, ChoiceID);
+            }
+        }
+    }
+}
+

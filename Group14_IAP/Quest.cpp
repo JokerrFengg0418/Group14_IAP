@@ -11,7 +11,7 @@ Quest::Quest(int Wave,int ID, std::string& Name, std::string& ItemName, int Item
 	Requirement.ItemName = ItemName;
 	Requirement.Count = ItemCount;
 	State = QuestState::NotStarted;
-
+	
 }
 
 
@@ -66,5 +66,13 @@ void Quest::ChangeQuestState(int newState) {
 
 int Quest::CheckQuestState() const {
 	return int(State);
+}
+
+std::string Quest::GetName() const {
+	return Name;
+}
+
+void Quest::SetName(std::string& Name) {
+	this->Name = Name;
 }
 
