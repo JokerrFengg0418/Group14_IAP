@@ -55,7 +55,7 @@ void Option::runMainMenu() {
             break;
         }
         case 3: {
-            Dungeon dungeon(&mainPlayer);   // pass a pointer to your player
+            Dungeon dungeon(&mainPlayer, PlayerInventoryPointer);   // pass a pointer to your player
             dungeon.dungeonOption();
             waitForEnter();
             break;

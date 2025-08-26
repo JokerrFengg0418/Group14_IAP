@@ -1,4 +1,6 @@
 #pragma once
+#include "Option.h"
+#include "Combat.h"
 class Logic
 {
 private:
@@ -9,6 +11,7 @@ private:
 
 	//End Condition of the Game//
 	bool GameEndState;
+	
 public:
 
 	//Constructor//
