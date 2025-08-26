@@ -564,9 +564,14 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 void Combat::startCombat(char CombatScenario) {
 
 	switch (CombatScenario) {
-	case 'A':
+	case 'A': // Wave 1
+
+		// Player Spawn
 		FactoryCreateEntity(8);
 		board.addPlayer(List[0]);
+
+
+		// Enemy Spawn
 		FactoryCreateEntity(0);
 		board.addEnemy(List[1]);
 		FactoryCreateEntity(0);
@@ -574,19 +579,47 @@ void Combat::startCombat(char CombatScenario) {
 		FactoryCreateEntity(0);
 		board.addEnemy(List[3]);
 		break;
-	case 'Z':
+	case 'B': // Wave 2
+
+		// Player Spawn
 		FactoryCreateEntity(8);
 		board.addPlayer(List[0]);
-		FactoryCreateEntity(0);
+
+
+		// Enemy Spawn
+		FactoryCreateEntity(1);
 		board.addEnemy(List[1]);
-		FactoryCreateEntity(0);
+		FactoryCreateEntity(1);
 		board.addEnemy(List[2]);
-		FactoryCreateEntity(0);
+		FactoryCreateEntity(1);
 		board.addEnemy(List[3]);
-		FactoryCreateEntity(0);
+		FactoryCreateEntity(1);
 		board.addEnemy(List[4]);
-		FactoryCreateEntity(0);
+		break;
+	case 'C': // Wave 3
+
+		// Player Spawn
+		FactoryCreateEntity(8);
+		board.addPlayer(List[0]);
+
+		// Enemy Spawn
+		FactoryCreateEntity(2);
+		board.addEnemy(List[1]);
+		FactoryCreateEntity(2);
+		board.addEnemy(List[2]);
+		FactoryCreateEntity(2);
+		board.addEnemy(List[3]);
+		FactoryCreateEntity(2);
+		board.addEnemy(List[4]);
+		FactoryCreateEntity(2);
 		board.addEnemy(List[5]);
+		FactoryCreateEntity(2);
+		board.addEnemy(List[6]);
+		FactoryCreateEntity(2);
+		board.addEnemy(List[7]);
+		FactoryCreateEntity(2);
+		board.addEnemy(List[8]);
+		break;
 	}
 }
 
