@@ -1,6 +1,7 @@
 #pragma once
-#include "Story.h"
 #include <string>
+
+
 
 enum class QuestState { NotStarted, InProgress, Completed };
 
@@ -31,6 +32,10 @@ public:
 
 	void SetQuestID(int ID);
 
+	std::string GetName() const;
+
+	void SetName(std::string& Name);
+
 	QuestRequirement GetQuestRequirement() const;
 
 	void SetQuestRequirement(std::string& ItemName, int req);
@@ -38,5 +43,7 @@ public:
 	void ChangeQuestState(int newState);
 
 	int CheckQuestState() const;
+
+
 };
  
