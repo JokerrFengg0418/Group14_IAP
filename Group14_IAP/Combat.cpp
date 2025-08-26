@@ -379,7 +379,7 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 		if (!turret) return;
 
 		// set attack range for turret
-		const int AttackRange = 10;
+		const int AttackRange = 5;
 		int turretRow = turret->getRow();
 		int turretCol = turret->getCol();
 
@@ -400,6 +400,7 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 					std::cout << "Turret at (" << turretRow << ", " << turretCol
 						<< ") attacked enemy at (" << enemyRow << ", " << enemyCol
 						<< ") for " << turret->getDamage() << " damage.\n";
+
 					return;
 				}
 			}
@@ -447,8 +448,8 @@ void Combat::placeTurret(Inventory* playerInventory, Entity* List[])
 	int newRow = row;
 	int newCol = col;
 
-	const int ROWS = 25;
-	const int COLS = 25;
+	const int ROWS = 20;
+	const int COLS = 20;
 
 	while (turretSelect == true) {
 		const char input = _getch();
@@ -483,7 +484,7 @@ void Combat::placeTurret(Inventory* playerInventory, Entity* List[])
 		if (newCol < 0) { newCol -  1; }
 		if (newCol >= COLS) { newCol + 1; }
 
-		if (row < 0 || row >= 25 || col < 0 || col >= 25) {
+		if (row < 0 || row >= 20 || col < 0 || col >= 20) {
 			std::cout << "Invalid position for turret!" << std::endl;
 			return;
 		}
