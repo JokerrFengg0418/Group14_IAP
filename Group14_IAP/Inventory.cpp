@@ -23,9 +23,21 @@ static inline int findSlotByExactName(Item* inv[25], const std::string& q) {
     return -1;
 }
 
-static inline int findSlotByNameContains(Item* inv[25], const std::string& q) {
+static inline std::string norm(const std::string& s) {
+    std::string out;
+    out.reserve(s.size());
+    for (unsigned char ch : s) {
+        if (!std::isspace(ch)) out.push_back(static_cast<char>(std::tolower(ch)));
+    }
+    return out;
+}
+
+static inline int findSlotByNameContains(Item* inv[25], const std::string& qRaw) {
+    const std::string q = norm(qRaw);
+    if (q.empty()) return -1;
     for (int i = 0; i < 25; ++i) {
-        if (inv[i] && inv[i]->GetItemWord('N').find(q) != std::string::npos) return i;
+        if (!inv[i]) continue;
+        if (norm(inv[i]->GetItemWord('N')).find(q) != std::string::npos) return i;
     }
     return -1;
 }
@@ -236,8 +248,8 @@ void Inventory::DatabaseInitialisation() {
     FactoryCreateItem("    Bat Wing    ", "A wing from a bat (Sellable).", 'M', 1, 7, 0, 0, 'M');
     FactoryCreateItem("      Bone      ", "A bone from a skeleton (Sellable).", 'M', 1, 8, 0, 0, 'M');
     FactoryCreateItem("  Flying Broom  ", "A flying broom from a witch (Sellable).", 'M', 1, 50, 0, 0, 'M');
-    FactoryCreateItem("Crystal of Power", "A flying broom from a witch (Sellable).", 'M', 1, 50, 0, 0, 'M');
-    FactoryCreateItem("    Red Ruby    ", "A flying broom from a witch (Sellable).", 'M', 1, 50, 0, 0, 'M');
+    FactoryCreateItem("Crystal of Power", "A magical crystal brimming with power (Quest Item).", 'M', 1, 50, 0, 0, 'M');
+    FactoryCreateItem("    Red Ruby    ", "A very rare manifestation of crystallized mana (Quest Item).", 'M', 1, 50, 0, 0, 'M');
 }
 
 //Draws Item from Database instead of Inventory//
@@ -340,7 +352,6 @@ bool Inventory::equipWeaponByName(const std::string& name) {
     EquippedItem = EquippedWeapon; // keep legacy pointer in sync
     inventory[slot] = nullptr;
 
-    std::cout << "Equipped weapon: " << nm << "\n";
     return true;
 }
 
@@ -372,7 +383,6 @@ bool Inventory::equipArmorByName(const std::string& name) {
     EquippedArmor = found;
     inventory[slot] = nullptr;
 
-    std::cout << "Equipped armor: " << nm << "\n";
     return true;
 }
 
@@ -404,8 +414,8 @@ void Inventory::unequip() { unequipWeapon(); }
 void Inventory::unequipWeapon() {
     if (!EquippedWeapon) { std::cout << "No weapon equipped.\n"; return; }
     int freeIdx = firstEmptySlot(inventory);
-    if (freeIdx < 0) { std::cout << "Inventory full—cannot unequip weapon.\n"; return; }
-    std::cout << "Unequipped weapon: " << EquippedWeapon->GetItemWord('N') << "\n";
+    if (freeIdx < 0) { std::cout << "Inventory full—cannot unequip weapon.\n"; return; };
+
     inventory[freeIdx] = EquippedWeapon;
     EquippedWeapon = nullptr;
     EquippedItem = nullptr; // keep legacy pointer in sync
@@ -417,7 +427,6 @@ void Inventory::unequipArmor() {
     int freeIdx = firstEmptySlot(inventory);
     if (freeIdx < 0) { std::cout << "Inventory full—cannot unequip armor.\n"; return; }
 
-    std::cout << "Unequipped armor: " << EquippedArmor->GetItemWord('N') << "\n";
     inventory[freeIdx] = EquippedArmor;
     EquippedArmor = nullptr;
 }
