@@ -14,7 +14,7 @@ public:
     char GetBoard(int row, int col) const;
 
     // Main board (25x25)
-    void drawBoard(Entity* List[]);
+    void drawBoard(Entity* List[], int size = 20);
 
     // Dungeon (5x5) helpers + render
     void initializeDungeonXGrid();                 // clears 5x5 area
