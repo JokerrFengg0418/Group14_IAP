@@ -80,8 +80,8 @@ void Enemy::move(Entity* List[20])
 	const int tc = c + dc;
 
 	// Adjust these to your board size (25x25 -> 0..24)
-	constexpr int ROWS = 25;
-	constexpr int COLS = 25;
+	constexpr int ROWS = 20;
+	constexpr int COLS = 20;
 
 	// Bounds check
 	if (tr < 0 || tr >= ROWS || tc < 0 || tc >= COLS) {
