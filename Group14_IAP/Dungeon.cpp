@@ -29,6 +29,21 @@ static bool sRubyCollected = false;
 static std::mt19937 sRng(static_cast<unsigned>(std::time(nullptr)));
 
 static std::vector<std::pair<int, int>> sCombatTiles;
+
+static std::vector<std::pair<int, int>> sItemTiles;
+static std::vector<std::string>        sItemNamesPerTile;
+
+static const char* MONSTER_ITEMS[] = {
+    "    Rat Tail    ",
+    "      Fang      ",
+    "  Rotten Flesh  ",
+    "   Mana Cores   ",
+    "    Bat Wing    ",
+    "      Bone      ",
+    "  Flying Broom  ",
+    "Crystal of Power"
+};
+static constexpr int MONSTER_ITEM_COUNT = sizeof(MONSTER_ITEMS) / sizeof(MONSTER_ITEMS[0]);
 // -----------------------------------------------------------------------------
 
 //void Dungeon::CollectRuby(Inventory* PlayerInventory)
@@ -88,7 +103,18 @@ void Dungeon::dungeonOption() {
         const int take = std::min(WANT, static_cast<int>(candidates.size()));
         sCombatTiles.assign(candidates.begin(), candidates.begin() + take);
 
-        sInited = true;
+        sItemTiles.clear();
+        sItemNamesPerTile.clear();
+        for (int i = take; i < static_cast<int>(candidates.size()); ++i) {
+            // these are non-start, non-ruby, non-combat tiles
+            sItemTiles.push_back(candidates[i]);
+
+            // pick a random monster item for this tile
+            std::uniform_int_distribution<int> pick(0, MONSTER_ITEM_COUNT - 1);
+            sItemNamesPerTile.emplace_back(MONSTER_ITEMS[pick(sRng)]);
+
+            sInited = true;
+        }
     }
 
     // Spawn player at bottom-right for each entry
@@ -153,6 +179,39 @@ void Dungeon::dungeonOption() {
             sBoard.setCellContentDungeon(pr, pc, under2);
 
             (void)_getch();
+        }
+
+        // --- Monster item pickup tiles (one-time) ---
+        {
+            int idx = -1;
+            for (int i = 0; i < static_cast<int>(sItemTiles.size()); ++i) {
+                if (sItemTiles[i].first == pr && sItemTiles[i].second == pc) { idx = i; break; }
+            }
+            if (idx != -1) {
+                const std::string itemName = sItemNamesPerTile[idx];
+
+                if (PlayerInventory) {
+                    PlayerInventory->setInventory(itemName, 1);
+                }
+                else {
+                    std::cerr << "[Dungeon] No Inventory bound; item not added.\n";
+                }
+
+                // consume so it won't re-trigger
+                sItemTiles.erase(sItemTiles.begin() + idx);
+                sItemNamesPerTile.erase(sItemNamesPerTile.begin() + idx);
+
+                // feedback screen
+                CLEAR_SCREEN();
+                char underI = sBoard.getCellContentDungeon(pr, pc);
+                sBoard.setCellContentDungeon(pr, pc, 'P');
+                sBoard.drawDungeon();
+
+                std::cout << "\n=== DUNGEON ===\nFound " << itemName
+                    << " (added to inventory)\nPress any key to continue...";
+                sBoard.setCellContentDungeon(pr, pc, underI);
+                (void)_getch();
+            }
         }
 
         // Combat trigger tiles — show "Attack Combat" once per tile
