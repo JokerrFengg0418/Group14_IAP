@@ -38,13 +38,13 @@ EnemyType Enemy::getType() const
 char Enemy::getTypeName() const 
 { 
 	switch (type) {
-	case EnemyType::Monster:   return 'M';
+	case EnemyType::Rat:	   return 'R';
 	case EnemyType::Hellhound: return 'H';
 	case EnemyType::Zombie:    return 'Z';
 	case EnemyType::Goblin:    return 'G';
 	case EnemyType::Bat:       return 'B';
 	case EnemyType::Skeleton:  return 'S';
-	case EnemyType::Gargoyle:  return 'G';
+	case EnemyType::Witch:	   return 'W';
 	case EnemyType::Boss:      return 'A';
 	default:                   return 'U';
 	}
@@ -64,73 +64,42 @@ void Enemy::takeDamage(int amount)
 
 void Enemy::move(Entity* List[20])
 {
-	// Example: Move randomly in one of the four directions
-	int direction = rand() % 4; // 0: up, 1: down, 2: left, 3: right
-	int newPos;
-	char A;
-	switch (direction) {
-	case 0:
-		newPos = getRow() - 1; // Move up
-		A = 'A';
-		break;
-	case 1:
-		newPos = getRow() + 1; // Move down
-		A = 'A';
-		break;
-	case 2:
-		newPos = getCol() - 1; // Move left
-		A = 'B';
-		break;
-	case 3:
-		newPos = getCol() + 1; // Move right
-		A = 'B';
-		break;
+	// Decide a direction: up/down/left/right
+	int dr = 0, dc = 0;
+	switch (rand() % 4) {
+	case 0: dr = -1; break; // up
+	case 1: dr = +1; break; // down
+	case 2: dc = -1; break; // left
+	case 3: dc = +1; break; // right
 	}
 
-	if (newPos < 0 || newPos > 39 || newPos < 0 || newPos > 39)
-	{
-		return;
+	// Current and proposed positions
+	const int r = getRow();
+	const int c = getCol();
+	const int tr = r + dr;
+	const int tc = c + dc;
+
+	// Adjust these to your board size (25x25 -> 0..24)
+	constexpr int ROWS = 25;
+	constexpr int COLS = 25;
+
+	// Bounds check
+	if (tr < 0 || tr >= ROWS || tc < 0 || tc >= COLS) {
+		return; // blocked by wall
 	}
-	else
-	{
-		for (int i = 0; i < 20; i++)
-		{
-			if (List[i] != nullptr)
-			{
-				int otherx = List[i]->getPosition().getRow();
-				int othery = List[i]->getPosition().getCol();
-				char othertype = List[i]->getEntityType();
-				for (int j = i + 1; j < 20; j++)
-				{
-					if (List[j] != nullptr && j != i)
-					{
-						int otherx1 = List[j]->getPosition().getRow();
-						int othery1 = List[j]->getPosition().getCol();
-						char othertype1 = List[j]->getEntityType();
-						if (otherx == otherx1 && othery == othery1)
-						{
-							if (othertype == 'P' && othertype1 == 'E')
-							{
-								return;
-							}
-							else if (othertype == 'E' && othertype1 == 'E')
-							{
-								return;
-							}
-						}
-					}
-				}
-			}
-		}
-		if (A == 'A')
-		{
-			setRow(newPos);
-		}
-		else
-		{
-			setCol(newPos);
+
+	// Collision check: is target tile occupied by anyone else?
+	for (int i = 0; i < 20; ++i) {
+		Entity* e = List[i];
+		if (!e || e == this) continue;
+		if (e->getRow() == tr && e->getCol() == tc) {
+			return; // tile occupied (player or another enemy)
 		}
 	}
+
+	// Move
+	setRow(tr);
+	setCol(tc);
 }
 
 // Debug

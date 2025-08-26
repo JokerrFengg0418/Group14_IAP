@@ -88,7 +88,7 @@ void Board::selectTurretHighlight(int row, int col)
     system("cls");
 
     board[row][col] = 'T';
-    std::cout << "+-------------------------------------------------------------------------------+ \n";
+    std::cout << "+------------------------------------------------------+ \n";
 
     for (int i = 0; i < 25; i++) {
         for (int j = 0; j < 25; j++) {
@@ -103,13 +103,13 @@ void Board::selectTurretHighlight(int row, int col)
         std::cout << '|';
         std::cout << '\n';
     }
-    std::cout << "+-------------------------------------------------------------------------------+ \n";
+    std::cout << "+------------------------------------------------------+ \n";
     board[row][col] = ' ';
 }
 
 
 
-void Board::drawBoard(Entity* List[])
+void Board::drawBoard(Entity* List[], int size)
 {
     // Clear board tiles
     for (int r = 0; r < ROWS; ++r)
@@ -157,7 +157,7 @@ void Board::drawBoard(Entity* List[])
     std::string Template;
 
     // Print out Board
-    Template.append("+-------------------------------------------------------------------+ \n");
+    Template.append("+-------------------------------------------------+ \n");
 
     for (int i = 0; i < 25; i++) {
         for (int j = 0; j < 25; j++) {
@@ -167,7 +167,7 @@ void Board::drawBoard(Entity* List[])
         Template.append(1, '|');
         Template.append(1, '\n');
     }
-    Template.append("+--------------------------------------------------------------------+ \n");
+    Template.append("+-------------------------------------------------+ \n");
     std::cout << Template;
 }
 

@@ -30,6 +30,10 @@ public:
 
 	void setInventory(std::string ItemName, int Number);
 
+	Item* PullInventoryIndex(int Index) const;
+
+	void sellItem(Inventory* PlayerInventory);
+
 	Item* getEquippedItem() const;
 
 	Item* getEquippedWeapon() const;

@@ -7,7 +7,7 @@ class Story
 {
 private:
     std::vector<StoryEntry> database;   // holds all story lines
-    bool quest1;
+    bool GameActive;
 public:
     Story();
     ~Story();
