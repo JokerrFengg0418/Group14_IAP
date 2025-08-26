@@ -32,8 +32,9 @@ static std::vector<std::pair<int, int>> sCombatTiles;
 
 void Dungeon::dungeonOption() {
 
-    Option GameOption;
-    Combat CombatHandler;
+    /*Option* GameOption = GetDungeonOption();
+    Combat* CombatHandler = GetDungeonCombat();*/
+    
 
     if (!player) {
         std::cout << "[Dungeon] No player provided.\n";
@@ -152,8 +153,8 @@ void Dungeon::dungeonOption() {
             sBoard.setCellContentDungeon(pr, pc, under3);
 
             (void)_getch();
-            CombatHandler.startCombat('T');
-            CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+            /*CombatHandler.startCombat('T');
+            CombatHandler.TurnOrder(GameOption.getPlayerInventory());*/
 
         }
     }

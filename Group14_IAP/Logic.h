@@ -1,4 +1,6 @@
 #pragma once
+#include "Option.h"
+#include "Combat.h"
 class Logic
 {
 private:
@@ -9,6 +11,10 @@ private:
 
 	//End Condition of the Game//
 	bool GameEndState;
+
+	Combat* CombatLogic;
+	Option* Optionlogic;
+	
 public:
 
 	//Constructor//
@@ -28,6 +34,12 @@ public:
 
 	//Turn Order//
 	void TurnOrder();
+
+	void SetDungeonSeed(Option* InventorySave, Combat* Combathandler);
+
+	Option* GetDungeonOption();
+
+	Combat* GetDungeonCombat();
 
 };
 
