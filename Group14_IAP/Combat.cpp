@@ -505,50 +505,30 @@ void Combat::placeTurret(Inventory* playerInventory, Entity* List[])
 			}
 		}
 
-		for (int i = 0; i < 20; i++) {
-			if (List[i] == nullptr) {
-				List[i] = new Turret(newRow, newCol, turretItem->GetItemValue('V'));
-				playerInventory->RemoveItemFromInventory("    Turret    ", 1);
-				std::cout << "Turret placed at (" << newRow << ", " << newCol << ")!" << std::endl;
-				break;
-			}
+
+		}
+
+	for (int i = 0; i < 20; i++) {
+		if (List[i] == nullptr) {
+			List[i] = new Turret(newRow, newCol, turretItem->GetItemValue('V'));
+			playerInventory->RemoveItemFromInventory("    Turret    ", 1);
+			std::cout << "Turret placed at (" << newRow << ", " << newCol << ")!" << std::endl;
+			break;
 		}
 	}
+
 }
 
 
 void Combat::TurnOrder(Inventory* PlayerInventory)
 {
 	firstTurn = 1;
-	board.drawBoard(List);
 	placeTurret(PlayerInventory, List);
-
-	Entity* turret = nullptr;
-	for (int i = 0; i < 20; ++i) {
-		if (List[i] == nullptr) { continue; }
-		if (List[i]->getEntityType() == 'T') {
-			turret = List[i];
-			break;
-		}
-	}
 
 	while (WinCondition() == 0)
 	{
 		std::cout << "Turn Number: " << firstTurn << "\n";
 		board.drawBoard(List, 20);
-
-		for (int i = 0; i < 20; i++)
-		{
-			if (List[i] != nullptr)
-			{
-				if (List[i]->getEntityType() == 'T')
-				{
-					Turret* turret = dynamic_cast<Turret*>(List[i]);
-					turret->Update(List, 20);
-				}
-			}
-		}
-
 
 
 		for (int i = 0; i < 20; ++i)
