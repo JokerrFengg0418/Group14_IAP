@@ -193,6 +193,9 @@ static void openInventoryDuringCombatByName(Inventory* inv) {
 	if (!inv) return;
 
 	while (true) {
+		// hide the board while inventory is open
+		system("cls");
+
 		std::cout << "\n=== INVENTORY (Combat) ===\n";
 		inv->DrawInventory();
 		std::cout << "Commands:\n";
@@ -313,8 +316,13 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 			key = std::tolower(key);
 
 			if (key == 'i') {
-				openInventoryDuringCombatByName(playerInv);  // lets you equip/unequip
-				// After returning, let the player choose again (they might now attack)
+				// Clear to show inventory only
+				openInventoryDuringCombatByName(playerInv);
+
+				// When inventory closes: restore the board view
+				system("cls");
+				board.drawBoard(List, 20);   // use your board’s draw function signature
+				// then let the user choose again
 				continue;
 			}
 			else if (key == 'e') {
