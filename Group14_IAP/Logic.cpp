@@ -94,7 +94,7 @@ void Logic::TurnOrder() {
 		CombatHandler.startCombat('H');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);
-		story.ShowWave(8, 0);
+		story.ShowWave(8, 0);*/
 		GameOption.runMainMenu();
 		CombatHandler.startCombat('A');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
