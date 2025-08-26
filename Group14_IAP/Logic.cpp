@@ -61,12 +61,8 @@ void Logic::TurnOrder() {
 		//CombatHandler.startCombat('A');
 		//CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		//GlobalOrderSet(GlobalOrderGet() + 1);
-		//int status = story.ShowWave(1, 0);
-		//if (status == 1) 
-		//{ 
-		//	GameOption.shopOption(GameOption.getPlayerInventory());
-		//	status = 0;
-		//}
+		//story.ShowWave(1, 0);
+		//GameOption.shopOption(GameOption.getPlayerInventory());
 		//CombatHandler.startCombat('B');
 		//CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		//GlobalOrderSet(GlobalOrderGet() + 1);
@@ -95,6 +91,44 @@ void Logic::TurnOrder() {
 		//CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		//GlobalOrderSet(GlobalOrderGet() + 1);
 		//story.ShowWave(8, 0);
+		/*story.ShowWave(0, 0);
+		CombatHandler.startCombat('A');
+		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+		GlobalOrderSet(GlobalOrderGet() + 1);*/
+		int status = story.ShowWave(1, 0);
+		if (status == 1) 
+		{ 
+			GameOption.shopOption(GameOption.getPlayerInventory());
+			status = 0;
+		}
+		CombatHandler.startCombat('B');
+		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+		GlobalOrderSet(GlobalOrderGet() + 1);
+		story.ShowWave(2, 0);
+		CombatHandler.startCombat('C');
+		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+		GlobalOrderSet(GlobalOrderGet() + 1);
+		story.ShowWave(3, 0);
+		CombatHandler.startCombat('D');
+		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+		GlobalOrderSet(GlobalOrderGet() + 1);
+		story.ShowWave(4, 0);
+		CombatHandler.startCombat('E');
+		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+		GlobalOrderSet(GlobalOrderGet() + 1);
+		story.ShowWave(5, 0);
+		CombatHandler.startCombat('F');
+		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+		GlobalOrderSet(GlobalOrderGet() + 1);
+		story.ShowWave(6, 0);
+		CombatHandler.startCombat('G');
+		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+		GlobalOrderSet(GlobalOrderGet() + 1);
+		story.ShowWave(7, 0);
+		CombatHandler.startCombat('H');
+		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+		GlobalOrderSet(GlobalOrderGet() + 1);
+		story.ShowWave(8, 0);*/
 		GameOption.runMainMenu();
 		CombatHandler.startCombat('A');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
