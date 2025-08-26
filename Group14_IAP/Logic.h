@@ -2,7 +2,7 @@
 class Logic
 {
 private:
-	
+
 
 	//Determines what progression the Player is at//
 	int GlobalOrderState;
