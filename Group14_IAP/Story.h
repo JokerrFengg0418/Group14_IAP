@@ -7,9 +7,11 @@
 
 struct Node {
     std::string Instruction;
-    int wave;
+    int Wave;
     int ChoiceID;
     int Choice;
+
+    Node(std::string instructions, int wave, int choiceID, int choice);
 };
 
 class Story

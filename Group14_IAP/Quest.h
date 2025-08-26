@@ -1,6 +1,7 @@
 #pragma once
-#include "Story.h"
 #include <string>
+
+
 
 enum class QuestState { NotStarted, InProgress, Completed };
 

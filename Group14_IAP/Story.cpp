@@ -7,6 +7,14 @@
 #include "Quest.h"
 
 
+Node::Node(std::string instructions, int wave, int choiceID, int choice)
+{
+	Instruction = instructions;
+    Wave = wave;
+    ChoiceID = choiceID;
+	Choice = choice;
+}
+
 Story::Story(Inventory* PlayerInventory)
 {
     DatabaseInitialisation(); 
@@ -300,7 +308,7 @@ void Story::CreateNode(std::string Instructions, int wave, int ChoiceID, int Cho
 
 void Story::QuestHandler(int wave, int ChoiceID, int Choice) {
     for (int i = 0; i < NodeDatabase.size(); i++) {
-        if (NodeDatabase[i].wave == wave && ChoiceID == NodeDatabase[i].ChoiceID && NodeDatabase[i].Choice == Choice) {
+        if (NodeDatabase[i].Wave == wave && ChoiceID == NodeDatabase[i].ChoiceID && NodeDatabase[i].Choice == Choice) {
             std::string Instructions;
             Instructions = NodeDatabase[i].Instruction;
             if (Instructions == "StartQuest") {

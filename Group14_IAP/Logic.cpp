@@ -15,7 +15,7 @@ Logic::Logic() {
 
 void Logic::GameEndStateIncrease() {
 
-	GameEndState += 1;
+	GameEndState = true;
 
 }
 
