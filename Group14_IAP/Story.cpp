@@ -57,7 +57,7 @@ void Story::FactoryCreateChoices(int wave, int choice, const std::string& choice
 void Story::DatabaseInitialisation()
 {
         // Wave 0
-        FactoryCreateStory(0, "After a magical fallout between two major kingdoms, the world is pretty much doomed. You spawn as John, the last soldier from the war that just ended. You claw out of the rocks that buried you and fall onto the floor. Monsters start noticing you. You slowly recover your memory from head concussion. @");
+        FactoryCreateStory(0, "\nAfter a magical fallout between two major kingdoms, the world is pretty much doomed. You spawn as John, the last soldier from the war that just ended. You claw out of the rocks that buried you and fall onto the floor. Monsters start noticing you. You slowly recover your memory from head concussion. @");
 
         // Wave 1
         FactoryCreateStory(1, "After the tough battle, you wandered around to find resources. You found a camp. It's empty. @");
@@ -66,7 +66,7 @@ void Story::DatabaseInitialisation()
         FactoryCreateStory(1, "Mysterious Person: Huh, you're up... What are you doing out in a death zone? @");
         FactoryCreateChoices(1, 0,
             "I'm John, I found myself laying in a pile of rubble and I.. uh. (calm)#Who are you and what are ye lookin at! (aggressive)#You ready your sword. 'Who are you?!' (defensive)",
-            "Mysterious Person: Hah! Knocked out by a pile of rubble, what a piece of work you are!@Mysterious Person: I've taken the courtesy to patch anything that you broke, but that'll be your last help.@#Mysterious Person: I'm looking atcha, if ya cant tell. And if ya want ma name, well ask it properly yerself. No way to introduce yourself to yer savior.@#Mysterious Person: Woah woah woah… Bud, Calm down ye. I am just tryna help you. Put that sword away before I fold ya in half. Isn't it common courtesy to introduce yourself to your savior instead of tryna kill them?@Mysterious Person: If ya can't tell, I'm a wandering traveller.@Mysterious Person:  know I know, it's rare...but we do what we can to get by.@Mysterious Person: Name's Dave, for your convenience. @",
+            "Mysterious Person: Hah! Knocked out by a pile of rubble, what a piece of work you are!@Mysterious Person: I've taken the courtesy to patch anything that you broke, but that'll be your last help.@#Mysterious Person: I'm looking atcha, if ya cant tell. And if ya want ma name, well ask it properly yerself. No way to introduce yourself to yer savior.@#Mysterious Person: Woah woah woah… Bud, Calm down ye. I am just tryna help you. Put that sword away before I fold ya in half. Isn't it common courtesy to introduce yourself to your savior instead of tryna kill them?@Mysterious Person: If ya can't tell, I'm a wandering traveller.@Mysterious Person: I know I know, it's rare...but we do what we can to get by.@Mysterious Person: Name's Dave, for your convenience. @",
             0, nullptr, 0);
         int next[] = { 1, 2, 1, 1 };
         FactoryCreateChoices(1, 1,
@@ -94,7 +94,7 @@ void Story::DatabaseInitialisation()
         );
 
         FactoryCreateChoices(2, 5,
-            "Sure, I need the gold.",
+            "Sure, I need the gold. (Opens Shop)",
             "Then, I'll be dropping this off with ya. @ (Quest to get 2 Fangs) @ Speaking of which, anything you want? (Opens Shop)@",
             1, nullptr, 0
         );
@@ -114,12 +114,14 @@ void Story::DatabaseInitialisation()
             "Getting out of the cave, the caravans are still there, just resting. You head towards the trail.",
             0, next7, 1
         );
-        FactoryCreateStory(2, "Dave: Well then, see ya! We’ll be making our way back from here. @The trail of caravans disappear into the horizon.");
-        FactoryCreateStory(2, "It's getting pretty late now, time for you to have a nice sleep, once the local wildlife stops bothering you of course. As you drift into slumber, you are jolted awake by the weird groans from afar. Standing up, you prepare yourself to fight as you see a hoard of zombies creeping towards you. @");
+        FactoryCreateChoices(2, 71,
+            "Continue story...",
+            "Dave: Well then, see ya! We'll be making our way back from here. @The trail of caravans disappear into the horizon.@It's getting pretty late now, time for you to have a nice sleep, once the local wildlife stops bothering you of course. As you drift into slumber, you are jolted awake by the weird groans from afar. Standing up, you prepare yourself to fight as you see a hoard of zombies creeping towards you. @",
+             0, nullptr, 0);
         FactoryCreateStory(3, "As you lower your weapon, you look at the rotten corpses that were once roaming the forests. The fatigue has set in and now you lay down in the sea of bodies. @ The line of carriages is back, along with Dave. They approach where you once laid down.@ Dave: So ya back are ya? And with so many bodies as well. @Didja find find any of them thingymajiggies whilst you’re here?");
         FactoryCreateChoices(3, 8,
             "Offer the 2 Fangs#Hide them",
-            "Dave: Perfect! That'll keep em satisfied, lemme just~ @Mysterious voice: Pass them over!@Rather on the small side, a woman approached them, as she left the carriage. Several assistants rush over, helping her carry other equipment, whether it be microscopes, or weird tablets.@The person quickly snatches the fangs away from you, she lowers a monocle, staring it.@Rude Mysterious Person: Mana Quality isn't dropping like most embedded objects. Check the Mh/P for me.@An assistant rushes over, poking a stick into it@Assistant: 150 over 20. Stable as well.@Mysterious Person: Did they temporarily stabilize the internal mana core using a van wiltz circle?@Assistant: Unlikely, there seems to be no residual leakage.@Mysterious Person: Odd, we'd need to bring this back for testing.. See if we can substitute the mana type for windless, or fire. If we can stimulate the channels here in any way, this area can get back to healing.@You: What is this girl yapping about.@Dave: Ya gotta greet guests ya know?@Mysterious girl: Oh yes. Yes, that's right. Call me Camilla, I'm a researcher in the institute of magic. By all means, I'm your contractor.@You: Right, so.@Camilla: Anyways, collect some Mana Core for me. The more the better, darkness types are always troublesome to unblock, especially when you need a natural mana conduit to do it with…@The girl starts quietly mumbling to herself as she walks away with her assistants.@Dave: Well don't mind ya, now that ya met ma boss now. So, as per normal, do ya accept the quest?@You: Sure, why not @Dave: Perfect, I'll get that sorted for ya. (Open shop)#Dave: Shame, well everyday can't be winning. Keep a lookout for em though.",
+            "Dave: Perfect! That'll keep em satisfied, lemme just~ @Mysterious voice: Pass them over!@Rather on the small side, a woman approached them, as she left the carriage. Several assistants rush over, helping her carry other equipment, whether it be microscopes, or weird tablets.@The person quickly snatches the fangs away from you, she lowers a monocle, staring it.@Rude Mysterious Person: Mana Quality isn't dropping like most embedded objects. Check the Mh/P for me.@An assistant rushes over, poking a stick into it@Assistant: 150 over 20. Stable as well.@Mysterious Person: Did they temporarily stabilize the internal mana core using a van wiltz circle?@Assistant: Unlikely, there seems to be no residual leakage.@Mysterious Person: Odd, we'd need to bring this back for testing.. See if we can substitute the mana type for windless, or fire. If we can stimulate the channels here in any way, this area can get back to healing.@You: What is this girl yapping about.@Dave: Ya gotta greet guests ya know?@Mysterious girl: Oh yes. Yes, that's right. Call me Camilla, I'm a researcher in the institute of magic. By all means, I'm your contractor.@You: Right, so.@Camilla: Anyways, collect some Mana Core for me. The more the better, darkness types are always troublesome to unblock, especially when you need a natural mana conduit to do it with…@The girl starts quietly mumbling to herself as she walks away with her assistants.@Dave: Well don't mind ya, now that ya met ma boss now. So, as per normal, do ya accept the quest?@You: Sure, why not @Dave: Perfect, I'll get that sorted for ya. (Open Shop)#Dave: Shame, well everyday can't be winning. Keep a lookout for em though.",
             0, nullptr, 0);
         FactoryCreateStory(3, "The carriage strides away, disappearing as they get further and further away. Till they blend into the background. @");
         FactoryCreateStory(3, "The sun sets once again and you start to get weary of your surroundings. As you expected, another monster rises from the shadows. This time it is a huge gang of goblins rushing towards you as you ready yourself to fight. @ ");
