@@ -593,7 +593,7 @@ void Combat::startCombat(char CombatScenario) {
 		FactoryCreateEntity(0);
 		board.addEnemy(List[3]);
 		break;
-	case 'T':
+	case 'Z':
 		FactoryCreateEntity(8);
 		board.addPlayer(List[0]);
 		FactoryCreateEntity(0);

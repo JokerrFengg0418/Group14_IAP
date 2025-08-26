@@ -225,7 +225,7 @@ void Dungeon::dungeonOption() {
             std::cout << "\n=== DUNGEON ===\nEnemies approach! Entering combat...\n";
 
             Combat combat;                           // create a combat instance
-            combat.startCombat('A');                 // pick a scenario (same as Logic.cpp)
+            combat.startCombat('Z');                 // pick a scenario (same as Logic.cpp)
             combat.TurnOrder(PlayerInventory);       // pass the SAME inventory pointer
 
             std::cout << "Leaving combat. Press any key to continue...";
