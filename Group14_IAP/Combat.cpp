@@ -35,7 +35,7 @@ static const char* lootNameFor(EnemyType t) {
 
 void Combat::FactoryCreateEntity(int CharacterType) {
 
-	int RandomTurf = rand() % 25;
+	int RandomTurf = rand() % 20;
 	switch (CharacterType) {
 	case 0:
 
@@ -43,7 +43,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(24, RandomTurf, EnemyType::Rat, 3, 5);
+				List[i] = new Enemy(19, RandomTurf, EnemyType::Rat, 3, 5);
 				return;
 
 			}
