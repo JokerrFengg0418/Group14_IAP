@@ -65,7 +65,7 @@ void Logic::TurnOrder() {
 		story.ShowWave(5, 0);
 		story.ShowWave(6, 0);
 		story.ShowWave(7, 0);
-		story.ShowWave(8, 0);
+		story.ShowWave(8, 0);*/
 		GameOption.runMainMenu();
 		CombatHandler.startCombat('A');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
@@ -73,21 +73,5 @@ void Logic::TurnOrder() {
 
 	}
 
-}
-
-void Logic::SetDungeonSeed(Option* InventorySave, Combat* Combathandler)
-{
-	CombatLogic = Combathandler;
-	Optionlogic = InventorySave;
-}
-
-Option* Logic::GetDungeonOption()
-{
-	return Optionlogic;
-}
-
-Combat* Logic::GetDungeonCombat()
-{
-	return CombatLogic;
 }
 
