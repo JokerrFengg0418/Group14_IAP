@@ -40,5 +40,8 @@ public:
 	void earnGold(int amount, Inventory* Inventory);
 	int getGold(Inventory* PlayerInventory) const;
 
-};
 
+	// Spawns 1 player + N enemies of a single random type (no boss by default)
+	void startDungeonOneTypeRandom(int minEnemies, int maxEnemies, bool allowBoss = false);
+
+};
