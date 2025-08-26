@@ -50,8 +50,8 @@ void Player::move(Entity* list[20]) {
     int newRow = row;
     int newCol = col;
 
-    const int ROWS = 40;  // adjust to your board size
-    const int COLS = 40;
+    const int ROWS = 20;  // adjust to your board size
+    const int COLS = 20;
 
     const char input = _getch();
     switch (input) {
