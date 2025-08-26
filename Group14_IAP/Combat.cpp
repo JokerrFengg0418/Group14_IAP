@@ -131,7 +131,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Player(0, 0, 100, 1);
+				List[i] = new Player(0, 0, 100, 5);
 				return;
 
 			}

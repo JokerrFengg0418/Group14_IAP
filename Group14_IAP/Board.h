@@ -41,8 +41,8 @@ public:
     void clearBoard();
 
 private:
-    static constexpr int ROWS = 25;
-    static constexpr int COLS = 25;
+    static constexpr int ROWS = 20;
+    static constexpr int COLS = 20;
     static constexpr int maxEnemies = 20;
 
     static bool inBounds(int r, int c) {
