@@ -1,4 +1,5 @@
 ﻿#include "Dungeon.h"
+#include "Inventory.h"
 #include "Logic.h"
 #include "Option.h"
 #include "Combat.h"
@@ -29,6 +30,14 @@ static std::mt19937 sRng(static_cast<unsigned>(std::time(nullptr)));
 
 static std::vector<std::pair<int, int>> sCombatTiles;
 // -----------------------------------------------------------------------------
+
+//void Dungeon::CollectRuby(Inventory* PlayerInventory)
+//{
+//    PlayerInventory->setInventory(selectedItem->GetItemWord('N'), 1);
+//}
+
+static const char* RED_RUBY_NAME = "    Red Ruby    "; // exact DB key
+
 
 void Dungeon::dungeonOption() {
 
@@ -127,6 +136,14 @@ void Dungeon::dungeonOption() {
         if (!sRubyCollected && pr == sRubyRow && pc == sRubyCol) {
             sRubyCollected = true;
 
+            // For ruby pickup we only add the item:
+            if (PlayerInventory) {
+                PlayerInventory->setInventory(RED_RUBY_NAME, 1);
+            }
+            else {
+                std::cerr << "[Dungeon] No Inventory bound; ruby not added.\n";
+            }
+
             CLEAR_SCREEN();
             char under2 = sBoard.getCellContentDungeon(pr, pc);
             sBoard.setCellContentDungeon(pr, pc, 'P');
@@ -153,11 +170,8 @@ void Dungeon::dungeonOption() {
             sBoard.setCellContentDungeon(pr, pc, under3);
 
             (void)_getch();
-            /*CombatHandler.startCombat('T');
-            CombatHandler.TurnOrder(GameOption.getPlayerInventory());*/
 
         }
     }
 }
-
 
