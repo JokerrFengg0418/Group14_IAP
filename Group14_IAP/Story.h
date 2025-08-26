@@ -16,7 +16,7 @@ public:
     void FactoryCreateChoices(int wave, int choice, const std::string& choicetext, const std::string& results, int quest, std::vector<int> nextChoices);
     void FactoryCreateChoices(int wave, int choice, const std::string& choicetext, const std::string& results, int quest, const int* nextChoices, size_t nextSize);
     void DatabaseInitialisation();
-    void ShowWave(int wave, int choiceId = -1) const; // print stories for one wave
+    int ShowWave(int wave, int choiceId = -1) const; // print stories for one wave
 
 };
 
