@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include <vector>
 #include <limits>
+#include <sstream>
 #include <string>
 #include <cctype>
 #include <conio.h>
@@ -193,41 +194,103 @@ static void openInventoryDuringCombatByName(Inventory* inv) {
 	if (!inv) return;
 
 	while (true) {
-		// hide the board while inventory is open
-		system("cls");
+		system("cls"); // hide board while inventory is open
 
 		std::cout << "\n=== INVENTORY (Combat) ===\n";
 		inv->DrawInventory();
 		std::cout << "Commands:\n";
-		std::cout << "  w <name>  = equip weapon by name (partial ok)\n";
-		std::cout << "  a <name>  = equip armor  by name (partial ok)\n";
-		std::cout << "  uw        = unequip weapon\n";
-		std::cout << "  ua        = unequip armor\n";
-		std::cout << "  e         = exit\n> ";
+		std::cout << "  equip <item name>\n";
+		std::cout << "  unequip <weapon|armor>\n";
+		std::cout << "  e = exit\n> ";
 
 		std::string line;
-		std::getline(std::cin >> std::ws, line);
+		if (!std::getline(std::cin >> std::ws, line)) return;
 		if (line.empty()) continue;
 
-		std::string lower = toLowerCopy(line);
-		if (lower == "e") return;
-		if (lower == "uw") { inv->unequipWeapon(); continue; }
-		if (lower == "ua") { inv->unequipArmor();  continue; }
+		// quick exit
+		std::string lowerAll = toLowerCopy(line);
+		if (lowerAll == "e") return;
 
-		// Parse "w ..." or "a ..."
-		if (lower.size() > 2 && lower[0] == 'w' && lower[1] == ' ') {
-			std::string name = line.substr(2); // keep original case/padding for matching
-			inv->equipWeaponByName(name);
-			continue;
-		}
-		if (lower.size() > 2 && lower[0] == 'a' && lower[1] == ' ') {
-			std::string name = line.substr(2);
-			inv->equipArmorByName(name);
-			continue;
+		// tokenize: first word = command, rest = argument
+		std::istringstream iss(line);
+		std::string cmd; iss >> cmd;
+		std::string arg; std::getline(iss, arg);
+		if (!arg.empty()) {
+			size_t p = arg.find_first_not_of(' ');
+			if (p != std::string::npos) arg.erase(0, p);
+			else arg.clear();
 		}
 
-		// Fallback: auto-route (weapon then armor)
-		inv->equipByName(line);
+		const std::string cmdLower = toLowerCopy(cmd);
+		const std::string argLower = toLowerCopy(arg);
+
+		if (cmdLower == "equip") {
+			if (arg.empty()) {
+				std::cout << "Usage: equip <item name>\nPress any key to continue...";
+				_getch();
+				continue;
+			}
+
+			// 1) Find the actual item in the bag (partial match OK)
+			Item* found = inv->FindItemByName(arg);
+			if (!found) {
+				std::cout << "Item not found: " << arg << "\nPress any key to continue...";
+				_getch();
+				continue;
+			}
+			const std::string nm = found->GetItemWord('N');
+
+			// 2) Route by DB membership so we don't call the wrong equip function
+			if (inv->DrawDatabase('M', nm)) {
+				std::cout << "Monster drop items/Quest Items cannot be equipped.\nPress any key to continue...";
+				_getch();
+				continue;
+			}
+
+			bool ok = false;
+			if (inv->DrawDatabase('W', nm)) {
+				ok = inv->equipWeaponByName(nm);
+				if (ok) { std::cout << "Equipped weapon: " << nm << "\n"; }
+			}
+			else if (inv->DrawDatabase('A', nm)) {
+				ok = inv->equipArmorByName(nm);
+				if (ok) { std::cout << "Equipped armor: " << nm << "\n"; }
+			}
+			else {
+				std::cout << "That item isn't equippable.\n";
+			}
+
+			std::cout << "Press any key to continue...";
+			_getch();
+			continue;
+		}
+
+		if (cmdLower == "unequip") {
+			if (argLower == "weapon" || argLower == "w") {
+				if (inv->getEquippedWeapon()) {
+					std::cout << "Unequipped weapon: " << inv->getEquippedWeapon()->GetItemWord('N') << "\n";
+				}
+				inv->unequipWeapon();
+				std::cout << "Press any key to continue...";
+				_getch();
+				continue;
+			}
+			if (argLower == "armor" || argLower == "a") {
+				if (inv->getEquippedArmor()) {
+					std::cout << "Unequipped armor: " << inv->getEquippedArmor()->GetItemWord('N') << "\n";
+				}
+				inv->unequipArmor();
+				std::cout << "Press any key to continue...";
+				_getch();
+				continue;
+			}
+			std::cout << "Usage: unequip <weapon|armor>\nPress any key to continue...";
+			_getch();
+			continue;
+		}
+
+		std::cout << "Unknown command. Use: equip <name>  or  unequip <weapon|armor>\nPress any key to continue...";
+		_getch();
 	}
 }
 
@@ -243,7 +306,6 @@ int Combat::calculateDistance(const Position& a, const Position& b) {
 void Combat::attack(Entity* entity1, Inventory* playerInv) {
 
 	if (!entity1) return;
-	std::cout << "\n=== Combat Start ===\n";
 
 	// ------------- ENEMY TURN -------------
 	if (entity1->getEntityType() == 'E') {
