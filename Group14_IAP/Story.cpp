@@ -163,7 +163,7 @@ void Story::DatabaseInitialisation()
 }
 
 // --- ShowWave ---
-void Story::ShowWave(int wave, int choiceId) const
+int Story::ShowWave(int wave, int choiceId) const
 {
     for (const auto& entry : database)
     {
@@ -194,8 +194,7 @@ void Story::ShowWave(int wave, int choiceId) const
                 std::cout << "You are faced with choices:\n";
                 for (size_t i = 0; i < entry.choicetext.size(); i++)
                     std::cout << i + 1 << ". " << entry.choicetext[i] << "\n";
-                //check quest number//
-                
+
                 int pick;
                 std::cout << "Enter choice number: ";
                 std::cin >> pick;
@@ -206,7 +205,6 @@ void Story::ShowWave(int wave, int choiceId) const
                     std::string resultText = entry.results[pick - 1];
                     std::stringstream ss(resultText);
                     std::string segment;
-                    /*entry.quest[choiceId];*/
                     while (std::getline(ss, segment, '@'))
                     {
                         if (!segment.empty())
@@ -221,13 +219,25 @@ void Story::ShowWave(int wave, int choiceId) const
                     }
                 }
 
+                // 👉 Detect if choice opens shop
+                if (entry.choicetext[pick - 1].find("Shop") != std::string::npos)
+                {
+                    return 1; // shop triggered
+                }
+
+                // Move to next choice if available
                 if (pick > 0 && pick <= entry.nextChoices.size())
                 {
                     int nextChoiceId = entry.nextChoices[pick - 1];
-                    ShowWave(wave, nextChoiceId); // recurse into next choice
-                    return;
+                    return ShowWave(wave, nextChoiceId);
                 }
             }
         }
     }
+    return 0; // nothing special
 }
+enum class StoryAction {
+    None,
+    OpenShop,
+    GameEnd
+};
