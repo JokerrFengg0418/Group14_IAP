@@ -131,7 +131,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Player(0, 0, 100, 1);
+				List[i] = new Player(0, 0, 100, 5);
 				return;
 
 			}
@@ -594,7 +594,7 @@ void Combat::startCombat(char CombatScenario) {
 		FactoryCreateEntity(0);
 		board.addEnemy(List[3]);
 		break;
-	case 'T':
+	case 'Z':
 		FactoryCreateEntity(8);
 		board.addPlayer(List[0]);
 		FactoryCreateEntity(0);

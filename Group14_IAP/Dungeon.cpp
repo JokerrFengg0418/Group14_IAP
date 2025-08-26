@@ -113,8 +113,8 @@ void Dungeon::dungeonOption() {
             std::uniform_int_distribution<int> pick(0, MONSTER_ITEM_COUNT - 1);
             sItemNamesPerTile.emplace_back(MONSTER_ITEMS[pick(sRng)]);
 
-            sInited = true;
         }
+        sInited = true;
     }
 
     // Spawn player at bottom-right for each entry
@@ -214,22 +214,22 @@ void Dungeon::dungeonOption() {
             }
         }
 
-        // Combat trigger tiles — show "Attack Combat" once per tile
+        // Combat trigger tiles — run actual combat once per tile
         auto it = std::find(sCombatTiles.begin(), sCombatTiles.end(), std::make_pair(pr, pc));
         if (it != sCombatTiles.end()) {
             // consume so it won't re-trigger
             sCombatTiles.erase(it);
 
+            // Launch combat like your main game flow
             CLEAR_SCREEN();
-            char under3 = sBoard.getCellContentDungeon(pr, pc);
-            sBoard.setCellContentDungeon(pr, pc, 'P');
-            sBoard.drawDungeon();
+            std::cout << "\n=== DUNGEON ===\nEnemies approach! Entering combat...\n";
 
-            std::cout << "\n=== DUNGEON ===\nAttack Combat\nPress any key to continue...";
-            sBoard.setCellContentDungeon(pr, pc, under3);
+            Combat combat;                           // create a combat instance
+            combat.startCombat('Z');                 // pick a scenario (same as Logic.cpp)
+            combat.TurnOrder(PlayerInventory);       // pass the SAME inventory pointer
 
+            std::cout << "Leaving combat. Press any key to continue...";
             (void)_getch();
-
         }
     }
 }
