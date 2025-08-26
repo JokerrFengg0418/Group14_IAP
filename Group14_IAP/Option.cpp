@@ -106,14 +106,41 @@ void Option::openInventory() {
             break;
         }
 
+        // Find the item (partial match OK with your FindItemByName)
         Item* item = PlayerInventory.FindItemByName(itemName);
-        if (item) {
-            PlayerInventory.setEquippedItem(item);
-            std::cout << "Equipped " << item->GetItemWord('N') << "!\n";
-        }
-        else {
+        if (!item) {
             std::cout << "No item with that name found in your inventory.\n";
+            continue;
         }
+
+        // Use the exact DB name for classification
+        const std::string nm = item->GetItemWord('N');
+
+        // 1) Explicitly block monster/quest items so no “Equipped …!” ever prints
+        if (PlayerInventory.DrawDatabase('M', nm)) {
+            std::cout << "Monster drop items/Quest items cannot be equipped.\n";
+            continue;
+        }
+
+        // 2) Weapons
+        if (PlayerInventory.DrawDatabase('W', nm)) {
+            // This prints its own success message on equip; we don't print another.
+            if (!PlayerInventory.equipWeaponByName(nm)) {
+                std::cout << "Couldn't equip that weapon.\n";
+            }
+            continue;
+        }
+
+        // 3) Armors
+        if (PlayerInventory.DrawDatabase('A', nm)) {
+            if (!PlayerInventory.equipArmorByName(nm)) {
+                std::cout << "Couldn't equip that armor.\n";
+            }
+            continue;
+        }
+
+        // 4) Everything else (consumables, etc.) is not equippable
+        std::cout << "That item cannot be equipped.\n";
     }
 }
 

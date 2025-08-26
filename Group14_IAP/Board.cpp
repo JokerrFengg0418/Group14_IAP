@@ -157,7 +157,7 @@ void Board::drawBoard(Entity* List[], int size)
     std::string Template;
 
     // Print out Board
-    Template.append("+-------------------------------------------------+ \n");
+    Template.append("+---------------------------------------+ \n");
 
     for (int i = 0; i < 20; i++) {
         for (int j = 0; j < 20; j++) {
@@ -167,7 +167,7 @@ void Board::drawBoard(Entity* List[], int size)
         Template.append(1, '|');
         Template.append(1, '\n');
     }
-    Template.append("+-------------------------------------------------+ \n");
+    Template.append("+---------------------------------------+ \n");
     std::cout << Template;
 }
 
