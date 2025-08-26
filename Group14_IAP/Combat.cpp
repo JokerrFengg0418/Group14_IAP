@@ -12,12 +12,48 @@
 #include <cstdlib>
 #include <vector>
 #include <limits>
+#include <sstream>
 #include <string>
 #include <cctype>
 #include <conio.h>
 #include <Windows.h>
 
 using namespace std;
+
+constexpr int BOARD_ROWS = 20;
+constexpr int BOARD_COLS = 20;
+
+static bool isOccupiedCell(int r, int c, Entity* list[]) {
+	for (int i = 0; i < 20; ++i) {
+		if (list[i] && list[i]->getRow() == r && list[i]->getCol() == c) return true;
+	}
+	return false;
+}
+
+// Avoids (avoidR, avoidC) explicitly AND any occupied cell in List[]
+static bool findRandomFreeCellAvoiding(int& outR, int& outC, Entity* list[],
+	int rows = BOARD_ROWS, int cols = BOARD_COLS,
+	int maxTries = 200,
+	int avoidR = 0, int avoidC = 0)
+{
+	// random attempts
+	for (int t = 0; t < maxTries; ++t) {
+		int r = rand() % rows;
+		int c = rand() % cols;
+		if ((r == avoidR && c == avoidC)) continue;     // never top-left
+		if (!isOccupiedCell(r, c, list)) { outR = r; outC = c; return true; }
+	}
+	// fallback linear scan
+	for (int r = 0; r < rows; ++r) {
+		for (int c = 0; c < cols; ++c) {
+			if ((r == avoidR && c == avoidC)) continue; // never top-left
+			if (!isOccupiedCell(r, c, list)) { outR = r; outC = c; return true; }
+		}
+	}
+	return false; // grid full
+}
+
+
 
 // Map enemy type -> drop name (must match your DB exactly)
 static const char* lootNameFor(EnemyType t) {
@@ -158,38 +194,103 @@ static void openInventoryDuringCombatByName(Inventory* inv) {
 	if (!inv) return;
 
 	while (true) {
+		system("cls"); // hide board while inventory is open
+
 		std::cout << "\n=== INVENTORY (Combat) ===\n";
 		inv->DrawInventory();
 		std::cout << "Commands:\n";
-		std::cout << "  w <name>  = equip weapon by name (partial ok)\n";
-		std::cout << "  a <name>  = equip armor  by name (partial ok)\n";
-		std::cout << "  uw        = unequip weapon\n";
-		std::cout << "  ua        = unequip armor\n";
-		std::cout << "  e         = exit\n> ";
+		std::cout << "  equip <item name>\n";
+		std::cout << "  unequip <weapon|armor>\n";
+		std::cout << "  e = exit\n> ";
 
 		std::string line;
-		std::getline(std::cin >> std::ws, line);
+		if (!std::getline(std::cin >> std::ws, line)) return;
 		if (line.empty()) continue;
 
-		std::string lower = toLowerCopy(line);
-		if (lower == "e") return;
-		if (lower == "uw") { inv->unequipWeapon(); continue; }
-		if (lower == "ua") { inv->unequipArmor();  continue; }
+		// quick exit
+		std::string lowerAll = toLowerCopy(line);
+		if (lowerAll == "e") return;
 
-		// Parse "w ..." or "a ..."
-		if (lower.size() > 2 && lower[0] == 'w' && lower[1] == ' ') {
-			std::string name = line.substr(2); // keep original case/padding for matching
-			inv->equipWeaponByName(name);
-			continue;
-		}
-		if (lower.size() > 2 && lower[0] == 'a' && lower[1] == ' ') {
-			std::string name = line.substr(2);
-			inv->equipArmorByName(name);
-			continue;
+		// tokenize: first word = command, rest = argument
+		std::istringstream iss(line);
+		std::string cmd; iss >> cmd;
+		std::string arg; std::getline(iss, arg);
+		if (!arg.empty()) {
+			size_t p = arg.find_first_not_of(' ');
+			if (p != std::string::npos) arg.erase(0, p);
+			else arg.clear();
 		}
 
-		// Fallback: auto-route (weapon then armor)
-		inv->equipByName(line);
+		const std::string cmdLower = toLowerCopy(cmd);
+		const std::string argLower = toLowerCopy(arg);
+
+		if (cmdLower == "equip") {
+			if (arg.empty()) {
+				std::cout << "Usage: equip <item name>\nPress any key to continue...";
+				_getch();
+				continue;
+			}
+
+			// 1) Find the actual item in the bag (partial match OK)
+			Item* found = inv->FindItemByName(arg);
+			if (!found) {
+				std::cout << "Item not found: " << arg << "\nPress any key to continue...";
+				_getch();
+				continue;
+			}
+			const std::string nm = found->GetItemWord('N');
+
+			// 2) Route by DB membership so we don't call the wrong equip function
+			if (inv->DrawDatabase('M', nm)) {
+				std::cout << "Monster drop items/Quest Items cannot be equipped.\nPress any key to continue...";
+				_getch();
+				continue;
+			}
+
+			bool ok = false;
+			if (inv->DrawDatabase('W', nm)) {
+				ok = inv->equipWeaponByName(nm);
+				if (ok) { std::cout << "Equipped weapon: " << nm << "\n"; }
+			}
+			else if (inv->DrawDatabase('A', nm)) {
+				ok = inv->equipArmorByName(nm);
+				if (ok) { std::cout << "Equipped armor: " << nm << "\n"; }
+			}
+			else {
+				std::cout << "That item isn't equippable.\n";
+			}
+
+			std::cout << "Press any key to continue...";
+			_getch();
+			continue;
+		}
+
+		if (cmdLower == "unequip") {
+			if (argLower == "weapon" || argLower == "w") {
+				if (inv->getEquippedWeapon()) {
+					std::cout << "Unequipped weapon: " << inv->getEquippedWeapon()->GetItemWord('N') << "\n";
+				}
+				inv->unequipWeapon();
+				std::cout << "Press any key to continue...";
+				_getch();
+				continue;
+			}
+			if (argLower == "armor" || argLower == "a") {
+				if (inv->getEquippedArmor()) {
+					std::cout << "Unequipped armor: " << inv->getEquippedArmor()->GetItemWord('N') << "\n";
+				}
+				inv->unequipArmor();
+				std::cout << "Press any key to continue...";
+				_getch();
+				continue;
+			}
+			std::cout << "Usage: unequip <weapon|armor>\nPress any key to continue...";
+			_getch();
+			continue;
+		}
+
+		std::cout << "Unknown command. Use: equip <name>  or  unequip <weapon|armor>\nPress any key to continue...";
+		_getch();
 	}
 }
 
@@ -205,7 +306,6 @@ int Combat::calculateDistance(const Position& a, const Position& b) {
 void Combat::attack(Entity* entity1, Inventory* playerInv) {
 
 	if (!entity1) return;
-	std::cout << "\n=== Combat Start ===\n";
 
 	// ------------- ENEMY TURN -------------
 	if (entity1->getEntityType() == 'E') {
@@ -278,8 +378,13 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 			key = std::tolower(key);
 
 			if (key == 'i') {
-				openInventoryDuringCombatByName(playerInv);  // lets you equip/unequip
-				// After returning, let the player choose again (they might now attack)
+				// Clear to show inventory only
+				openInventoryDuringCombatByName(playerInv);
+
+				// When inventory closes: restore the board view
+				system("cls");
+				board.drawBoard(List, 20);   // use your board’s draw function signature
+				// then let the user choose again
 				continue;
 			}
 			else if (key == 'e') {
@@ -505,50 +610,30 @@ void Combat::placeTurret(Inventory* playerInventory, Entity* List[])
 			}
 		}
 
-		for (int i = 0; i < 20; i++) {
-			if (List[i] == nullptr) {
-				List[i] = new Turret(newRow, newCol, turretItem->GetItemValue('V'));
-				playerInventory->RemoveItemFromInventory("    Turret    ", 1);
-				std::cout << "Turret placed at (" << newRow << ", " << newCol << ")!" << std::endl;
-				break;
-			}
+
+		}
+
+	for (int i = 0; i < 20; i++) {
+		if (List[i] == nullptr) {
+			List[i] = new Turret(newRow, newCol, turretItem->GetItemValue('V'));
+			playerInventory->RemoveItemFromInventory("    Turret    ", 1);
+			std::cout << "Turret placed at (" << newRow << ", " << newCol << ")!" << std::endl;
+			break;
 		}
 	}
+
 }
 
 
 void Combat::TurnOrder(Inventory* PlayerInventory)
 {
 	firstTurn = 1;
-	board.drawBoard(List);
 	placeTurret(PlayerInventory, List);
-
-	Entity* turret = nullptr;
-	for (int i = 0; i < 20; ++i) {
-		if (List[i] == nullptr) { continue; }
-		if (List[i]->getEntityType() == 'T') {
-			turret = List[i];
-			break;
-		}
-	}
 
 	while (WinCondition() == 0)
 	{
 		std::cout << "Turn Number: " << firstTurn << "\n";
 		board.drawBoard(List, 20);
-
-		for (int i = 0; i < 20; i++)
-		{
-			if (List[i] != nullptr)
-			{
-				if (List[i]->getEntityType() == 'T')
-				{
-					Turret* turret = dynamic_cast<Turret*>(List[i]);
-					turret->Update(List, 20);
-				}
-			}
-		}
-
 
 
 		for (int i = 0; i < 20; ++i)
@@ -584,9 +669,14 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 void Combat::startCombat(char CombatScenario) {
 
 	switch (CombatScenario) {
-	case 'A':
+	case 'A': // Wave 1 ([R]ats)
+
+		// Player Spawn
 		FactoryCreateEntity(8);
 		board.addPlayer(List[0]);
+
+
+		// Enemy Spawn
 		FactoryCreateEntity(0);
 		board.addEnemy(List[1]);
 		FactoryCreateEntity(0);
@@ -594,19 +684,183 @@ void Combat::startCombat(char CombatScenario) {
 		FactoryCreateEntity(0);
 		board.addEnemy(List[3]);
 		break;
-	case 'Z':
+
+	case 'B': // Wave 2 ([H]ellhounds)
+
+		// Player Spawn
 		FactoryCreateEntity(8);
 		board.addPlayer(List[0]);
-		FactoryCreateEntity(0);
+
+
+		// Enemy Spawn
+		FactoryCreateEntity(1);
 		board.addEnemy(List[1]);
-		FactoryCreateEntity(0);
+		FactoryCreateEntity(1);
 		board.addEnemy(List[2]);
-		FactoryCreateEntity(0);
+		FactoryCreateEntity(1);
 		board.addEnemy(List[3]);
-		FactoryCreateEntity(0);
+		FactoryCreateEntity(1);
 		board.addEnemy(List[4]);
-		FactoryCreateEntity(0);
+		break;
+	case 'C': // Wave 3 ([Z]ombies)
+
+		// Player Spawn
+		FactoryCreateEntity(8);
+		board.addPlayer(List[0]);
+
+		// Enemy Spawn
+		FactoryCreateEntity(2);
+		board.addEnemy(List[1]);
+		FactoryCreateEntity(2);
+		board.addEnemy(List[2]);
+		FactoryCreateEntity(2);
+		board.addEnemy(List[3]);
+		FactoryCreateEntity(2);
+		board.addEnemy(List[4]);
+		FactoryCreateEntity(2);
 		board.addEnemy(List[5]);
+		FactoryCreateEntity(2);
+		board.addEnemy(List[6]);
+		FactoryCreateEntity(2);
+		board.addEnemy(List[7]);
+		FactoryCreateEntity(2);
+		board.addEnemy(List[8]);
+		break;
+
+	case 'D': // Wave 4 ([G]oblins)
+
+		// Player Spawn
+		FactoryCreateEntity(8);
+		board.addPlayer(List[0]);
+
+		// Enemy Spawn
+		FactoryCreateEntity(3);
+		board.addEnemy(List[1]);
+		FactoryCreateEntity(3);
+		board.addEnemy(List[2]);
+		FactoryCreateEntity(3);
+		board.addEnemy(List[3]);
+		FactoryCreateEntity(3);
+		board.addEnemy(List[4]);
+		FactoryCreateEntity(3);
+		board.addEnemy(List[5]);
+		FactoryCreateEntity(3);
+		board.addEnemy(List[6]);
+		FactoryCreateEntity(3);
+		board.addEnemy(List[7]);
+		FactoryCreateEntity(3);
+		board.addEnemy(List[8]);
+		FactoryCreateEntity(3);
+		board.addEnemy(List[9]);
+		break;
+
+	case 'E': // Wave 5 ([B]ats)
+
+		// Player Spawn
+		FactoryCreateEntity(8);
+		board.addPlayer(List[0]);
+
+		// Enemy Spawn
+		FactoryCreateEntity(4);
+		board.addEnemy(List[1]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[2]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[3]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[4]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[5]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[6]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[7]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[8]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[9]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[10]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[11]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[12]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[13]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[14]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[15]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[16]);
+		break;
+
+
+	case 'F': // Wave 6 ([S]keletons)
+
+		// Player Spawn
+		FactoryCreateEntity(8);
+		board.addPlayer(List[0]);
+
+		// Enemy Spawn
+		FactoryCreateEntity(5);
+		board.addEnemy(List[1]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[2]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[3]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[4]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[5]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[6]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[7]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[8]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[9]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[10]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[11]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[12]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[13]);
+		break;
+
+
+	case 'G': // Wave 7 ([W]itches)
+
+		// Player Spawn
+		FactoryCreateEntity(8);
+		board.addPlayer(List[0]);
+
+		// Enemy Spawn
+		FactoryCreateEntity(6);
+		board.addEnemy(List[1]);
+		FactoryCreateEntity(6);
+		board.addEnemy(List[2]);
+		FactoryCreateEntity(6);
+		board.addEnemy(List[3]);
+		FactoryCreateEntity(6);
+		board.addEnemy(List[4]);
+		FactoryCreateEntity(6);
+		board.addEnemy(List[5]);
+		break;
+
+	case 'H': // Wave 8 ([A]bomination)
+
+		// Player Spawn
+		FactoryCreateEntity(8);
+		board.addPlayer(List[0]);
+
+		// Enemy Spawn
+		FactoryCreateEntity(7);
+		board.addEnemy(List[1]);
+		break;
 	}
 }
 
@@ -619,6 +873,89 @@ int Combat::getGold(Inventory* PlayerInventory) const {
 	return PlayerInventory->getCurrency();
 
 }
+
+void Combat::startDungeonOneTypeRandom(int minEnemies, int maxEnemies, bool /*allowBoss*/)
+{
+	// --- sanitize inputs ---
+	if (minEnemies < 1)  minEnemies = 1;
+	if (maxEnemies > 19) maxEnemies = 19;   // keep a slot for player
+	if (minEnemies > maxEnemies) std::swap(minEnemies, maxEnemies);
+
+	// --- clear this combat instance's entities ---
+	for (int i = 0; i < 20; ++i) {
+		if (List[i]) { delete List[i]; List[i] = nullptr; }
+	}
+
+	// --- add the player using your factory (keeps normal behavior) ---
+	FactoryCreateEntity(8);
+	board.addPlayer(List[0]); // spawns your Player as usual
+
+	// --- choose ONE non-boss enemy type (0..6) ---
+	int typeIndex = rand() % 7; // Rat..Witch (no Boss)
+
+	// --- how many enemies? ---
+	int toSpawn = minEnemies + (rand() % (maxEnemies - minEnemies + 1));
+	if (toSpawn > 19) toSpawn = 19;
+
+	// helper: HP/DMG per type
+	auto hpFor = [](int t) {
+		switch (t) {
+		case 0: return 3;   // Rat
+		case 1: return 5;   // Hellhound
+		case 2: return 10;  // Zombie
+		case 3: return 8;   // Goblin
+		case 4: return 4;   // Bat
+		case 5: return 7;   // Skeleton
+		case 6: return 25;  // Witch
+		default: return 5;
+		}
+	};
+	auto dmgFor = [](int t) {
+		switch (t) {
+		case 0: return 5;
+		case 1: return 6;
+		case 2: return 6;
+		case 3: return 7;
+		case 4: return 4;
+		case 5: return 5;
+		case 6: return 15;
+		default: return 5;
+		}
+	};
+
+	auto etFor = [](int t) -> EnemyType {
+		switch (t) {
+		case 0: return EnemyType::Rat;
+		case 1: return EnemyType::Hellhound;
+		case 2: return EnemyType::Zombie;
+		case 3: return EnemyType::Goblin;
+		case 4: return EnemyType::Bat;
+		case 5: return EnemyType::Skeleton;
+		case 6: return EnemyType::Witch;
+		default: return EnemyType::Rat;
+		}
+	};
+
+	// --- spawn that many of the chosen type at RANDOM FREE CELLS ---
+	for (int k = 0; k < toSpawn; ++k) {
+		int r, c;
+		// avoid (0,0) where the player spawns, and avoid any occupied cell
+		if (!findRandomFreeCellAvoiding(r, c, this->List, BOARD_ROWS, BOARD_COLS, 200, /*avoidR=*/0, /*avoidC=*/0)) {
+			std::cout << "[Dungeon] No free cell to spawn more enemies.\n";
+			break;
+		}
+
+		// find a free slot in List
+		int slot = -1;
+		for (int i = 0; i < 20; ++i) { if (!List[i]) { slot = i; break; } }
+		if (slot == -1) { std::cout << "[Dungeon] Entity list full.\n"; break; }
+
+		List[slot] = new Enemy(r, c, etFor(typeIndex), hpFor(typeIndex), dmgFor(typeIndex));
+		board.addEnemy(List[slot]);
+	}
+}
+
+
 
 void Combat::FactoryDestructor(Inventory* playerInv) {
 	for (int i = 0; i < 20; ++i) {
@@ -641,4 +978,7 @@ void Combat::FactoryDestructor(Inventory* playerInv) {
 		List[i] = nullptr;
 	}
 }
+
+
+
 

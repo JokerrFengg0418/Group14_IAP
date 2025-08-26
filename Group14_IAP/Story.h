@@ -29,7 +29,7 @@ public:
     void FactoryCreateStory(int wave, const std::string& story);
     void FactoryCreateChoices(int wave, int choice, const std::string& choicetext, const std::string& results, int quest, const int* nextChoices, size_t nextSize);
     void DatabaseInitialisation();
-    void ShowWave(int wave, int choiceId = -1); // print stories for one wave
+    int ShowWave(int wave, int choiceId = -1); // print stories for one wave
     
     void QuestHandler( int Wave, int ChoiceID, int Choice);
     void StartQuest(int Wave, int ChoiceID);
