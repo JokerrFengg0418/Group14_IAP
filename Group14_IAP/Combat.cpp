@@ -564,7 +564,7 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 void Combat::startCombat(char CombatScenario) {
 
 	switch (CombatScenario) {
-	case 'A': // Wave 1
+	case 'A': // Wave 1 ([R]ats)
 
 		// Player Spawn
 		FactoryCreateEntity(8);
@@ -579,7 +579,8 @@ void Combat::startCombat(char CombatScenario) {
 		FactoryCreateEntity(0);
 		board.addEnemy(List[3]);
 		break;
-	case 'B': // Wave 2
+
+	case 'B': // Wave 2 ([H]ellhounds)
 
 		// Player Spawn
 		FactoryCreateEntity(8);
@@ -596,7 +597,7 @@ void Combat::startCombat(char CombatScenario) {
 		FactoryCreateEntity(1);
 		board.addEnemy(List[4]);
 		break;
-	case 'C': // Wave 3
+	case 'C': // Wave 3 ([Z]ombies)
 
 		// Player Spawn
 		FactoryCreateEntity(8);
@@ -619,6 +620,141 @@ void Combat::startCombat(char CombatScenario) {
 		board.addEnemy(List[7]);
 		FactoryCreateEntity(2);
 		board.addEnemy(List[8]);
+		break;
+
+	case 'D': // Wave 4 ([G]oblins)
+
+		// Player Spawn
+		FactoryCreateEntity(8);
+		board.addPlayer(List[0]);
+
+		// Enemy Spawn
+		FactoryCreateEntity(3);
+		board.addEnemy(List[1]);
+		FactoryCreateEntity(3);
+		board.addEnemy(List[2]);
+		FactoryCreateEntity(3);
+		board.addEnemy(List[3]);
+		FactoryCreateEntity(3);
+		board.addEnemy(List[4]);
+		FactoryCreateEntity(3);
+		board.addEnemy(List[5]);
+		FactoryCreateEntity(3);
+		board.addEnemy(List[6]);
+		FactoryCreateEntity(3);
+		board.addEnemy(List[7]);
+		FactoryCreateEntity(3);
+		board.addEnemy(List[8]);
+		FactoryCreateEntity(3);
+		board.addEnemy(List[9]);
+		break;
+
+	case 'E': // Wave 5 ([B]ats)
+
+		// Player Spawn
+		FactoryCreateEntity(8);
+		board.addPlayer(List[0]);
+
+		// Enemy Spawn
+		FactoryCreateEntity(4);
+		board.addEnemy(List[1]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[2]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[3]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[4]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[5]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[6]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[7]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[8]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[9]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[10]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[11]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[12]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[13]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[14]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[15]);
+		FactoryCreateEntity(4);
+		board.addEnemy(List[16]);
+		break;
+
+
+	case 'F': // Wave 6 ([S]keletons)
+
+		// Player Spawn
+		FactoryCreateEntity(8);
+		board.addPlayer(List[0]);
+
+		// Enemy Spawn
+		FactoryCreateEntity(5);
+		board.addEnemy(List[1]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[2]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[3]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[4]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[5]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[6]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[7]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[8]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[9]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[10]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[11]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[12]);
+		FactoryCreateEntity(5);
+		board.addEnemy(List[13]);
+		break;
+
+
+	case 'G': // Wave 7 ([W]itches)
+
+		// Player Spawn
+		FactoryCreateEntity(8);
+		board.addPlayer(List[0]);
+
+		// Enemy Spawn
+		FactoryCreateEntity(6);
+		board.addEnemy(List[1]);
+		FactoryCreateEntity(6);
+		board.addEnemy(List[2]);
+		FactoryCreateEntity(6);
+		board.addEnemy(List[3]);
+		FactoryCreateEntity(6);
+		board.addEnemy(List[4]);
+		FactoryCreateEntity(6);
+		board.addEnemy(List[5]);
+		break;
+
+	case 'H': // Wave 8 ([A]bomination)
+
+		// Player Spawn
+		FactoryCreateEntity(8);
+		board.addPlayer(List[0]);
+
+		// Enemy Spawn
+		FactoryCreateEntity(7);
+		board.addEnemy(List[1]);
 		break;
 	}
 }
