@@ -75,8 +75,8 @@ void Logic::TurnOrder() {
 		}
 		CombatHandler.startCombat('B');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		int status1 = story.ShowWave(2, 0);
+		GlobalOrderSet(GlobalOrderGet() + 1);*/
+		/*int status1 = story.ShowWave(2, 0);
 		if (status1 == 1)
 		{
 			GameOption.shopOption(GameOption.getPlayerInventory());
@@ -122,7 +122,7 @@ void Logic::TurnOrder() {
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);
 		story.ShowWave(7, 0);
-		story.ShowWave(8, 0);
+		story.ShowWave(8, 0);*/
 		GameOption.runMainMenu();
 		CombatHandler.startCombat('H');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());

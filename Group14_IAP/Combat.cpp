@@ -344,6 +344,12 @@ void Combat::openInventoryDuringCombatByName(Inventory* inv) {
 	}
 }
 
+static inline void waitKey(const char* prompt = "\n[Press any key to continue]")
+{
+	std::cout << prompt << std::flush;
+	_getch(); // waits for a single key, no echo
+}
+
 // External enemy list if used elsewhere
 extern Entity* List[20];
 
@@ -365,7 +371,7 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 			if (List[i] == nullptr) continue;
 			if (List[i]->getEntityType() == 'P') { player = List[i]; break; }
 		}
-		if (!player) { std::cout << "[Combat] No player found.\n"; std::cout << "=== Combat End ===\n"; return; }
+		if (!player) { std::cout << "[Combat] No player found.\n"; std::cout << "=== Combat End ===\n" ; return; }
 
 		int distance = calculateDistance(entity1->getPosition(), player->getPosition());
 
@@ -415,6 +421,8 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 			std::cout << "=== Combat End ===\n";
 			return;
 		}
+
+		waitKey("\n[Enemy turn over] Press any key...");
 	}
 
 	// ------------- PLAYER TURN -------------
