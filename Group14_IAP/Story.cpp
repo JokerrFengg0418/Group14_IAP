@@ -13,6 +13,7 @@ Node::Node(std::string instructions, int wave, int choiceID, int choice, std::st
     Wave = wave;
     ChoiceID = choiceID;
 	Choice = choice;
+    this->QuestName = QuestName;
 }
 
 Story::Story(Inventory* PlayerInventory)
@@ -178,7 +179,7 @@ void Story::DatabaseInitialisation()
             "Camilla: Something that I created based off of old texts. This precarious balance between insanity and practicality.@Camilla: Of course, its something I would destroy after I'm done with it. There's no point of having such a dangerous thing around. The concept, elegant and an intuitive understanding of how mana wavelengths affect the particulate structure of molecules.@Camilla: Reversing the mana polarity of certain selected mana wavelengths causes the item to de-harmonize with the entire item. This causes a phenomenon called particulate instability, where said mana wave lengths directly change particulate bonds, destabilizing the item and risk it collapsing into the particles of the surroundings, effective 'vaporizing' the object. @Camilla: Such a shame, but I'll have to destroy it.@You: But there's no guarantee that you will destroy it, is there?@Camilla: I suppose there is not.@Camilla: Then to soothe your views.  I ask you to destroy it, with your own hands. Beat it, crunch it. Whatever that satisfies your desire for destruction.@You: What if you don't keep your promise?@Camilla: Nothing can be said that is axiomically always sincere. That is up to you to determine.@You:...#Camilla: The expulsion of dark mana from the leylines of the earth is going to be a violent procedure. Inevitably such a large build-up of dark mana will inevitably trigger what is known as mana coagulation. You would notice this in forms of your zombies, bats, monsters.@Camilla: A sufficient build up of mana would convert surroundings particles into matter based on the mana's wavelength instructions. This violent expulsion of dark mana, cleansing the leylines, will be the largest buildup of latent dark mana in the atmosphere since the death of the Devil Lanthania's heart.@Camilla: An Abomination will be made. A creation of dark mana that all that is unholy.@Camilla: The later we defuse it, the more we risk a mana implosion, caused by the negative and positive wave lengths of dark mana physically affecting the world around it.@Camilla: The disruptor de-harmonizes the wavelengths of dark mana, making it so we delay the possibility of a mana-type implosion. Safely dispersing the mana into the air, for it to be sufficiently broken down, or reduced to safe levels.@You: The resulting creature will destroy everything around it?@Camilla: Yes, whether by being a mere beast, bludgeoning everything manually, no doubt poisoning the ecosystem by disrupting natural mana processes, or manifesting a mana implosion, causing the surrounding areas to be completely uninhabitable as the dark mana violently assimilates or integrates matter to vibrate at its wavelength.@Camilla: That is why such a terrible weapon, and fascinating phenomenon is allowed to be used for such purposes.#Camilla: It will help us greatly for the final expulsion. I don't doubt your strength, but there's limits that the gods have set upon us. The bigger expulsion will be in 2 days, so that is when this would be ready. This machine is still incomplete. I request a Red Ruby, from the dungeons.@Camilla: If it's too dangerous, there's no need to push yourself. I will procure the red ruby at the site itself. But, I would.. like if I didn't have to do it myself.@Quest activated: Red Ruby Excavation@Camilla walks away",
             0, next8, 3);
         FactoryCreateQuest("Collect Red Ruby", "    Red Ruby    ", 1);
-        CreateNode("StartQuest", 6, 4, 3, "Collect Red Ruby"),
+        CreateNode("StartQuest", 6, 4, 3, "Collect Red Ruby");
         FactoryCreateStory(6, "The sun slowly started to set, marking another night to survive. Familiar with this routine, you prepare for battle. Surely enough, you see a hoard of flying grey gargoyles rushing towards you.@");
         FactoryCreateStory(7, "You finally vanquished the gargoyles as you remember the first time you fought these monsters. You feel a sense of pride as you see how far you've come, though that feeling is short-lived as fatigue settles in. You slowly lay yourself down and drift into sleep.@The caravan is back, busier than ever. The device you say from yesterday, was kept, improved upon with a mass of wires going into and out of the main chamber. An extra lens was added inside the machine itself.@Camilla was working on the device, carving intricate patterns into the container. She notices you approaching them, jumping down from her high position, landing with a thump.@Camilla: Did you find the red ruby? I'm almost done on my end, just making sure the device works, that is.@Offer the Red Ruby?");
         int next9[] = { 14 };
@@ -215,6 +216,9 @@ enum class StoryAction {
 // --- ShowWave ---
 int Story::ShowWave(int wave, int choiceId)
 {
+
+    bool Questcheck = false;
+
     for (const auto& entry : database)
     {
         if (entry.wave == wave && (choiceId == 0 || entry.choice == choiceId))
@@ -239,6 +243,7 @@ int Story::ShowWave(int wave, int choiceId)
                 }
             }
 
+        Retrypick:;
             // Choices
             if (!entry.choicetext.empty())
             {
@@ -246,29 +251,31 @@ int Story::ShowWave(int wave, int choiceId)
                 for (size_t i = 0; i < entry.choicetext.size(); i++)
                     std::cout << i + 1 << ". " << entry.choicetext[i] << "\n";
 
+            
 
                 int pick;
                 std::cout << "Enter choice number: ";
                 std::cin >> pick;
+                if (pick > entry.choicetext.size()) { system("cls"); goto Retrypick; }
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 QuestHandler(wave, choiceId, pick);
 
                 //Quest Check
-                if (entry.quest != 0) {
+                if(entry.quest != 0) {
                     for (const auto& quest : QuestDatabase) {
-                        for (const auto& NodeDatabase : NodeDatabase) {
-                            if (quest.GetName() == NodeDatabase.QuestName) {
-                                if (quest.CheckQuestState() != 2) {
-                                    pick = 2; // force second option
-
-                                }
-
-
+                        
+                            
+                        if (quest.GetName() == "Collect Red Ruby" &&
+                            quest.CheckQuestState() != 2) {
+                            if (entry.results.size() >= 2) {
+                                pick = 2; // force second option safely
                             }
+                            goto quest_done; // break out of both loops
                         }
+                        
                     }
                 }
-
+            quest_done:;
                 
                 if (pick > 0 && pick <= entry.results.size())
                 {
@@ -288,16 +295,17 @@ int Story::ShowWave(int wave, int choiceId)
                         }
                     }
                 }
+                if(Questcheck == false){
+                    if (entry.choicetext[pick - 1].find("Shop") != std::string::npos)
+                    {
+                        return 1; // shop triggered
+                    }
             
-                if (entry.choicetext[pick - 1].find("Shop") != std::string::npos)
-                {
-                    return 1; // shop triggered
-                }
-            
-                // 👉 Detect if choice opens dungeon
-                if (entry.choicetext[pick - 1].find("Dungeon") != std::string::npos)
-                {
-                    return 2; // dungeon triggered
+                    // 👉 Detect if choice opens dungeon
+                    if (entry.choicetext[pick - 1].find("Dungeon") != std::string::npos)
+                    {
+                        return 2; // dungeon triggered
+                    }
                 }
             
                 // Move to next choice if available
@@ -319,8 +327,10 @@ void Story::StartQuest(std::string& Name) {
 
     for (int i = 0; i < QuestDatabase.size(); i++) {
         if (QuestDatabase[i].GetName() == Name) {
+
             QuestDatabase[i].ChangeQuestState(1);
-            std::cout << "Quest Activated";
+            std::cout << "Quest Activated \n";
+            return;
         }
     }
 
@@ -378,12 +388,15 @@ void Story::QuestHandler(int wave, int ChoiceID, int Choice) {
             Instructions = NodeDatabase[i].Instruction;
             if (Instructions == "StartQuest") {
                 StartQuest(NodeDatabase[i].QuestName);
+                return;
             }
             else if (Instructions == "CheckQuest") {
                 CompleteQuest(NodeDatabase[i].QuestName);
+                return;
             }
             else if (Instructions == "ForceEndQuest") {
                 ForceEndQuest(NodeDatabase[i].QuestName);
+                return;
             }
         }
     }
