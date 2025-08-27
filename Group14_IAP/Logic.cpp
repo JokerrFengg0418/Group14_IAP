@@ -2,6 +2,8 @@
 #include "Combat.h"
 #include "Option.h"
 #include "Story.h"
+#include "Dungeon.h"
+
 
 Logic::Logic() {
 
@@ -53,44 +55,12 @@ void Logic::TurnOrder() {
 
 	Option GameOption;
 	Combat CombatHandler;
-	Story story(GameOption.getPlayerInventory());
+	Story story;
+	Dungeon dungeon;
 
 	while (GameEndState == false) {
 		
-		story.ShowWave(0, 0);
-		CombatHandler.startCombat('A');
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		story.ShowWave(1, 0);
-		GameOption.shopOption(GameOption.getPlayerInventory());
-		CombatHandler.startCombat('B');
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		story.ShowWave(2, 0);
-		CombatHandler.startCombat('C');
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		story.ShowWave(3, 0);
-		CombatHandler.startCombat('D');
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		story.ShowWave(4, 0);
-		CombatHandler.startCombat('E');
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		story.ShowWave(5, 0);
-		CombatHandler.startCombat('F');
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		story.ShowWave(6, 0);
-		CombatHandler.startCombat('G');
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		story.ShowWave(7, 0);
-		CombatHandler.startCombat('H');
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		story.ShowWave(8, 0);
+		
 		/*story.ShowWave(0, 0);
 		CombatHandler.startCombat('A');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
@@ -115,11 +85,29 @@ void Logic::TurnOrder() {
 		CombatHandler.startCombat('C');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);
-		story.ShowWave(3, 0);
+		int status2 = story.ShowWave(3, 0);
+		if (status2 == 1)
+		{
+			GameOption.shopOption(GameOption.getPlayerInventory());
+			story.ShowWave(3, 82);
+			status2 = 0;
+		}
+		else if (status2 == 2)
+		{
+			dungeon.dungeonOption();
+			GameOption.waitForEnter();
+			status2 = 0;
+		}
 		CombatHandler.startCombat('D');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);
-		story.ShowWave(4, 0);
+		int status3 = story.ShowWave(4, 0);
+		if (status3 == 1)
+		{
+			GameOption.shopOption(GameOption.getPlayerInventory());
+			story.ShowWave(4, 10);
+			status3 = 0;
+		}
 		CombatHandler.startCombat('E');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);
@@ -132,12 +120,9 @@ void Logic::TurnOrder() {
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);
 		story.ShowWave(7, 0);
-		CombatHandler.startCombat('H');
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
 		story.ShowWave(8, 0);
 		GameOption.runMainMenu();
-		CombatHandler.startCombat('A');
+		CombatHandler.startCombat('H');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);
 

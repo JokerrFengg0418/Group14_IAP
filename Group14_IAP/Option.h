@@ -16,7 +16,6 @@ private:
     Player mainPlayer;
 
     // Small helpers
-    void waitForEnter() const;
     void clearCin() const;
 
 public:
@@ -28,4 +27,5 @@ public:
     void openInventory();       // open and interact with inventory
     void closeInventory();      // close inventory
     void shopOption(Inventory* inventory);
+    void waitForEnter() const;
 };
