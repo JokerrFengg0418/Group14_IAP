@@ -72,6 +72,7 @@ void Option::runMainMenu() {
                 PlayerInventoryPointer->setCurrency(
                     PlayerInventoryPointer->getCurrency() + 50000);
                 PlayerInventoryPointer->setInventory("   Broadsword   ", 1);
+                PlayerInventoryPointer->setInventory("    Red Ruby    ", 1);
                 cout << "[Debug] Added 50,000 gold and a Broadsword to your inventory.\n";
             }
             else {
