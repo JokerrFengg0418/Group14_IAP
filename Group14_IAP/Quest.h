@@ -22,15 +22,7 @@ private:
 	
 public:
 
-	Quest(int Wave, int ID, std::string& Name, std::string& ItemName, int ItemCount);
-
-	int GetWave() const;
-
-	void SetWave(int Wave);
-
-	int GetQuestID() const;
-
-	void SetQuestID(int ID);
+	Quest(std::string& Name, std::string& ItemName, int ItemCount);
 
 	std::string GetName() const;
 

@@ -7,11 +7,12 @@
 
 struct Node {
     std::string Instruction;
+    std::string QuestName;
     int Wave;
     int ChoiceID;
     int Choice;
 
-    Node(std::string instructions, int wave, int choiceID, int choice);
+    Node(std::string instructions, int wave, int choiceID, int choice, std::string& QuestName);
 };
 
 class Story
@@ -32,11 +33,11 @@ public:
     int ShowWave(int wave, int choiceId = -1); // print stories for one wave
     
     void QuestHandler( int Wave, int ChoiceID, int Choice);
-    void StartQuest(int Wave, int ChoiceID);
-    void CompleteQuest(int Wave, int ChoiceID);
-    void ForceEndQuest(int Wave, int ChoiceID);
-    void CreateNode(std::string Instructions, int Wave, int ChoiceID, int Choice);
-	void FactoryCreateQuest(int Wave, int ID, std::string Name, std::string ItemName, int ItemCount);
+    void StartQuest(std::string& Name);
+    void CompleteQuest(std::string& Name);
+    void ForceEndQuest(std::string& Name);
+    void CreateNode(std::string Instructions, int Wave, int ChoiceID, int Choice, std::string QuestName);
+	void FactoryCreateQuest(std::string Name, std::string ItemName, int ItemCount);
     
 
 };
