@@ -100,6 +100,7 @@ void Logic::TurnOrder() {
 		else if (status1 == 2)
 		{
 			cutsceneDungeonTutorial();
+			GameOption.waitForEnter();
 			dungeon.dungeonOption();
 			story.ShowWave(2, 7);
 			status1 = 0;
@@ -197,6 +198,7 @@ void Logic::cutsceneInventoryTutorial()
 }
 void Logic::cutsceneDungeonTutorial()
 {
+	system("cls");
 	std::cout << "The X are random events \n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	std::cout << "They could give you a random item, or bring you into a dungeon room \n";
@@ -209,5 +211,6 @@ void Logic::cutsceneDungeonTutorial()
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	std::cout << "A red ruby is hidden in one of the X \n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+	system("cls");
 }
 
