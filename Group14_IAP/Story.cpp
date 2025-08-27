@@ -167,7 +167,7 @@ void Story::DatabaseInitialisation()
 }
 
 // --- ShowWave ---
-int Story::ShowWave(int wave, int choiceId) const
+int Story::ShowWave(int wave, int choiceId)
 {
     for (const auto& entry : database)
     {
@@ -176,7 +176,7 @@ int Story::ShowWave(int wave, int choiceId) const
             // Story text
             if (!entry.text.empty())
             {
-
+                QuestHandler(wave, choiceId, 0);
                 std::stringstream ss(entry.text);
                 std::string segment;
                 while (std::getline(ss, segment, '@'))
@@ -239,51 +239,61 @@ int Story::ShowWave(int wave, int choiceId) const
                             }
                         }
                     }
-                if (pick > 0 && pick <= entry.results.size())
-                {
-                    std::string resultText = entry.results[pick - 1];
-                    std::stringstream ss(resultText);
-                    std::string segment;
-                    while (std::getline(ss, segment, '@'))
+                    if (pick > 0 && pick <= entry.results.size())
                     {
-                        if (!segment.empty())
+                        std::string resultText = entry.results[pick - 1];
+                        std::stringstream ss(resultText);
+                        std::string segment;
+                        while (std::getline(ss, segment, '@'))
                         {
-                            std::cout << segment << "\n";
-                            if (!ss.eof())
+                            if (!segment.empty())
                             {
-                                std::cout << "Press Enter to continue...\n";
-                                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                                std::cout << segment << "\n";
+                                if (!ss.eof())
+                                {
+                                    std::cout << "Press Enter to continue...\n";
+                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                                }
                             }
                         }
                     }
-                }
 
-                // 👉 Detect if choice opens shop
-                if (entry.choicetext[pick - 1].find("Shop") != std::string::npos)
-                {
-                    return 1; // shop triggered
-                }
+                    // 👉 Detect if choice opens shop
+                    if (entry.choicetext[pick - 1].find("Shop") != std::string::npos)
+                    {
+                        return 1; // shop triggered
+                    }
 
+
+                    // Move to next choice if available
+                    if (pick > 0 && pick <= entry.nextChoices.size())
+                    {
+                        int nextChoiceId = entry.nextChoices[pick - 1];
+                        return ShowWave(wave, nextChoiceId);
+                    }
+                }
             }
         }
+        return 0; // nothing special
     }
 }
+
 
 void Story::StartQuest(int wave, int ChoiceID) {
 
     for (int i = 0; i < QuestDatabase.size(); i++) {
-        if(QuestDatabase[i].GetWave() == wave && ChoiceID == QuestDatabase[i].GetQuestID()) {
+        if (QuestDatabase[i].GetWave() == wave && ChoiceID == QuestDatabase[i].GetQuestID()) {
             QuestDatabase[i].ChangeQuestState(1);
-  
+
         }
-	}
+    }
 
 }
 
 void Story::CompleteQuest(int wave, int ChoiceID) {
 
     for (int i = 0; i < QuestDatabase.size(); i++) {
-        if(QuestDatabase[i].GetWave() == wave && ChoiceID == QuestDatabase[i].GetQuestID()) {
+        if (QuestDatabase[i].GetWave() == wave && ChoiceID == QuestDatabase[i].GetQuestID()) {
             std::string QuestItem;
             int QuestItemNum;
             QuestItem = QuestDatabase[i].GetQuestRequirement().ItemName;
@@ -307,21 +317,21 @@ void Story::FactoryCreateQuest(int Wave, int ID, std::string& Name, std::string&
 
 void Story::ForceEndQuest(int wave, int ChoiceID) {
 
-       for (int i = 0; i < QuestDatabase.size(); i++) {
+    for (int i = 0; i < QuestDatabase.size(); i++) {
 
-        
-           if(QuestDatabase[i].GetWave() == wave && ChoiceID == QuestDatabase[i].GetQuestID()) {
 
-            
-               QuestDatabase[i].ChangeQuestState(0);
-  
-           }
-	   }
+        if (QuestDatabase[i].GetWave() == wave && ChoiceID == QuestDatabase[i].GetQuestID()) {
+
+
+            QuestDatabase[i].ChangeQuestState(0);
+
+        }
+    }
 }
 
 void Story::CreateNode(std::string Instructions, int wave, int ChoiceID, int Choice) {
 
-	NodeDatabase.emplace_back(Instructions, wave, ChoiceID, Choice);
+    NodeDatabase.emplace_back(Instructions, wave, ChoiceID, Choice);
 
 
 }
@@ -342,18 +352,6 @@ void Story::QuestHandler(int wave, int ChoiceID, int Choice) {
             }
         }
     }
-}
-
-                // Move to next choice if available
-                if (pick > 0 && pick <= entry.nextChoices.size())
-                {
-                    int nextChoiceId = entry.nextChoices[pick - 1];
-                    return ShowWave(wave, nextChoiceId);
-                }
-            }
-        }
-    }
-    return 0; // nothing special
 }
 enum class StoryAction {
     None,
