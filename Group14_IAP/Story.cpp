@@ -5,6 +5,9 @@
 #include "Story.h"
 #include "StoryEntry.h"
 #include "Quest.h"
+#include <chrono>
+#include <thread>
+
 
 
 Node::Node(std::string instructions, int wave, int choiceID, int choice, std::string& QuestName)
@@ -233,7 +236,7 @@ int Story::ShowWave(int wave, int choiceId)
                 {
                     if (!segment.empty())
                     {
-                        std::cout << segment << "\n";
+                        TypeWriter(segment, 20);
                         if (!ss.eof())
                         {
                             std::cout << "Press Enter to continue...\n";
@@ -256,26 +259,18 @@ int Story::ShowWave(int wave, int choiceId)
                 int pick;
                 std::cout << "Enter choice number: ";
                 std::cin >> pick;
+
                 if (pick > entry.choicetext.size()) { system("cls"); goto Retrypick; }
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 QuestHandler(wave, choiceId, pick);
 
                 //Quest Check
-                if(entry.quest != 0) {
-                    for (const auto& quest : QuestDatabase) {
-                        
-                            
-                        if (quest.GetName() == "Collect Red Ruby" &&
-                            quest.CheckQuestState() != 2) {
-                            if (entry.results.size() >= 2) {
-                                pick = 2; // force second option safely
-                            }
-                            goto quest_done; // break out of both loops
-                        }
-                        
-                    }
+                if (entry.quest == -1) {
+                    QuestFlagCheck("Collect Red Ruby", 2) ? pick = 1:pick = 2;
+
                 }
-            quest_done:;
+
+       
                 
                 if (pick > 0 && pick <= entry.results.size())
                 {
@@ -286,7 +281,7 @@ int Story::ShowWave(int wave, int choiceId)
                     {
                         if (!segment.empty())
                         {
-                            std::cout << segment << "\n";
+                            TypeWriter(segment, 20);
                             if (!ss.eof())
                             {
                                 std::cout << "Press Enter to continue...\n";
@@ -295,18 +290,24 @@ int Story::ShowWave(int wave, int choiceId)
                         }
                     }
                 }
-                if(Questcheck == false){
-                    if (entry.choicetext[pick - 1].find("Shop") != std::string::npos)
-                    {
-                        return 1; // shop triggered
-                    }
-            
-                    // 👉 Detect if choice opens dungeon
-                    if (entry.choicetext[pick - 1].find("Dungeon") != std::string::npos)
-                    {
-                        return 2; // dungeon triggered
-                    }
+                
+                if (entry.choicetext[pick - 1].find("Shop") != std::string::npos)
+                {
+                    return 1; // shop triggered
                 }
+                
+                // 👉 Detect if choice opens dungeon
+                if (entry.choicetext[pick - 1].find("Dungeon") != std::string::npos)
+                {
+                    return 2; // dungeon triggered
+                }
+
+                if(entry.choicetext[pick - 1].find("GAME END") != std::string::npos)
+                {
+                    return 3; // game end triggered
+				}
+                
+                
             
                 // Move to next choice if available
                 if (pick > 0 && pick <= entry.nextChoices.size())
@@ -402,4 +403,24 @@ void Story::QuestHandler(int wave, int ChoiceID, int Choice) {
     }
 }
 
+bool Story::QuestFlagCheck(std::string Name, int DesiredState) {
+        for (int i = 0; i < QuestDatabase.size(); i++) {
+        if (QuestDatabase[i].GetName() == Name) {
+            if (QuestDatabase[i].CheckQuestState() == DesiredState) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+		return false;
+}
 
+void Story::TypeWriter(const std::string& text, int delay_ms) {
+    for (char c : text) {
+        std::cout << c << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
+    }
+    std::cout << std::endl; // Ensure a newline at the end
+}

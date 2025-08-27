@@ -129,6 +129,11 @@ void Logic::TurnOrder() {
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);
 		story.ShowWave(5, 0);
+		int status4 = story.ShowWave(5, 0);
+		if (status4 == 3)
+		{
+			return;
+		}
 		CombatHandler.startCombat('F');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);
@@ -142,7 +147,7 @@ void Logic::TurnOrder() {
 		CombatHandler.startCombat('H');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);
-
+		return;
 	}
 
 }
