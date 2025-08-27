@@ -62,7 +62,7 @@ void Logic::TurnOrder() {
 	while (GameEndState == false) {
 		
 		
-		/*story.ShowWave(0, 0);
+		story.ShowWave(0, 0);
 		CombatHandler.startCombat('A');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);
@@ -75,7 +75,7 @@ void Logic::TurnOrder() {
 		}
 		CombatHandler.startCombat('B');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);*/
+		GlobalOrderSet(GlobalOrderGet() + 1);
 		int status1 = story.ShowWave(2, 0);
 		if (status1 == 1)
 		{
