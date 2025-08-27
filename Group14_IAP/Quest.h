@@ -17,8 +17,7 @@ private:
 	QuestRequirement Requirement;
 	QuestState State;
 	std::string Name;
-	int ID;
-	int Wave;
+	
 	
 public:
 
