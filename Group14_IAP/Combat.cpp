@@ -17,6 +17,8 @@
 #include <cctype>
 #include <conio.h>
 #include <Windows.h>
+#include <chrono>
+#include <thread>
 
 using namespace std;
 
@@ -344,12 +346,6 @@ void Combat::openInventoryDuringCombatByName(Inventory* inv) {
 	}
 }
 
-static inline void waitKey(const char* prompt = "\n[Press any key to continue]")
-{
-	std::cout << prompt << std::flush;
-	_getch(); // waits for a single key, no echo
-}
-
 // External enemy list if used elsewhere
 extern Entity* List[20];
 
@@ -421,8 +417,8 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 			std::cout << "=== Combat End ===\n";
 			return;
 		}
-
-		waitKey("\n[Enemy turn over] Press any key...");
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		
 	}
 
 	// ------------- PLAYER TURN -------------
