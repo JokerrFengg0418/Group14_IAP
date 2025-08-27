@@ -1,9 +1,14 @@
+#include <windows.h>
 #include "Logic.h"
 #include "Combat.h"
 #include "Option.h"
 #include "Board.h"
 #include "Story.h"
 #include "Dungeon.h"
+#include "Entity.h"
+#include <cstdlib>
+#include <chrono>
+#include <thread>
 
 
 Logic::Logic() {
@@ -58,6 +63,7 @@ void Logic::TurnOrder() {
 	Combat CombatHandler;
 	Story story(GameOption.getPlayerInventory());
 	Dungeon dungeon(GameOption.getPlayerDungeon(), GameOption.getPlayerInventory());
+	
 
 
 	while (GameEndState == false) {
@@ -65,8 +71,13 @@ void Logic::TurnOrder() {
 		
 		story.ShowWave(0, 0);
 		GameOption.waitForEnter();
-		cutsceneCombatTutorial();
+
+
 		CombatHandler.startCombat('A');
+		
+		cutsceneCombatTutorial();
+		GameOption.waitForEnter();
+		
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);
 		int status = story.ShowWave(1, 0);
@@ -135,6 +146,33 @@ void Logic::TurnOrder() {
 
 }
 
+void Logic::cutsceneCombatTutorial()
+{
+	//Board board;
+	//Entity* Entitylist[20];
+	//board.drawBoard(Entitylist, 20);
+
+	system("cls");
+	std::cout << "Welcome to the Combat Tutorial!\n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	std::cout << "Fighting is really easy! Just be within 2 tiles of the enemy\n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	std::cout << "In order for you to initiate the attack!\n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	std::cout << "Just remember that, different weapons have different ranges!\n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	std::cout << "You can also, cycle the attack if there are multiple enemies\n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	std::cout << "nearby you and you can choose who to attack! you can do this with A and D keys";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+	system("cls");
+
+}
 void Logic::cutsceneDungeonTutorial()
 {
 	std::cout << "The X are random events \n";
@@ -143,13 +181,5 @@ void Logic::cutsceneDungeonTutorial()
 	std::cout << "Step on a X tile to automatically collect or go into a room \n";
 	std::cout << "The dungeon provides extra resources \n";
 	std::cout << "A red ruby is hidden in one of the X \n";
-}
-
-void Logic::cutsceneCombatTutorial(Combat& combat)
-{
-	std::cout << "Welcome to the Combat Tutorial!";
-	std::cout << "Fighting is really easy! Just be within 2 tiles of the enemy";
-	std::cout << "In order for you to initiate the attack!";
-	std::cout << "You can also, cycle the attack if there are multiple enemies\n nearby you and you want to choose who to attack! you can do this with A and D keys";
 }
 
