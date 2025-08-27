@@ -11,7 +11,7 @@
 Player::Player()
 {
 	Health = 100;
-	std::cout << "Player Created \n";
+	//std::cout << "Player Created \n";
 }
 
 Player::Player(int r, int c, int hp, int dmg)
@@ -21,7 +21,7 @@ Player::Player(int r, int c, int hp, int dmg)
 	setHealth(hp);   // 
 	setDamage(dmg);  // 
 	setEntityType('P');
-	std::cout << "Player Created at (" << r << ", " << c << ")" << ", health: " << getHealth() << ", damage: " << getDamage() << std::endl;
+	//std::cout << "Player Created at (" << r << ", " << c << ")" << ", health: " << getHealth() << ", damage: " << getDamage() << std::endl;
 }
 
 Player::~Player()
@@ -36,6 +36,7 @@ void Player::takeDamage(int amount)
 	if (getHealth() <= 0) {
 		setHealth(0);
 		std::cout << " Player has been defeated!" << std::endl;
+
 	}
 }
 
@@ -119,24 +120,24 @@ bool Player::moveDungeon()
     switch (toupper(input)) {
     case 'W':
         newRow--;
-        std::cout << "Move Up\n";
+        //std::cout << "Move Up\n";
         break;
     case 'S':
         newRow++;
-        std::cout << "Move Down\n";
+        //std::cout << "Move Down\n";
         break;
     case 'A':
         newCol--;
-        std::cout << "Move Left\n";
+        //std::cout << "Move Left\n";
         break;
     case 'D':
         newCol++;
-        std::cout << "Move Right\n";
+        //std::cout << "Move Right\n";
         break;
     case 'E':
         return true; // signal exit
     default:
-        std::cout << "Invalid input\n";
+        //std::cout << "Invalid input\n";
         return false; // ignore bad key
     }
 
