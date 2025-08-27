@@ -37,6 +37,7 @@ public:
 
 	//Inventory Tutorial//
 	void cutsceneInventoryTutorial();
+	bool inventoryTutorialPlayed = false;
 
 	//Dungeon Tutorial//
 	void cutsceneDungeonTutorial();

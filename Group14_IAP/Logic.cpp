@@ -69,17 +69,17 @@ void Logic::TurnOrder() {
 	while (GameEndState == false) {
 		
 		
-		/*story.ShowWave(0, 0);
+		story.ShowWave(0, 0);
 		GameOption.waitForEnter();
 
 
 		CombatHandler.startCombat('A');
 		
-		cutsceneCombatTutorial();
+		cutsceneCombatTutorial(); // cutscene combat
 		GameOption.waitForEnter();
-		
+
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);*/
+		GlobalOrderSet(GlobalOrderGet() + 1);
 		int status = story.ShowWave(1, 0);
 		if (status == 1) 
 		{ 
@@ -87,9 +87,9 @@ void Logic::TurnOrder() {
 			story.ShowWave(1, 1);
 			status = 0;
 		}
-		/*CombatHandler.startCombat('B');
+		CombatHandler.startCombat('B');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);*/
+		GlobalOrderSet(GlobalOrderGet() + 1);
 		int status1 = story.ShowWave(2, 0);
 		if (status1 == 1)
 		{
@@ -104,9 +104,9 @@ void Logic::TurnOrder() {
 			story.ShowWave(2, 7);
 			status1 = 0;
 		}
-		/*CombatHandler.startCombat('C');
+		CombatHandler.startCombat('C');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);*/
+		GlobalOrderSet(GlobalOrderGet() + 1);
 		int status2 = story.ShowWave(3, 0);
 		if (status2 == 1)
 		{
@@ -172,6 +172,28 @@ void Logic::cutsceneCombatTutorial()
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	system("cls");
 
+}
+void Logic::cutsceneInventoryTutorial()
+{
+	system("cls");
+	std::cout << "Welcome to the Inventory Tutorial!\n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	std::cout << "You can choose to equip, unequip or use an item!\n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	std::cout << "simply type equip [name of equipment/item]\n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	std::cout << "or, unequip[weapon/armor name]\n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	std::cout << "to use the health potion, use [Health Potion] to heal yourself!\n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	std::cout << "see, easy right! Now go on and fight youngin'!";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+	system("cls");
 }
 void Logic::cutsceneDungeonTutorial()
 {
