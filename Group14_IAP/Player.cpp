@@ -11,7 +11,7 @@
 Player::Player()
 {
 	Health = 100;
-	std::cout << "Player Created \n";
+	// Player Created
 }
 
 Player::Player(int r, int c, int hp, int dmg)

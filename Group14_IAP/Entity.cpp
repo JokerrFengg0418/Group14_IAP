@@ -2,7 +2,7 @@
 #include <iostream>
 
 Entity::Entity() : position(0, 0) {
-    std::cout << "Entity Created." << std::endl;
+    // Entity Creation
 }
 
 Entity::Entity(int r, int c) : position(r, c) {
