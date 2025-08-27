@@ -236,7 +236,7 @@ int Story::ShowWave(int wave, int choiceId)
                 {
                     if (!segment.empty())
                     {
-                        TypeWriter(segment, 20);
+                        TypeWriter(segment, 5);
                         if (!ss.eof())
                         {
                             std::cout << "Press Enter to continue...\n";
@@ -262,13 +262,11 @@ int Story::ShowWave(int wave, int choiceId)
 
                 if (pick > entry.choicetext.size()) { system("cls"); goto Retrypick; }
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                QuestHandler(wave, choiceId, pick);
-
-                //Quest Check
-                if (entry.quest == -1) {
-                    QuestFlagCheck("Collect Red Ruby", 2) ? pick = 1:pick = 2;
-
+                bool QuestCheck = QuestHandler(wave, entry.choice, pick);
+                if (QuestCheck = false) {
+                    pick = entry.results.size();
                 }
+                
 
        
                 
@@ -281,7 +279,7 @@ int Story::ShowWave(int wave, int choiceId)
                     {
                         if (!segment.empty())
                         {
-                            TypeWriter(segment, 20);
+                            TypeWriter(segment, 5);
                             if (!ss.eof())
                             {
                                 std::cout << "Press Enter to continue...\n";
@@ -382,22 +380,26 @@ void Story::CreateNode(std::string Instructions, int wave, int ChoiceID, int Cho
 
 }
 
-void Story::QuestHandler(int wave, int ChoiceID, int Choice) {
+bool Story::QuestHandler(int wave, int ChoiceID, int Choice) {
     for (int i = 0; i < NodeDatabase.size(); i++) {
         if (NodeDatabase[i].Wave == wave && ChoiceID == NodeDatabase[i].ChoiceID && NodeDatabase[i].Choice == Choice) {
             std::string Instructions;
             Instructions = NodeDatabase[i].Instruction;
             if (Instructions == "StartQuest") {
                 StartQuest(NodeDatabase[i].QuestName);
-                return;
+                return true;
             }
             else if (Instructions == "CheckQuest") {
                 CompleteQuest(NodeDatabase[i].QuestName);
-                return;
+                return true;
             }
             else if (Instructions == "ForceEndQuest") {
                 ForceEndQuest(NodeDatabase[i].QuestName);
-                return;
+                return true;
+            }
+            else if (Instructions == "CheckFlagQuest") {
+                bool Check = QuestFlagCheck(NodeDatabase[i].QuestName, 2);
+                return Check;
             }
         }
     }

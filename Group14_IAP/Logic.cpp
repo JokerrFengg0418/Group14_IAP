@@ -93,8 +93,8 @@ void Logic::TurnOrder() {
 
 		// --- Run combat after each wave ---
 		char combatTag = 'A' + wave; // A, B, C... for each wave
-		CombatHandler.startCombat(combatTag);
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+		//CombatHandler.startCombat(combatTag);
+		//CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 
 		// increment global turn order + move to next wave
 		GlobalOrderSet(GlobalOrderGet() + 1);

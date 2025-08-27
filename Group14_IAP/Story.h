@@ -32,7 +32,7 @@ public:
     void DatabaseInitialisation();
     int ShowWave(int wave, int choiceId = -1); // print stories for one wave
     
-    void QuestHandler( int Wave, int ChoiceID, int Choice);
+    bool QuestHandler( int Wave, int ChoiceID, int Choice);
     void StartQuest(std::string& Name);
     void CompleteQuest(std::string& Name);
     void ForceEndQuest(std::string& Name);

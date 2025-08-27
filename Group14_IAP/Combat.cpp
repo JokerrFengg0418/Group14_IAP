@@ -700,9 +700,9 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 
 	while (WinCondition() == 0)
 	{
-		std::cout << "Turn Number: " << firstTurn << "\n";
+		
 		board.drawBoard(List, 20);
-
+		std::cout << "Turn Number: " << firstTurn << "\n";
 
 		for (int i = 0; i < 20; ++i)
 		{
