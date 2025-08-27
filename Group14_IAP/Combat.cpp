@@ -628,7 +628,9 @@ void Combat::placeTurret(Inventory* playerInventory, Entity* List[])
 void Combat::TurnOrder(Inventory* PlayerInventory)
 {
 	firstTurn = 1;
+	board.drawBoard(List, 20);
 	placeTurret(PlayerInventory, List);
+	system("cls");
 
 	while (WinCondition() == 0)
 	{
