@@ -1,6 +1,7 @@
 #include "Logic.h"
 #include "Combat.h"
 #include "Option.h"
+#include "Board.h"
 #include "Story.h"
 #include "Dungeon.h"
 #include <chrono>
@@ -66,6 +67,7 @@ void Logic::TurnOrder() {
 		
 		/*story.ShowWave(0, 0);
 		GameOption.waitForEnter();
+		cutsceneCombatTutorial();
 		CombatHandler.startCombat('A');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);
@@ -149,5 +151,13 @@ void Logic::cutsceneDungeonTutorial()
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	std::cout << "A red ruby is hidden in one of the X \n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+}
+
+void Logic::cutsceneCombatTutorial(Combat& combat)
+{
+	std::cout << "Welcome to the Combat Tutorial!";
+	std::cout << "Fighting is really easy! Just be within 2 tiles of the enemy";
+	std::cout << "In order for you to initiate the attack!";
+	std::cout << "You can also, cycle the attack if there are multiple enemies\n nearby you and you want to choose who to attack! you can do this with A and D keys";
 }
 

@@ -33,7 +33,7 @@ public:
 	void TurnOrder();
 
 	//Combat Tutorial//
-	void cutsceneCombatTutorial();
+	void cutsceneCombatTutorial(Combat& combat);
 
 	//Inventory Tutorial//
 	void cutsceneInventoryTutorial();
