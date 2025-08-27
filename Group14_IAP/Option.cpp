@@ -2,6 +2,8 @@
 #include "Inventory.h"
 #include "Item.h"
 #include "Board.h"
+#include "Story.h"
+#include "Logic.h"
 #include <iostream>
 #include <string>
 #include <limits>
@@ -210,6 +212,32 @@ void Option::waitForEnter() const {
     cout << "\nPress ENTER to continue...";
     cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     if (cin.peek() == '\n') cin.get();
+}
+
+void Option::gameStart() const
+{
+    std::cout << "\n=================================\n";
+    std::cout << "   Remnant of The Last Soldier   ";
+    std::cout << "\n=================================\n";
+
+    std::cout << "1. Start Game" << std::endl;
+    std::cout << "2. Exit Game" << std::endl;
+
+    int choice;
+    std::cin >> choice;
+
+    if (choice == 1) {
+        Logic logic;
+        logic.TurnOrder();
+    }
+    else if (choice == 2) {
+        std::cout << "Exiting Game.";
+        return;
+    }
+    else {
+        std::cout << "Invalid Choice. Try again\n";
+    }
+
 }
 
 void Option::clearCin() const {
