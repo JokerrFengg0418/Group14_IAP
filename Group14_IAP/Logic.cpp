@@ -3,6 +3,8 @@
 #include "Option.h"
 #include "Story.h"
 #include "Dungeon.h"
+#include <chrono>
+#include <thread>
 
 
 Logic::Logic() {
@@ -62,7 +64,7 @@ void Logic::TurnOrder() {
 	while (GameEndState == false) {
 		
 		
-		story.ShowWave(0, 0);
+		/*story.ShowWave(0, 0);
 		GameOption.waitForEnter();
 		CombatHandler.startCombat('A');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
@@ -76,7 +78,7 @@ void Logic::TurnOrder() {
 		}
 		CombatHandler.startCombat('B');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
+		GlobalOrderSet(GlobalOrderGet() + 1);*/
 		int status1 = story.ShowWave(2, 0);
 		if (status1 == 1)
 		{
@@ -136,10 +138,16 @@ void Logic::TurnOrder() {
 void Logic::cutsceneDungeonTutorial()
 {
 	std::cout << "The X are random events \n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	std::cout << "They could give you a random item, or bring you into a dungeon room \n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	std::cout << "Once all the monster dies in a room, you will be able to leave \n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	std::cout << "Step on a X tile to automatically collect or go into a room \n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	std::cout << "The dungeon provides extra resources \n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	std::cout << "A red ruby is hidden in one of the X \n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 }
 
