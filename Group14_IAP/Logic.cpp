@@ -86,6 +86,10 @@ void Logic::TurnOrder() {
 			dungeon.dungeonOption();
 			choiceId = story.ShowWave(wave, 7); // resume branch after dungeon
 		}
+		else if (status == 3) {
+			GameEndState = true;
+			return;
+		}
 
 		// --- Run combat after each wave ---
 		char combatTag = 'A' + wave; // A, B, C... for each wave
