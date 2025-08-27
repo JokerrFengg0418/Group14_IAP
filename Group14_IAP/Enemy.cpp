@@ -4,7 +4,7 @@
 // Default Constructor
 Enemy::Enemy()
 {
-	std::cout << "Enemy Created." << std::endl;
+	// Enemy Created
 }
 
 // Overloaded Constructor to set initial position, type, health, and damage
@@ -14,18 +14,18 @@ Enemy::Enemy(int r, int c, EnemyType type, int hp, int dmg)
 	setCol(c);
 	this->type = type;
 	setEntityType('E');
-	setHealth(hp);   // 
-	setDamage(dmg);  // 
-	std::cout << "Enemy Created at (" << r << ", " << c << ") with type: "
-		<< static_cast<int>(type) << ", health: " << getHealth()
-		<< ", damage: " << getDamage() << std::endl;
+	setHealth(hp);   
+	setDamage(dmg); 
+	//std::cout << "Enemy Created at (" << r << ", " << c << ") with type: "
+	//	<< static_cast<int>(type) << ", health: " << getHealth()
+	//	<< ", damage: " << getDamage() << std::endl;
 }
 
  
 // Destructor
 Enemy::~Enemy()
 {
-	std::cout << "Enemy Destroyed." << std::endl;
+	// Enemy Destroyed
 }
 
 // Getters

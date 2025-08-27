@@ -11,7 +11,7 @@ Board::Board()
 {
     static bool printed = false;
     if (!printed) {
-        std::cout << "Map created\n";
+        //std::cout << "Map created\n";
         printed = true;
     }
     for (int i = 0; i < maxEnemies; ++i) enemies[i] = nullptr;

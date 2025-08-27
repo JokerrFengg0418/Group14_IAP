@@ -34,10 +34,10 @@ void Option::runMainMenu() {
         cout << "=============================\n";
         cout << "           MAIN MENU         \n";
         cout << "=============================\n";
-        cout << "1. Inventory\n";
+        cout << "1. Open Inventory\n";
         cout << "2. Shop\n";
-        cout << "3. Dungeon\n";
-        cout << "4. Exit\n";
+        cout << "3. Enter Dungeon\n";
+        cout << "4. Start Next Chapter of the Story\n";
         cout << "5. Debug (add 50,000 gold + Broadsword)\n";
         cout << "=============================\n";
         cout << "Enter your choice: ";

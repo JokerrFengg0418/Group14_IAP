@@ -2,15 +2,15 @@
 #include <iostream>
 
 Entity::Entity() : position(0, 0) {
-    std::cout << "Entity Created." << std::endl;
+    //std::cout << "Entity Created." << std::endl;
 }
 
 Entity::Entity(int r, int c) : position(r, c) {
-    std::cout << "Entity Created at (" << r << ", " << c << ")" << std::endl;
+    //std::cout << "Entity Created at (" << r << ", " << c << ")" << std::endl;
 }
 
 Entity::~Entity() {
-    std::cout << "Entity Destroyed." << std::endl;
+    //std::cout << "Entity Destroyed." << std::endl;
 }
 
 int Entity::getRow() const {

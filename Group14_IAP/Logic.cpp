@@ -1,8 +1,11 @@
 #include "Logic.h"
 #include "Combat.h"
 #include "Option.h"
+#include "Board.h"
 #include "Story.h"
 #include "Dungeon.h"
+#include <chrono>
+#include <thread>
 
 
 Logic::Logic() {
@@ -62,8 +65,9 @@ void Logic::TurnOrder() {
 	while (GameEndState == false) {
 		
 		
-		story.ShowWave(0, 0);
-		/*GameOption.waitForEnter();
+		/*story.ShowWave(0, 0);
+		GameOption.waitForEnter();
+		cutsceneCombatTutorial();
 		CombatHandler.startCombat('A');
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);*/
@@ -86,7 +90,7 @@ void Logic::TurnOrder() {
 		}
 		else if (status1 == 2)
 		{
-		
+			cutsceneDungeonTutorial();
 			dungeon.dungeonOption();
 			story.ShowWave(2, 7);
 			status1 = 0;
@@ -131,5 +135,29 @@ void Logic::TurnOrder() {
 
 	}
 
+}
+
+void Logic::cutsceneDungeonTutorial()
+{
+	std::cout << "The X are random events \n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+	std::cout << "They could give you a random item, or bring you into a dungeon room \n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+	std::cout << "Once all the monster dies in a room, you will be able to leave \n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+	std::cout << "Step on a X tile to automatically collect or go into a room \n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+	std::cout << "The dungeon provides extra resources \n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+	std::cout << "A red ruby is hidden in one of the X \n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+}
+
+void Logic::cutsceneCombatTutorial(Combat& combat)
+{
+	std::cout << "Welcome to the Combat Tutorial!";
+	std::cout << "Fighting is really easy! Just be within 2 tiles of the enemy";
+	std::cout << "In order for you to initiate the attack!";
+	std::cout << "You can also, cycle the attack if there are multiple enemies\n nearby you and you want to choose who to attack! you can do this with A and D keys";
 }
 

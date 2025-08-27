@@ -32,5 +32,13 @@ public:
 	//Turn Order//
 	void TurnOrder();
 
+	//Combat Tutorial//
+	void cutsceneCombatTutorial(Combat& combat);
+
+	//Inventory Tutorial//
+	void cutsceneInventoryTutorial();
+
+	//Dungeon Tutorial//
+	void cutsceneDungeonTutorial();
 };
 
