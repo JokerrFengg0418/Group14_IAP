@@ -232,7 +232,7 @@ void Option::gameStart() const
     }
     else if (choice == 2) {
         std::cout << "Exiting Game.";
-        return;
+        exit(0);
     }
     else {
         std::cout << "Invalid Choice. Try again\n";
