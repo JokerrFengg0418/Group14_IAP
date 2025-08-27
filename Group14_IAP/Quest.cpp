@@ -3,10 +3,9 @@
 
 
 //Initialiser, Wave determines chunk, ID determines specific choice, Item name and Item Count for requirements
-Quest::Quest(int Wave,int ID, std::string& Name, std::string& ItemName, int ItemCount) {
+Quest::Quest( std::string& Name, std::string& ItemName, int ItemCount) {
 
-	this->Wave = Wave;
-	this->ID = ID;
+	
 	this->Name = Name;
 	Requirement.ItemName = ItemName;
 	Requirement.Count = ItemCount;
@@ -16,27 +15,6 @@ Quest::Quest(int Wave,int ID, std::string& Name, std::string& ItemName, int Item
 
 
 //Getters Setters
-
-int Quest::GetWave() const {
-
-	return Wave;
-
-}
-
-void Quest::SetWave(int Wave) {
-
-	this->Wave = Wave;
-}
-int Quest::GetQuestID() const {
-
-	return ID;
-
-}
-
-void Quest::SetQuestID(int ID) {
-
-	this->ID = ID;
-}
 
 QuestRequirement Quest::GetQuestRequirement() const {
 

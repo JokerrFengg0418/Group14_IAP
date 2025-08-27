@@ -7,7 +7,7 @@
 #include "Quest.h"
 
 
-Node::Node(std::string instructions, int wave, int choiceID, int choice)
+Node::Node(std::string instructions, int wave, int choiceID, int choice, std::string& QuestName)
 {
 	Instruction = instructions;
     Wave = wave;
@@ -230,13 +230,15 @@ int Story::ShowWave(int wave, int choiceId)
                 //Quest Check
                 if (entry.quest != -1) {
                     for (const auto& quest : QuestDatabase) {
-                        if (quest.GetQuestID() == entry.choice) {
-                            if (quest.CheckQuestState() != 2) {
-                                pick = 2; // force second option
+                        for (const auto& NodeDatabase : NodeDatabase) {
+                            if (quest.GetName() == NodeDatabase.QuestName) {
+                                if (quest.CheckQuestState() != 2) {
+                                    pick = 2; // force second option
+
+                                }
+
 
                             }
-
-
                         }
                     }
 
@@ -304,10 +306,10 @@ int Story::ShowWave(int wave, int choiceId)
 }
 
 
-void Story::StartQuest(int wave, int ChoiceID) {
+void Story::StartQuest(std::string& Name) {
 
     for (int i = 0; i < QuestDatabase.size(); i++) {
-        if (QuestDatabase[i].GetWave() == wave && ChoiceID == QuestDatabase[i].GetQuestID()) {
+        if (QuestDatabase[i].GetName() == Name) {
             QuestDatabase[i].ChangeQuestState(1);
 
         }
@@ -315,10 +317,10 @@ void Story::StartQuest(int wave, int ChoiceID) {
 
 }
 
-void Story::CompleteQuest(int wave, int ChoiceID) {
+void Story::CompleteQuest(std::string& Name) {
 
     for (int i = 0; i < QuestDatabase.size(); i++) {
-        if (QuestDatabase[i].GetWave() == wave && ChoiceID == QuestDatabase[i].GetQuestID()) {
+        if (QuestDatabase[i].GetName() == Name) {
             std::string QuestItem;
             int QuestItemNum;
             QuestItem = QuestDatabase[i].GetQuestRequirement().ItemName;
@@ -335,17 +337,17 @@ void Story::CompleteQuest(int wave, int ChoiceID) {
 
 }
 
-void Story::FactoryCreateQuest(int Wave, int ID, std::string& Name, std::string& ItemName, int ItemCount)
+void Story::FactoryCreateQuest(std::string Name, std::string ItemName, int ItemCount)
 {
-    QuestDatabase.emplace_back(Wave, ID, Name, ItemName, ItemCount);
+    QuestDatabase.emplace_back( Name, ItemName, ItemCount);
 }
 
-void Story::ForceEndQuest(int wave, int ChoiceID) {
+void Story::ForceEndQuest(std::string& Name) {
 
     for (int i = 0; i < QuestDatabase.size(); i++) {
 
 
-        if (QuestDatabase[i].GetWave() == wave && ChoiceID == QuestDatabase[i].GetQuestID()) {
+        if (QuestDatabase[i].GetName() == Name) {
 
 
             QuestDatabase[i].ChangeQuestState(0);
@@ -354,9 +356,9 @@ void Story::ForceEndQuest(int wave, int ChoiceID) {
     }
 }
 
-void Story::CreateNode(std::string Instructions, int wave, int ChoiceID, int Choice) {
+void Story::CreateNode(std::string Instructions, int wave, int ChoiceID, int Choice, std::string QuestName) {
 
-    NodeDatabase.emplace_back(Instructions, wave, ChoiceID, Choice);
+    NodeDatabase.emplace_back(Instructions, wave, ChoiceID, Choice, QuestName);
 
 
 }
@@ -367,13 +369,13 @@ void Story::QuestHandler(int wave, int ChoiceID, int Choice) {
             std::string Instructions;
             Instructions = NodeDatabase[i].Instruction;
             if (Instructions == "StartQuest") {
-                StartQuest(wave, ChoiceID);
+                StartQuest(NodeDatabase[i].QuestName);
             }
             else if (Instructions == "CheckQuest") {
-                CompleteQuest(wave, ChoiceID);
+                CompleteQuest(NodeDatabase[i].QuestName);
             }
             else if (Instructions == "ForceEndQuest") {
-                ForceEndQuest(wave, ChoiceID);
+                ForceEndQuest(NodeDatabase[i].QuestName);
             }
         }
     }
