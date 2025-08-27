@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Inventory.h"
 #include "Option.h"
+#include "Logic.h"
 #include "Turret.h"
 #include <iostream>
 #include <cmath>
@@ -194,6 +195,13 @@ static inline std::string toLowerCopy(std::string s) {
 // Open inventory while in combat. Returns when user presses E.
 void Combat::openInventoryDuringCombatByName(Inventory* inv) {
 	if (!inv) return;
+
+	Logic logic; // define logic so that it can call inventory cutscene
+
+	if (!inventoryTutorialPlayed) {
+		logic.cutsceneInventoryTutorial(); // call cutscene from logic
+		inventoryTutorialPlayed = true; // once set to true it wont loop again
+	}
 
 	while (true) {
 		system("cls"); // hide board while inventory is open

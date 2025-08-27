@@ -33,10 +33,11 @@ public:
 	void TurnOrder();
 
 	//Combat Tutorial//
-	void cutsceneCombatTutorial(Combat& combat);
+	void cutsceneCombatTutorial();
 
 	//Inventory Tutorial//
 	void cutsceneInventoryTutorial();
+	bool inventoryTutorialPlayed = false;
 
 	//Dungeon Tutorial//
 	void cutsceneDungeonTutorial();
