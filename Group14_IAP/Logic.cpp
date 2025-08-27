@@ -76,7 +76,7 @@ void Logic::TurnOrder() {
 		CombatHandler.startCombat('A');
 		
 		cutsceneCombatTutorial(); // cutscene combat
-		GameOption.waitForEnter();
+		GameOption.waitForEnter(); // Enter
 
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);

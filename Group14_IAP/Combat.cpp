@@ -196,11 +196,11 @@ static inline std::string toLowerCopy(std::string s) {
 void Combat::openInventoryDuringCombatByName(Inventory* inv) {
 	if (!inv) return;
 
-	Logic logic;
+	Logic logic; // define logic so that it can call inventory cutscene
 
 	if (!inventoryTutorialPlayed) {
-		logic.cutsceneInventoryTutorial();  // <-- Your function to show tutorial
-		inventoryTutorialPlayed = true; // Mark as shown
+		logic.cutsceneInventoryTutorial(); // call cutscene from logic
+		inventoryTutorialPlayed = true; // once set to true it wont loop again
 	}
 
 	while (true) {
