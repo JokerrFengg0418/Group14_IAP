@@ -244,3 +244,9 @@ void Option::clearCin() const {
     cin.clear();
     cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
+
+Player* Option::getPlayerDungeon()
+{
+    Player* mainPlayerPointer = &mainPlayer;
+        return mainPlayerPointer;
+}

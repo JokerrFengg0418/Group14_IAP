@@ -190,7 +190,7 @@ static inline std::string toLowerCopy(std::string s) {
 }
 
 // Open inventory while in combat. Returns when user presses E.
-static void openInventoryDuringCombatByName(Inventory* inv) {
+void Combat::openInventoryDuringCombatByName(Inventory* inv) {
 	if (!inv) return;
 
 	while (true) {
@@ -201,6 +201,7 @@ static void openInventoryDuringCombatByName(Inventory* inv) {
 		std::cout << "Commands:\n";
 		std::cout << "  equip <item name>\n";
 		std::cout << "  unequip <weapon|armor>\n";
+		std::cout << "  use <item name>\n";
 		std::cout << "  e = exit\n> ";
 
 		std::string line;
@@ -289,9 +290,64 @@ static void openInventoryDuringCombatByName(Inventory* inv) {
 			continue;
 		}
 
+		if (cmdLower == "use") {
+			if (arg.empty()) {
+				std::cout << "Usage: use <item name>\nPress any key to continue...";
+				_getch();
+				continue;
+			}
+
+			Item* found = inv->FindItemByName(arg);
+			if (!found) {
+				std::cout << "Item not found: " << arg << "\nPress any key to continue...";
+				_getch();
+				continue;
+			}
+			if (inv->DrawDatabase('M', arg) || inv->DrawDatabase('W', arg) || inv->DrawDatabase('A', arg)) {
+
+				std::cout << "Monster item, weapons and armour cannot be used.\nPress any key to continue...";
+				_getch();
+				continue;
+
+			}
+			if (inv->DrawDatabase('I', arg)) {
+				std::cout << "Used item: " << found->GetItemWord('N') << "\n";
+				int cur = found->GetItemValue('V');
+
+				if (cur > 1) {
+					found->SetItemValue('V', cur - 1);
+				}
+
+				else {
+					inv->RemoveItemFromInventory(found->GetItemWord('N'), 1);
+				}
+
+				for (int i = 0; i < 20; i++)
+				{
+					if (!List[i]) continue;
+					if (List[i]->getEntityType() == 'P') {
+						List[i]->setHealth(List[i]->getHealth() + found->GetNumber());
+						std::cout << "You healed " << found->GetNumber() << "HP.\n";
+						break;
+					}
+				}
+				std::cout << "Press any key to continue...";
+				_getch();
+				continue;
+			}
+			
+
+		}
+
 		std::cout << "Unknown command. Use: equip <name>  or  unequip <weapon|armor>\nPress any key to continue...";
 		_getch();
 	}
+}
+
+static inline void waitKey(const char* prompt = "\n[Press any key to continue]")
+{
+	std::cout << prompt << std::flush;
+	_getch(); // waits for a single key, no echo
 }
 
 // External enemy list if used elsewhere
@@ -315,7 +371,7 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 			if (List[i] == nullptr) continue;
 			if (List[i]->getEntityType() == 'P') { player = List[i]; break; }
 		}
-		if (!player) { std::cout << "[Combat] No player found.\n"; std::cout << "=== Combat End ===\n"; return; }
+		if (!player) { std::cout << "[Combat] No player found.\n"; std::cout << "=== Combat End ===\n" ; return; }
 
 		int distance = calculateDistance(entity1->getPosition(), player->getPosition());
 
@@ -365,6 +421,8 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 			std::cout << "=== Combat End ===\n";
 			return;
 		}
+
+		waitKey("\n[Enemy turn over] Press any key...");
 	}
 
 	// ------------- PLAYER TURN -------------

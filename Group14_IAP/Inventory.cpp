@@ -238,7 +238,7 @@ void Inventory::DatabaseInitialisation() {
     FactoryCreateItem("     Helmet     ", "Protects your head.", 'A', 80, 30, 50, 5, 'A');
 
     // ===== Consumables / Other (DB 'I') =====
-    FactoryCreateItem(" Health Potions ", "Restores health.", 'I', 1, 20, 30, 20, 'I');
+    FactoryCreateItem(" Health Potion  ", "Restores health.", 'I', 1, 20, 30, 20, 'I');
 
     // ===== Monster/Dungeon Drop Items / Other (DB 'M') =====
     FactoryCreateItem("    Rat Tail    ", "A tail from a rat (Sellable).", 'M', 1, 3, 0, 0, 'M');
