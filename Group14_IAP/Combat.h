@@ -43,5 +43,6 @@ public:
 
 	// Spawns 1 player + N enemies of a single random type (no boss by default)
 	void startDungeonOneTypeRandom(int minEnemies, int maxEnemies, bool allowBoss = false);
+	void openInventoryDuringCombatByName(Inventory* inv);
 
 };

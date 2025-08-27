@@ -71,7 +71,7 @@ void Shop::populateShop()
         {'A', "     Shield     "},
         {'A', "     Helmet     "},
 
-        {'I', " Health Potions "},
+        {'I', " Health Potion  "},
     };
 
     std::random_device rd;
