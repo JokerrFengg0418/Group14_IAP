@@ -28,5 +28,7 @@ public:
     void closeInventory();      // close inventory
     void shopOption(Inventory* inventory);
     void waitForEnter() const;
+    void gameStart() const;
+
     Player* getPlayerDungeon();
 };

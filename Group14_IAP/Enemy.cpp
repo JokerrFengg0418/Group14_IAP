@@ -64,43 +64,45 @@ void Enemy::takeDamage(int amount)
 
 void Enemy::move(Entity* List[20])
 {
-	// Decide a direction: up/down/left/right
-	int dr = 0, dc = 0;
-	switch (rand() % 4) {
-	case 0: dr = -1; break; // up
-	case 1: dr = +1; break; // down
-	case 2: dc = -1; break; // left
-	case 3: dc = +1; break; // right
-	}
+    // Randomise enemy movement
+    int rowOffset = 0;
+    int colOffset = 0;
+    switch (rand() % 4) {
+    case 0: rowOffset = -1; break; // up
+    case 1: rowOffset = +1; break; // down
+    case 2: colOffset = -1; break; // left
+    case 3: colOffset = +1; break; // right
+    }
 
-	// Current and proposed positions
-	const int r = getRow();
-	const int c = getCol();
-	const int tr = r + dr;
-	const int tc = c + dc;
+    // Current and proposed positions
+    const int currentRow = getRow();
+    const int currentCol = getCol();
+    const int newRow = currentRow + rowOffset;
+    const int newCol = currentCol + colOffset;
 
-	// Adjust these to your board size (25x25 -> 0..24)
-	constexpr int ROWS = 20;
-	constexpr int COLS = 20;
+    // 20x20 board size
+    constexpr int ROWS = 20;
+    constexpr int COLS = 20;
 
-	// Bounds check
-	if (tr < 0 || tr >= ROWS || tc < 0 || tc >= COLS) {
-		return; // blocked by wall
-	}
+    // Boundary Check
+    if (newRow < 0 || newRow >= ROWS || newCol < 0 || newCol >= COLS) {
+        return; // blocked by wall
+    }
 
-	// Collision check: is target tile occupied by anyone else?
-	for (int i = 0; i < 20; ++i) {
-		Entity* e = List[i];
-		if (!e || e == this) continue;
-		if (e->getRow() == tr && e->getCol() == tc) {
-			return; // tile occupied (player or another enemy)
-		}
-	}
+    // Collision check
+    for (int i = 0; i < 20; ++i) {
+        Entity* entity = List[i];
+        if (!entity || entity == this) continue;
+        if (entity->getRow() == newRow && entity->getCol() == newCol) {
+            return; // tile occupied (player or another enemy)
+        }
+    }
 
-	// Move
-	setRow(tr);
-	setCol(tc);
+    // Move
+    setRow(newRow);
+    setCol(newCol);
 }
+
 
 // Debug
 void Enemy::printStatus() const
