@@ -88,7 +88,7 @@ void Logic::TurnOrder() {
 		}
 		else if (status1 == 2)
 		{
-		
+			cutsceneDungeonTutorial();
 			dungeon.dungeonOption();
 			story.ShowWave(2, 7);
 			status1 = 0;
@@ -133,6 +133,16 @@ void Logic::TurnOrder() {
 
 	}
 
+}
+
+void Logic::cutsceneDungeonTutorial()
+{
+	std::cout << "The X are random events \n";
+	std::cout << "They could give you a random item, or bring you into a dungeon room \n";
+	std::cout << "Once all the monster dies in a room, you will be able to leave \n";
+	std::cout << "Step on a X tile to automatically collect or go into a room \n";
+	std::cout << "The dungeon provides extra resources \n";
+	std::cout << "A red ruby is hidden in one of the X \n";
 }
 
 void Logic::cutsceneCombatTutorial(Combat& combat)
