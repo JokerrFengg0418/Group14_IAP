@@ -306,8 +306,9 @@ int Story::ShowWave(int wave, int choiceId)
                 }
             }
         }
-        return 0; // nothing special
+       
     }
+    return 0; // nothing special
 }
 
 
