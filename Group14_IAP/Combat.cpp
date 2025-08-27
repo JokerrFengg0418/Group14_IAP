@@ -418,6 +418,8 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 			return;
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		system("cls");
+		board.drawBoard(List, 20);
 		
 	}
 
