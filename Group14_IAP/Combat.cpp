@@ -404,6 +404,7 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 			int raw = enemyRef->getDamage();
 			int finalDmg = std::max(0, raw - mitigation);
 			std::cout << enemyRef->getTypeName() << " strikes you in close combat!\n";
+			std::cout << "Current Enemy HP: " << enemyRef->getHealth() << "\n";
 			if (mitigation > 0) std::cout << "(Your armor reduces damage by " << mitigation << ")\n";
 			player->takeDamage(finalDmg);
 			enemyAttacked = true;
@@ -412,6 +413,7 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 			int raw = std::max(0, enemyRef->getDamage() - 2);
 			int finalDmg = std::max(0, raw - mitigation);
 			std::cout << enemyRef->getTypeName() << " attacks you from range!\n";
+			std::cout << "Current Enemy HP: " << enemyRef->getHealth() << "\n";
 			if (mitigation > 0) std::cout << "(Your armor reduces damage by " << mitigation << ")\n";
 			player->takeDamage(finalDmg);
 			enemyAttacked = true;

@@ -68,10 +68,18 @@ void Enemy::move(Entity* List[20])
     int rowOffset = 0;
     int colOffset = 0;
     switch (rand() % 4) {
-    case 0: rowOffset = -1; break; // up
-    case 1: rowOffset = +1; break; // down
-    case 2: colOffset = -1; break; // left
-    case 3: colOffset = +1; break; // right
+    case 0: 
+        rowOffset = -1; 
+        break; // up
+    case 1: 
+        rowOffset = +1; 
+        break; // down
+    case 2: 
+        colOffset = -1; 
+        break; // left
+    case 3: 
+        colOffset = +1; 
+        break; // right
     }
 
     // Current and proposed positions
