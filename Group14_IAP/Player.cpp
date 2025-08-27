@@ -58,19 +58,19 @@ void Player::move(Entity* list[20]) {
     switch (input) {
     case 'w': case 'W':
         newRow = row - 1;
-        std::cout << "Move Up\n";
+        std::cout << "Current Player HP: " << getHealth() << "\n";
         break;
     case 's': case 'S':
         newRow = row + 1;
-        std::cout << "Move Down\n";
+        std::cout << "Current Player HP: " << getHealth() << "\n";
         break;
     case 'a': case 'A':
         newCol = col - 1;
-        std::cout << "Move Left\n";
+        std::cout << "Current Player HP: " << getHealth() << "\n";
         break;
     case 'd': case 'D':
         newCol = col + 1;
-        std::cout << "Move Right\n";
+        std::cout << "Current Player HP: " << getHealth() << "\n";
         break;
     default:
         std::cout << "invalid input\n";
