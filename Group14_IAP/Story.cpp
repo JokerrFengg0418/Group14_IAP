@@ -278,24 +278,16 @@ int Story::ShowWave(int wave, int choiceId)
                         }
                     }
 
-                    // 👉 Detect if choice opens shop
                     if (entry.choicetext[pick - 1].find("Shop") != std::string::npos)
                     {
                         return 1; // shop triggered
                     }
 
-
-                    // Move to next choice if available
-                    if (pick > 0 && pick <= entry.nextChoices.size())
-                    {
-                        int nextChoiceId = entry.nextChoices[pick - 1];
-                        return ShowWave(wave, nextChoiceId);
-                    }
+                    // 👉 Detect if choice opens dungeon
                     if (entry.choicetext[pick - 1].find("Dungeon") != std::string::npos)
                     {
-                        return 2; // shop triggered
+                        return 2; // dungeon triggered
                     }
-
 
                     // Move to next choice if available
                     if (pick > 0 && pick <= entry.nextChoices.size())
