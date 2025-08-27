@@ -290,7 +290,7 @@ int Story::ShowWave(int wave, int choiceId)
                     {
                         return 2; // dungeon triggered
                     }
-
+                    
                     // Move to next choice if available
                     if (pick > 0 && pick <= entry.nextChoices.size())
                     {
