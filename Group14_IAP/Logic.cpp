@@ -58,8 +58,6 @@ void Logic::TurnOrder() {
 	Story story(GameOption.getPlayerInventory());
 	Dungeon dungeon;
 
-	Story story(GameOption.getPlayerInventory());
-
 
 	while (GameEndState == false) {
 		
@@ -79,6 +77,7 @@ void Logic::TurnOrder() {
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);
 		int status1 = story.ShowWave(2, 0);
+		story.ShowWave(2, 0);
 		if (status1 == 1)
 		{
 			GameOption.shopOption(GameOption.getPlayerInventory());
@@ -89,6 +88,7 @@ void Logic::TurnOrder() {
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 		GlobalOrderSet(GlobalOrderGet() + 1);*/
 		int status2 = story.ShowWave(3, 0);
+		story.ShowWave(3, 0);
 		if (status2 == 1)
 		{
 			GameOption.shopOption(GameOption.getPlayerInventory());
