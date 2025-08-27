@@ -36,7 +36,7 @@ public:
     void CompleteQuest(int Wave, int ChoiceID);
     void ForceEndQuest(int Wave, int ChoiceID);
     void CreateNode(std::string Instructions, int Wave, int ChoiceID, int Choice);
-	void FactoryCreateQuest(int Wave, int ID, std::string& Name, std::string& ItemName, int ItemCount);
+	void FactoryCreateQuest(int Wave, int ID, std::string Name, std::string ItemName, int ItemCount);
     
 
 };

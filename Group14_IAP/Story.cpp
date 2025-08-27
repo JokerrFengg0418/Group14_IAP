@@ -101,6 +101,8 @@ void Story::DatabaseInitialisation()
             1, nullptr, 0
         );
 
+        FactoryCreateQuest(2, 1, "Quest to get 2 Fangs", "Fang", 2);
+
         // Choice 4
         int next4[] = { 7 };
         FactoryCreateChoices(2, 4,
@@ -125,6 +127,7 @@ void Story::DatabaseInitialisation()
             "Offer the 2 Fangs#Hide them",
             "Dave: Perfect! That'll keep em satisfied, lemme just~ @Mysterious voice: Pass them over!@Rather on the small side, a woman approached them, as she left the carriage. Several assistants rush over, helping her carry other equipment, whether it be microscopes, or weird tablets.@The person quickly snatches the fangs away from you, she lowers a monocle, staring it.@Rude Mysterious Person: Mana Quality isn't dropping like most embedded objects. Check the Mh/P for me.@An assistant rushes over, poking a stick into it@Assistant: 150 over 20. Stable as well.@Mysterious Person: Did they temporarily stabilize the internal mana core using a van wiltz circle?@Assistant: Unlikely, there seems to be no residual leakage.@Mysterious Person: Odd, we'd need to bring this back for testing.. See if we can substitute the mana type for windless, or fire. If we can stimulate the channels here in any way, this area can get back to healing.@You: What is this girl yapping about.@Dave: Ya gotta greet guests ya know?@Mysterious girl: Oh yes. Yes, that's right. Call me Camilla, I'm a researcher in the institute of magic. By all means, I'm your contractor.@You: Right, so.@Camilla: Anyways, collect some Mana Core for me. The more the better, darkness types are always troublesome to unblock, especially when you need a natural mana conduit to do it with…@The girl starts quietly mumbling to herself as she walks away with her assistants.@Dave: Well don't mind ya, now that ya met ma boss now. So, as per normal, do ya accept the quest?@You: Sure, why not @Dave: Perfect, I'll get that sorted for ya. @#Dave: Shame, well everyday can't be winning. Keep a lookout for em though.@",
             0, nullptr, 0);
+        FactoryCreateQuest();
         FactoryCreateChoices(3, 81,
             "(Open Shop)",
             "",
