@@ -55,7 +55,7 @@ void Logic::TurnOrder() {
 
 	Option GameOption;
 	Combat CombatHandler;
-	Story story;
+	Story story(GameOption.getPlayerInventory());
 	Dungeon dungeon;
 
 	while (GameEndState == false) {

@@ -90,7 +90,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(0, RandomTurf, EnemyType::Hellhound, 5, 6);
+				List[i] = new Enemy(19, RandomTurf, EnemyType::Hellhound, 5, 6);
 				return;
 
 			}
@@ -101,7 +101,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(0, RandomTurf, EnemyType::Zombie, 10, 6);
+				List[i] = new Enemy(19, RandomTurf, EnemyType::Zombie, 10, 6);
 				return;
 
 			}
@@ -112,7 +112,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(0, RandomTurf, EnemyType::Goblin, 8, 7);
+				List[i] = new Enemy(19, RandomTurf, EnemyType::Goblin, 8, 7);
 				return;
 
 			}
@@ -123,7 +123,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(0, RandomTurf, EnemyType::Bat, 4, 4);
+				List[i] = new Enemy(19, RandomTurf, EnemyType::Bat, 4, 4);
 				return;
 
 			}
@@ -134,7 +134,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(0, RandomTurf, EnemyType::Skeleton, 7, 5);
+				List[i] = new Enemy(19, RandomTurf, EnemyType::Skeleton, 7, 5);
 				return;
 
 			}
@@ -145,7 +145,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(0, RandomTurf, EnemyType::Witch, 25, 15);
+				List[i] = new Enemy(19, RandomTurf, EnemyType::Witch, 25, 15);
 				return;
 
 			}
@@ -156,7 +156,7 @@ void Combat::FactoryCreateEntity(int CharacterType) {
 
 			if (List[i] == nullptr) {
 
-				List[i] = new Enemy(0, RandomTurf, EnemyType::Boss, 125, 30);
+				List[i] = new Enemy(19, RandomTurf, EnemyType::Boss, 125, 30);
 				return;
 
 			}
