@@ -217,7 +217,7 @@ void Option::waitForEnter() const {
 
 void Option::gameStart() const
 {
-    std::cout << "\n=================================\n";
+    std::cout << "=================================\n";
     std::cout << "   Remnant of The Last Soldier   ";
     std::cout << "\n=================================\n";
 
