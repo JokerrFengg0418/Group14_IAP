@@ -9,7 +9,7 @@ Turret::Turret() : Entity(0, 0)
 	setHealth(50);
 	setDamage(0);
 	setEntityType('T');
-	std::cout << "Turret Created\n";
+	// Turret Creation
 }
 
 Turret::Turret(int r, int c, int dmg) : Entity(r, c)
@@ -23,7 +23,7 @@ Turret::Turret(int r, int c, int dmg) : Entity(r, c)
 
 Turret::~Turret()
 {
-	std::cout << "Turret Destroyed\n";
+	// Destroy Turret
 }
 
 //void Turret::Update(Entity* enemies[], int enemyCount)

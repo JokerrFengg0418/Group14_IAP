@@ -21,7 +21,7 @@ Player::Player(int r, int c, int hp, int dmg)
 	setHealth(hp);   // 
 	setDamage(dmg);  // 
 	setEntityType('P');
-	std::cout << "Player Created at (" << r << ", " << c << ")" << ", health: " << getHealth() << ", damage: " << getDamage() << std::endl;
+	// Player Creation
 }
 
 Player::~Player()

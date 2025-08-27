@@ -6,11 +6,11 @@ Entity::Entity() : position(0, 0) {
 }
 
 Entity::Entity(int r, int c) : position(r, c) {
-    std::cout << "Entity Created at (" << r << ", " << c << ")" << std::endl;
+    // Entity Creation with overloader
 }
 
 Entity::~Entity() {
-    std::cout << "Entity Destroyed." << std::endl;
+    // Entity Destroyed
 }
 
 int Entity::getRow() const {
