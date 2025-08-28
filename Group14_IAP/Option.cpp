@@ -237,7 +237,8 @@ void Option::gameStart() const
         logic.TurnOrder();
     }
     else if (choice == 2) {
-
+        Logic logic;
+        logic.DemoTurnOrder();
     }else if (choice == 3) {
         std::cout << "Exiting Game.";
         exit(0);

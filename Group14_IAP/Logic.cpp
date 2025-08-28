@@ -105,37 +105,7 @@ void Logic::TurnOrder() {
 		default:
 			break;
 		}
-		//if (status == 1) // Shop
-		//{
-		//	GameOption.shopOption(GameOption.getPlayerInventory());
-		//	choiceId = story.ShowWave(wave, 1);
-		//}
-		//if (status == 81)
-		//{
-		//	GameOption.shopOption(GameOption.getPlayerInventory());
-		//	choiceId = story.ShowWave(wave, 82);
-		//}
-		//if (status == 9)
-		//{
-		//	GameOption.shopOption(GameOption.getPlayerInventory());
-		//	choiceId = story.ShowWave(wave, 10);
-		//}
-		//if (status == 12)
-		//{
-		//	GameOption.shopOption(GameOption.getPlayerInventory());
-		//	choiceId = story.ShowWave(wave, 12);
-		//}
-		//else if (status == 2) // Dungeon
-		//{
-		//	cutsceneDungeonTutorial();
-		//	GameOption.waitForEnter();
-		//	dungeon.dungeonOption();
-		//	choiceId = story.ShowWave(wave, 7); // resume branch after dungeon
-		//}
-		//else if (status == 3) {
-		//	GameEndState = true;
-		//	return;
-		//}
+		
 
 		// --- Run combat after each wave ---
 		char combatTag = 'A' + wave; // A, B, C... for each wave
