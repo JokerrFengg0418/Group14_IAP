@@ -125,13 +125,40 @@ void Inventory::setInventory(std::string ItemName, int Number) {
         return;
     }
 
-    // For non-stackables, add one slot per piece; for stackables, just place 1 slot
-    int copies = isStackable ? 1 : Number;
-    for (int k = 0; k < copies; ++k) {
+    if (isStackable) {
+        // If already present, increment stack count
+        for (int i = 0; i < 25; ++i) {
+            Item* it = inventory[i];
+            if (!it) continue;
+            if (it->GetItemWord('N') == ItemName) {
+                const int cur = it->GetItemValue('V');
+                it->SetItemValue('V', cur + Number);
+                return;
+            }
+        }
+
+        // Otherwise create a new stack with the full amount
         int empty = -1;
         for (int i = 0; i < 25; ++i) { if (inventory[i] == nullptr) { empty = i; break; } }
         if (empty < 0) { std::cout << "Inventory is full.\n"; return; }
+
+        inventory[empty] = src;  // one slot per stackable item name
+        // Initialize stack count to exactly Number (not just 1)
+        src->SetItemValue('V', Number);
+        return;
+    }
+
+    // Non-stackables (weapons/armors): add one slot per piece
+    int placed = 0;
+    for (int k = 0; k < Number; ++k) {
+        int empty = -1;
+        for (int i = 0; i < 25; ++i) { if (inventory[i] == nullptr) { empty = i; break; } }
+        if (empty < 0) {
+            std::cout << "Inventory is full. Placed " << placed << " of " << Number << ".\n";
+            return;
+        }
         inventory[empty] = src;   // DB owns pointer; slot is just a reference/type token
+        ++placed;
     }
 }
 

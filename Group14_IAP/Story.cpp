@@ -7,6 +7,7 @@
 #include "Quest.h"
 #include <chrono>
 #include <thread>
+#include "item.h"
 
 
 
@@ -128,7 +129,7 @@ void Story::DatabaseInitialisation()
             "Dave: Well then, see ya! We'll be making our way back from here. @The trail of caravans disappear into the horizon.@It's getting pretty late now, time for you to have a nice sleep, once the local wildlife stops bothering you of course. As you drift into slumber, you are jolted awake by the weird groans from afar. Standing up, you prepare yourself to fight as you see a hoard of zombies creeping towards you. @",
              0, nullptr, 0);
         FactoryCreateStory(3, "As you lower your weapon, you look at the rotten corpses that were once roaming the forests. The fatigue has set in and now you lay down in the sea of bodies. @ The line of carriages is back, along with Dave. They approach where you once laid down.@ Dave: So ya back are ya? And with so many bodies as well. @Didja find find any of them thingymajiggies whilst you're here?");
-        CreateNode("CheckQuest", 3, 71, 1, "Quest to get 2 Fangs");
+        CreateNode("CheckQuest", 3, 0, 0, "Quest to get 2 Fangs");
         FactoryCreateChoices(3, 8,
             "Offer the 2 Fangs#Hide them",
             "Dave: Perfect! That'll keep em satisfied, lemme just~ @Mysterious voice: Pass them over!@Rather on the small side, a woman approached them, as she left the carriage. Several assistants rush over, helping her carry other equipment, whether it be microscopes, or weird tablets.@The person quickly snatches the fangs away from you, she lowers a monocle, staring it.@Rude Mysterious Person: Mana Quality isn't dropping like most embedded objects. Check the Mh/P for me.@An assistant rushes over, poking a stick into it@Assistant: 150 over 20. Stable as well.@Mysterious Person: Did they temporarily stabilize the internal mana core using a van wiltz circle?@Assistant: Unlikely, there seems to be no residual leakage.@Mysterious Person: Odd, we'd need to bring this back for testing.. See if we can substitute the mana type for windless, or fire. If we can stimulate the channels here in any way, this area can get back to healing.@You: What is this girl yapping about.@Dave: Ya gotta greet guests ya know?@Mysterious girl: Oh yes. Yes, that's right. Call me Camilla, I'm a researcher in the institute of magic. By all means, I'm your contractor.@You: Right, so.@Camilla: Anyways, collect some Mana Core for me. The more the better, darkness types are always troublesome to unblock, especially when you need a natural mana conduit to do it with...@The girl starts quietly mumbling to herself as she walks away with her assistants.@Dave: Well don't mind ya, now that ya met ma boss now. So, as per normal, do ya accept the quest?@You: Sure, why not @Dave: Perfect, I'll get that sorted for ya. @#Dave: Shame, well everyday can't be winning. Keep a lookout for em though.@",
@@ -234,7 +235,7 @@ int Story::ShowWave(int wave, int choiceId)
             // Story text
             if (!entry.text.empty())
             {
-                QuestHandler(wave, choiceId, 0);
+                QuestHandler(wave, entry.choice, 0);
                 std::stringstream ss(entry.text);
                 std::string segment;
                 while (std::getline(ss, segment, '@'))
@@ -250,28 +251,38 @@ int Story::ShowWave(int wave, int choiceId)
                 }
             }
 
-        Retrypick:;
+       
             // Choices
             if (!entry.choicetext.empty())
             {
-                std::cout << "You are faced with choices:\n";
-                for (size_t i = 0; i < entry.choicetext.size(); i++)
-                    std::cout << i + 1 << ". " << entry.choicetext[i] << "\n";
-
-            
-
+                bool Validation = false;
                 int pick;
-                std::cout << "Enter choice number: ";
-                std::cin >> pick;
+                while (Validation == false) {
+                    std::cout << "You are faced with choices:\n";
+                    for (size_t i = 0; i < entry.choicetext.size(); i++)
+                        std::cout << i + 1 << ". " << entry.choicetext[i] << "\n";
 
-                if (pick > entry.choicetext.size()) { system("cls"); goto Retrypick; }
+
+
+                    
+                    std::cout << "Enter choice number: ";
+                    std::cin >> pick;
+
+                    if (pick > entry.choicetext.size() || std::cin.fail()) {
+                        std::cin.clear(); system("cls"); std::cin.ignore(std::numeric_limits<std::streamsize>::max());
+                        continue;
+                    }
+                    
+                    if (pick <= entry.choicetext.size()) {
+						Validation = true;
+                    }
+
+                }
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 bool QuestCheck = QuestHandler(wave, entry.choice, pick);
-                if (QuestCheck = false) {
+                if (QuestCheck == false) {
                     pick = entry.results.size();
                 }
-                
-
        
                 
                 if (pick > 0 && pick <= entry.results.size())
@@ -347,12 +358,13 @@ void Story::CompleteQuest(std::string& Name) {
             int QuestItemNum;
             QuestItem = QuestDatabase[i].GetQuestRequirement().ItemName;
             QuestItemNum = QuestDatabase[i].GetQuestRequirement().Count;
-            auto* PlayerItem = PlayerInventoryPointer->getInventory(QuestItem);
+            Item* PlayerItem = PlayerInventoryPointer->getInventory(QuestItem);
 
             if (PlayerItem && PlayerItem->GetItemValue('V') >= QuestItemNum) {
                 QuestDatabase[i].ChangeQuestState(2);
                 PlayerInventoryPointer->RemoveItemFromInventory(QuestItem, QuestItemNum);
                 std::cout << "Quest Completed: " << QuestDatabase[i].GetName() << "\n";
+                break;
             }
         }
     }

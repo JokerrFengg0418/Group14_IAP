@@ -31,6 +31,7 @@ public:
 
 	//Turn Order//
 	void TurnOrder();
+	void DemoTurnOrder();
 
 	//Combat Tutorial//
 	void cutsceneCombatTutorial();

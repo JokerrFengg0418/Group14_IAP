@@ -73,6 +73,9 @@ void Option::runMainMenu() {
                     PlayerInventoryPointer->getCurrency() + 50000);
                 PlayerInventoryPointer->setInventory("   Broadsword   ", 1);
                 PlayerInventoryPointer->setInventory("    Red Ruby    ", 1);
+                PlayerInventoryPointer->setInventory(" Health Potion  ", 1);
+                PlayerInventoryPointer->setInventory("      Fang      ", 2);
+                PlayerInventoryPointer->setInventory("     Turret     ", 1);
                 cout << "[Debug] Added 50,000 gold and a Broadsword to your inventory.\n";
             }
             else {
@@ -222,6 +225,7 @@ void Option::gameStart() const
     std::cout << "\n=================================\n";
 
     std::cout << "1. Start Game" << std::endl;
+    std::cout << "2. Demo Mode" << std::endl;
     std::cout << "2. Exit Game" << std::endl;
     
 
@@ -233,6 +237,9 @@ void Option::gameStart() const
         logic.TurnOrder();
     }
     else if (choice == 2) {
+        Logic logic;
+        logic.DemoTurnOrder();
+    }else if (choice == 3) {
         std::cout << "Exiting Game.";
         exit(0);
     }
