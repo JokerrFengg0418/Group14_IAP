@@ -229,7 +229,7 @@ int Story::ShowWave(int wave, int choiceId)
             // Story text
             if (!entry.text.empty())
             {
-                QuestHandler(wave, choiceId, 0);
+                QuestHandler(wave, entry.choice, 0);
                 std::stringstream ss(entry.text);
                 std::string segment;
                 while (std::getline(ss, segment, '@'))
@@ -263,7 +263,7 @@ int Story::ShowWave(int wave, int choiceId)
                 if (pick > entry.choicetext.size()) { system("cls"); goto Retrypick; }
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 bool QuestCheck = QuestHandler(wave, entry.choice, pick);
-                if (QuestCheck = false) {
+                if (QuestCheck == false) {
                     pick = entry.results.size();
                 }
                 

@@ -130,6 +130,28 @@ void Logic::TurnOrder() {
 	}
 }
 
+void Logic::DemoTurnOrder() {
+
+	Option GameOption;
+	Combat CombatHandler;
+	Story story(GameOption.getPlayerInventory());
+	Dungeon dungeon(GameOption.getPlayerDungeon(), GameOption.getPlayerInventory());
+	
+
+
+	story.ShowWave(0, 0);
+	GameOption.runMainMenu();
+	cutsceneCombatTutorial();
+	CombatHandler.startCombat('A');
+	CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+	story.ShowWave(2, 0);
+	GameOption.runMainMenu();
+	story.ShowWave(3, 0);
+	story.ShowWave(6, 0);
+	story.ShowWave(7, 0);
+	story.ShowWave(8, 0);
+}
+
 void Logic::cutsceneCombatTutorial()
 {
 	//Board board;
