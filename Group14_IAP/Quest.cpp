@@ -30,16 +30,17 @@ void Quest::SetQuestRequirement(std::string& ItemName, int req) {
 void Quest::ChangeQuestState(int newState) {
 
 	switch (newState) {
-	case '0':
+	case 0:
 		State = QuestState::NotStarted;
 		break;
-	case '1':
+	case 1:
 		State = QuestState::InProgress;
 		break;
-	case '2':
+	case 2:
 		State = QuestState::Completed;
 		break;
 	}
+	return;
 }
 
 int Quest::CheckQuestState() const {

@@ -25,33 +25,3 @@ Turret::~Turret()
 {
 	// Destroy Turret
 }
-
-//void Turret::Update(Entity* enemies[], int enemyCount)
-//{
-//	const int AttackRange = 10;
-//	int turretRow = getRow();
-//	int turretCol = getCol();
-//
-//	for (int i = 0; i < 20; ++i)
-//	{
-//		Entity* enemy = enemies[i];
-//		if (enemy != nullptr && enemy->getEntityType() == 'E')
-//		{
-//
-//
-//			int enemyRow = enemy->getRow();
-//			int enemyCol = enemy->getCol();
-//
-//			int distance = std::max(std::abs(turretRow - enemyRow), std::abs(turretCol - enemyCol));
-//
-//			if (distance <= AttackRange)
-//			{
-//				enemy->takeDamage(getDamage());
-//				std::cout << "Turret at (" << turretRow << ", " << turretCol
-//					<< ") attacked enemy at (" << enemyRow << ", " << enemyCol
-//					<< ") for " << getDamage() << " damage.\n";
-//				return;
-//			}
-//		}
-//	}
-//}

@@ -5,6 +5,9 @@
 #include "Story.h"
 #include "StoryEntry.h"
 #include "Quest.h"
+#include <chrono>
+#include <thread>
+
 
 
 Node::Node(std::string instructions, int wave, int choiceID, int choice, std::string& QuestName)
@@ -13,6 +16,7 @@ Node::Node(std::string instructions, int wave, int choiceID, int choice, std::st
     Wave = wave;
     ChoiceID = choiceID;
 	Choice = choice;
+    this->QuestName = QuestName;
 }
 
 Story::Story(Inventory* PlayerInventory)
@@ -59,7 +63,7 @@ void Story::FactoryCreateChoices(int wave, int choice, const std::string& choice
 void Story::DatabaseInitialisation()
 {
         // Wave 0
-        FactoryCreateStory(0, "\nAfter a magical fallout between two major kingdoms, the world is pretty much doomed. You spawn as John, the last soldier from the war that just ended. You claw out of the rocks that buried you and fall onto the floor. Monsters start noticing you. You slowly recover your memory from head concussion. ");
+        FactoryCreateStory(0, "\nAfter a magical fallout between two major kingdoms, the world is pretty much doomed. You spawn as John, the last soldierfrom the war that just ended. You claw out of the rocks that buried you and fall onto the floor. Monsters start noticing you. You slowly recover your memory from head concussion. ");
 
         // Wave 1
         FactoryCreateStory(1, "@After the tough battle, you wandered around to find resources. You found a camp. It's empty. @");
@@ -68,7 +72,7 @@ void Story::DatabaseInitialisation()
         FactoryCreateStory(1, "Mysterious Person: Huh, you're up... What are you doing out in a death zone? @");
         FactoryCreateChoices(1, 0,
             "I'm John, I found myself laying in a pile of rubble and I.. uh. (calm)#Who are you and what are ye lookin at! (aggressive)#You ready your sword. 'Who are you?!' (defensive)",
-            "Mysterious Person: Hah! Knocked out by a pile of rubble, what a piece of work you are!@Mysterious Person: I've taken the courtesy to patch anything that you broke, but that'll be your last help.@#Mysterious Person: I'm looking atcha, if ya cant tell. And if ya want ma name, well ask it properly yerself. No way to introduce yourself to yer savior.@#Mysterious Person: Woah woah woah… Bud, Calm down ye. I am just tryna help you. Put that sword away before I fold ya in half. Isn't it common courtesy to introduce yourself to your savior instead of tryna kill them?@Mysterious Person: If ya can't tell, I'm a wandering traveller.@Mysterious Person: I know I know, it's rare...but we do what we can to get by.@Mysterious Person: Name's Dave, for your convenience. @",
+            "Mysterious Person: Hah! Knocked out by a pile of rubble, what a piece of work you are!@Mysterious Person: I've taken the courtesy to patch anything that you broke, but that'll be your last help.@#Mysterious Person: I'm looking atcha, if ya cant tell. And if ya want ma name, well ask it properly yerself. No way to introduce yourself to yer savior.@#Mysterious Person: Woah woah woah... Bud, Calm down ye. I am just tryna help you. Put that sword away before I fold ya in half. Isn't it common courtesy to introduce yourself to your savior instead of tryna kill them?@Mysterious Person: If ya can't tell, I'm a wandering traveller.@Mysterious Person: I know I know, it's rare...but we do what we can to get by.@Mysterious Person: Name's Dave, for your convenience. @",
             0, nullptr, 0);
         int next[] = { 1, 2, 1, 1 };
         FactoryCreateChoices(1, 1,
@@ -91,7 +95,7 @@ void Story::DatabaseInitialisation()
         int next3[] = { 5, 4 };
         FactoryCreateChoices(2, 3,
             "Head towards the white carriages. # Explore the hole.",
-            "@Heading towards the carriages, you see a royal insignia. @ Guard: Halt! @ Player: (What the-) @ Dave: Didn't expect to meetcha. @ *Dave and Guard talk privately.* @ Guard: You may approach. @ Dave: Gist is, a very interesting proposal came up. See, this place isn’t exactly the most hospitable. Luckily for you, the research ladies want some data from here.@Dave: So, you get em what they want, and ya get gold. See, G O L D! Ya won’t meet em, but they’ll be travelling through here often. What do ya say?",
+            "@Heading towards the carriages, you see a royal insignia. @ Guard: Halt! @ Player: (What the-) @ Dave: Didn't expect to meetcha. @ *Dave and Guard talk privately.* @ Guard: You may approach. @ Dave: Gist is, a very interesting proposal came up. See, this place isn't exactly the most hospitable. Luckily for you, the research ladies want some data from here.@Dave: So, you get em what they want, and ya get gold. See, G O L D! Ya won't meet em, but they'll be travelling through here often. What do ya say?",
             0, next3, 2
         );
 
@@ -123,15 +127,15 @@ void Story::DatabaseInitialisation()
             "Continue story...",
             "Dave: Well then, see ya! We'll be making our way back from here. @The trail of caravans disappear into the horizon.@It's getting pretty late now, time for you to have a nice sleep, once the local wildlife stops bothering you of course. As you drift into slumber, you are jolted awake by the weird groans from afar. Standing up, you prepare yourself to fight as you see a hoard of zombies creeping towards you. @",
              0, nullptr, 0);
-        FactoryCreateStory(3, "As you lower your weapon, you look at the rotten corpses that were once roaming the forests. The fatigue has set in and now you lay down in the sea of bodies. @ The line of carriages is back, along with Dave. They approach where you once laid down.@ Dave: So ya back are ya? And with so many bodies as well. @Didja find find any of them thingymajiggies whilst you’re here?");
+        FactoryCreateStory(3, "As you lower your weapon, you look at the rotten corpses that were once roaming the forests. The fatigue has set in and now you lay down in the sea of bodies. @ The line of carriages is back, along with Dave. They approach where you once laid down.@ Dave: So ya back are ya? And with so many bodies as well. @Didja find find any of them thingymajiggies whilst you're here?");
         FactoryCreateChoices(3, 8,
             "Offer the 2 Fangs#Hide them",
-            "Dave: Perfect! That'll keep em satisfied, lemme just~ @Mysterious voice: Pass them over!@Rather on the small side, a woman approached them, as she left the carriage. Several assistants rush over, helping her carry other equipment, whether it be microscopes, or weird tablets.@The person quickly snatches the fangs away from you, she lowers a monocle, staring it.@Rude Mysterious Person: Mana Quality isn't dropping like most embedded objects. Check the Mh/P for me.@An assistant rushes over, poking a stick into it@Assistant: 150 over 20. Stable as well.@Mysterious Person: Did they temporarily stabilize the internal mana core using a van wiltz circle?@Assistant: Unlikely, there seems to be no residual leakage.@Mysterious Person: Odd, we'd need to bring this back for testing.. See if we can substitute the mana type for windless, or fire. If we can stimulate the channels here in any way, this area can get back to healing.@You: What is this girl yapping about.@Dave: Ya gotta greet guests ya know?@Mysterious girl: Oh yes. Yes, that's right. Call me Camilla, I'm a researcher in the institute of magic. By all means, I'm your contractor.@You: Right, so.@Camilla: Anyways, collect some Mana Core for me. The more the better, darkness types are always troublesome to unblock, especially when you need a natural mana conduit to do it with…@The girl starts quietly mumbling to herself as she walks away with her assistants.@Dave: Well don't mind ya, now that ya met ma boss now. So, as per normal, do ya accept the quest?@You: Sure, why not @Dave: Perfect, I'll get that sorted for ya. @#Dave: Shame, well everyday can't be winning. Keep a lookout for em though.@",
+            "Dave: Perfect! That'll keep em satisfied, lemme just~ @Mysterious voice: Pass them over!@Rather on the small side, a woman approached them, as she left the carriage. Several assistants rush over, helping her carry other equipment, whether it be microscopes, or weird tablets.@The person quickly snatches the fangs away from you, she lowers a monocle, staring it.@Rude Mysterious Person: Mana Quality isn't dropping like most embedded objects. Check the Mh/P for me.@An assistant rushes over, poking a stick into it@Assistant: 150 over 20. Stable as well.@Mysterious Person: Did they temporarily stabilize the internal mana core using a van wiltz circle?@Assistant: Unlikely, there seems to be no residual leakage.@Mysterious Person: Odd, we'd need to bring this back for testing.. See if we can substitute the mana type for windless, or fire. If we can stimulate the channels here in any way, this area can get back to healing.@You: What is this girl yapping about.@Dave: Ya gotta greet guests ya know?@Mysterious girl: Oh yes. Yes, that's right. Call me Camilla, I'm a researcher in the institute of magic. By all means, I'm your contractor.@You: Right, so.@Camilla: Anyways, collect some Mana Core for me. The more the better, darkness types are always troublesome to unblock, especially when you need a natural mana conduit to do it with...@The girl starts quietly mumbling to herself as she walks away with her assistants.@Dave: Well don't mind ya, now that ya met ma boss now. So, as per normal, do ya accept the quest?@You: Sure, why not @Dave: Perfect, I'll get that sorted for ya. @#Dave: Shame, well everyday can't be winning. Keep a lookout for em though.@",
             0, nullptr, 0);
-        CreateNode("CheckQuest", 3, 1, 1, "Quest to get 2 Fangs");
-        CreateNode("ForceEndQuest", 3, 1, 2, "Quest to get 2 Fangs");
+        CreateNode("CheckQuest", 3, 8, 1, "Quest to get 2 Fangs");
+        CreateNode("ForceEndQuest", 3, 8, 2, "Quest to get 2 Fangs");
         FactoryCreateQuest("Collect Mana Core", "   Mana Cores   ", 1);
-        CreateNode("StartQuest", 3, 2, -1, "Collect Mana Core");
+        CreateNode("StartQuest", 3, 8, -1, "Collect Mana Core");
         FactoryCreateChoices(3, 81,
             "(Open Shop)",
             "",
@@ -154,16 +158,16 @@ void Story::DatabaseInitialisation()
             "Offer the Mana Core#Don't offer up Mana Core",
             "Camilla takes hold of the Mana Core@Camilla: Perfect, specimen's well intact. Can't complain about how clean it is, but this should suffice.@Camilla walks away, hauling them back into the black carriage. She appears soon after, not carrying anything in particular.@Camilla: Whilst we let it sit in the analysis chamber, to collect mana resonance scans. Have you seen any Crystals of Power around lately? Anything like it, really. Its fine if you didn't, but it would speed up progress immensely.@#Dave: Ah, I'll tell the young lady what ya said.@Camilla: Did you not find any Mana Core?@Player: Nope, couldn't find a bit of it.@Camilla: Such a shame, but nonetheless we must persevere.@Camilla: I'll be back tomorrow, if you have the items of course.@Camilla leaves for the white carriages@Dave: I'll be heading back as well, yeah?@He turns around, back towards the caravan.@",
             0, next0, 1);
-        CreateNode("CheckQuest", 4, 2, 1, "Collect Mana Core");
-        CreateNode("ForceEndQuest", 4, 2, 2, "Collect Mana Core");
+        CreateNode("CheckQuest", 4, 101, 1, "Collect Mana Core");
+        CreateNode("ForceEndQuest", 4, 101, 2, "Collect Mana Core");
         FactoryCreateQuest("Collect Crystal of Power", "Crystal of Power", 1);
-        CreateNode("StartQuest", 4, 3, 1, "Collect Crystal of Power");
+        CreateNode("StartQuest", 4, 3, 101, "Collect Crystal of Power");
         FactoryCreateChoices(4, 102,
             "Offer up Crystals of Power#No, I haven't seen any Crystals of Power",
-            "Camilla: Great, let me just inspect this..@Camilla takes the Crystals of Power@Camilla: Solidified Mana core, no signs of disturbance..@Camilla: Attempting to access the mana essence..@A white glow radiates over Crystals of Power@Camilla: No resonance with the core, not even with typeless mana..@She walks away, but before she does, she looks back@Camilla: And to help you on your journey, take this.@She offers you a Turret@Camilla: Keep it safe, that's my design you have.@Camilla walks away@#Camilla: That's understandable, being how rare they are.@Camilla: No matter, our research should not be impeded by such a setback. Keep doing what you do best, there’ll be more work in the future.@Camilla leaves, Dave looks before, nods his head before leaving as well.@",
+            "Camilla: Great, let me just inspect this..@Camilla takes the Crystals of Power@Camilla: Solidified Mana core, no signs of disturbance..@Camilla: Attempting to access the mana essence..@A white glow radiates over Crystals of Power@Camilla: No resonance with the core, not even with typeless mana..@She walks away, but before she does, she looks back@Camilla: And to help you on your journey, take this.@She offers you a Turret@Camilla: Keep it safe, that's my design you have.@Camilla walks away@#Camilla: That's understandable, being how rare they are.@Camilla: No matter, our research should not be impeded by such a setback. Keep doing what you do best, there'll be more work in the future.@Camilla leaves, Dave looks before, nods his head before leaving as well.@",
             0, nullptr, 0);
-        CreateNode("CheckQuest", 4, 3, 1, "Collect Crystal of Power");
-        CreateNode("ForceEndQuest", 4, 3, 2, "Collect Crystal of Power");
+        CreateNode("CheckQuest", 4, 102, 1, "Collect Crystal of Power");
+        CreateNode("ForceEndQuest", 4, 102, 2, "Collect Crystal of Power");
         FactoryCreateStory(4, "After another harsh battle, the sun sets and it is time for you to rest. However this time, you expect that another wave of monster is rushing towards you, hence you don't rest. As expected, a swarm of mutated bats rush towards you and this time you are prepared to defend yourself.@");
         FactoryCreateStory(5, "After a long harsh battle, you can finally rest.You think to yourself if you could ever escape from this nightmare. @You wake up to Dave's foot nudging your stomach.@Dave: Well I'll be darned.How're ye still up and kickin after all this? Look 'ere, boss wants to talk to ya'.@Camilla: After careful consideration, I have confirmed your reliability and strength which has been proved to be useful time and time again. What I'm saying is, I'd like to offer you a stable job.@...@Camilla: So, what will it be?@");
         FactoryCreateChoices(5, 11,
@@ -178,30 +182,30 @@ void Story::DatabaseInitialisation()
             "Camilla: Something that I created based off of old texts. This precarious balance between insanity and practicality.@Camilla: Of course, its something I would destroy after I'm done with it. There's no point of having such a dangerous thing around. The concept, elegant and an intuitive understanding of how mana wavelengths affect the particulate structure of molecules.@Camilla: Reversing the mana polarity of certain selected mana wavelengths causes the item to de-harmonize with the entire item. This causes a phenomenon called particulate instability, where said mana wave lengths directly change particulate bonds, destabilizing the item and risk it collapsing into the particles of the surroundings, effective 'vaporizing' the object. @Camilla: Such a shame, but I'll have to destroy it.@You: But there's no guarantee that you will destroy it, is there?@Camilla: I suppose there is not.@Camilla: Then to soothe your views.  I ask you to destroy it, with your own hands. Beat it, crunch it. Whatever that satisfies your desire for destruction.@You: What if you don't keep your promise?@Camilla: Nothing can be said that is axiomically always sincere. That is up to you to determine.@You:...#Camilla: The expulsion of dark mana from the leylines of the earth is going to be a violent procedure. Inevitably such a large build-up of dark mana will inevitably trigger what is known as mana coagulation. You would notice this in forms of your zombies, bats, monsters.@Camilla: A sufficient build up of mana would convert surroundings particles into matter based on the mana's wavelength instructions. This violent expulsion of dark mana, cleansing the leylines, will be the largest buildup of latent dark mana in the atmosphere since the death of the Devil Lanthania's heart.@Camilla: An Abomination will be made. A creation of dark mana that all that is unholy.@Camilla: The later we defuse it, the more we risk a mana implosion, caused by the negative and positive wave lengths of dark mana physically affecting the world around it.@Camilla: The disruptor de-harmonizes the wavelengths of dark mana, making it so we delay the possibility of a mana-type implosion. Safely dispersing the mana into the air, for it to be sufficiently broken down, or reduced to safe levels.@You: The resulting creature will destroy everything around it?@Camilla: Yes, whether by being a mere beast, bludgeoning everything manually, no doubt poisoning the ecosystem by disrupting natural mana processes, or manifesting a mana implosion, causing the surrounding areas to be completely uninhabitable as the dark mana violently assimilates or integrates matter to vibrate at its wavelength.@Camilla: That is why such a terrible weapon, and fascinating phenomenon is allowed to be used for such purposes.#Camilla: It will help us greatly for the final expulsion. I don't doubt your strength, but there's limits that the gods have set upon us. The bigger expulsion will be in 2 days, so that is when this would be ready. This machine is still incomplete. I request a Red Ruby, from the dungeons.@Camilla: If it's too dangerous, there's no need to push yourself. I will procure the red ruby at the site itself. But, I would.. like if I didn't have to do it myself.@Quest activated: Red Ruby Excavation@Camilla walks away",
             0, next8, 3);
         FactoryCreateQuest("Collect Red Ruby", "    Red Ruby    ", 1);
-        CreateNode("StartQuest", 6, 4, 3, "Collect Red Ruby"),
+        CreateNode("StartQuest", 6, 12, 3, "Collect Red Ruby");
         FactoryCreateStory(6, "The sun slowly started to set, marking another night to survive. Familiar with this routine, you prepare for battle. Surely enough, you see a hoard of flying grey gargoyles rushing towards you.@");
         FactoryCreateStory(7, "You finally vanquished the gargoyles as you remember the first time you fought these monsters. You feel a sense of pride as you see how far you've come, though that feeling is short-lived as fatigue settles in. You slowly lay yourself down and drift into sleep.@The caravan is back, busier than ever. The device you say from yesterday, was kept, improved upon with a mass of wires going into and out of the main chamber. An extra lens was added inside the machine itself.@Camilla was working on the device, carving intricate patterns into the container. She notices you approaching them, jumping down from her high position, landing with a thump.@Camilla: Did you find the red ruby? I'm almost done on my end, just making sure the device works, that is.@Offer the Red Ruby?");
         int next9[] = { 14 };
         FactoryCreateChoices(7, 13,
             "Yes#No",
-            "You: Found this Red Ruby in the dungeons, among a bunch of scattered remains.@Camilla: Lets hope that their ends weren't that gruesome..@Camilla: Come on-@She hops up, extending her hand for you to pass the Red Ruby. You do so, as she inspects the Ruby@Camilla: This.. should suffice, the quality is enough so that resonance scattering isnt an issue.@She places the ruby into the chamber, carefully. As she locks the chamber tight. Turning on several switches, the Red Ruby starts levitating, suspended by some aura.@Camilla: Locking Resonance signature..@Camilla looks at the chamber, manually adjusting knobs and buttons. She presses a button, finished with her adjustments.@Camilla: Dave!@Dave: Yeah?@Dave walks over, having being called. He looks over, at the machine.@Camilla: Rotate this thing for me!@The machine starts whirring louder and louder, as if powering up or charging an external source of storage.@Dave: Where do you want this thing to point at?@Camilla: Just by the forestline!@Dave: Gimme a sec..@Dave gets the lone guardsman from days ago, and they shift it, being careful to not to tilt the device@Dave: Ready on yer say.@Camilla: Capturing mana normalization readings..@Dave: You sure this is safe?@Camilla: Yes.. Well it should be.@Dave: Should be aint exactly a comforting answer now is it?@Camilla: That’s the best answer we got!@Camilla: Firing now!@The Red Ruby shines bright, through the chamber’s opaque covering, blinding everything for a second. A large beam shot out of the chamber, hitting the treeline in earnestly. Then the beam dissipates, leaving no trace that it was even there.@Dave: All this preparation for that?@Camilla: Give it a second or two.@The chamber starts heating up immensely, as steam leaves the chamber. The Ruby, red hot, exhales hard, as several components of the device starts to whirr. The chamber, once filled with just the crystal, was flooded with ice.@It melts quickly, as the ice is chuted away from the chamber, replaced by more ice. In a sort of recycling system, constantly cooling the Ruby.@Camilla: Watch the trees!@The trees, normal just a second ago, start warping. What once was solid, seemed to be blending together in a kaleidoscope of colors.@Dave: Get back!@Dave: He sets down the weapon, recognising the danger, as he hides behind a piece of rock cover.@Camilla: It’s so beautiful..@You find yourself instinctively pulling Camilla back from the impact point, running away from the area.@Camilla: Let me see the implosion!@The impact point blends with what was and what once was. Resonating out from the centre, what seems to be the color of the very space itself gets sucked into a singular point. As trees, ground and anything near it start to vanish, collecting into this singular point.@You: Put your head down!@The Singular point vanishes, before a massive wave of heat is released. The space where Camilla’s head used to be at, shot out a large surge of mana, visible even to the naked eye.@The rock visibly heated up,  as it started melting down into its base components, Rock became minerals, quartz, crystals, melting down, separating, before turning into component slurry.@The magic pulse dissipated over distance, as the worst has been weathered by the crew. Camilla looked at you, then at where her head used to be.@Camilla: How did you know?@You: Know what?@Camilla: Know that that reaction was going to happen. Everything should have been in my calculations..@Staying silent, you look at Dave. Then back to Camilla.@You: Not sure myself, but I know these types of explosions, they are always bigger than anticipated.@Camilla: …@Camilla peaked up looking at the destruction.@Camilla: Thank you, for saving my life. Who knows what might have happened if that wave really did..@Camilla: Hit me…@Dave: That thing is, way too powerful! Any more and we might kill ourselves in the process! Young lady, this is a step too far in the wrong direction!@Camilla: But.. The thing is worth the risk, if we did use it on the abomination we won’t even need to fight it!@Dave: And risk us dying because of a freak accident like this? Sorry to say this but, not everybody would appreciate this kind of end!@Camilla: …@Camilla looks the area of impact, replaced with just air. As if somebody carved up the world and removed it, and left technicolor slurry in its place.@Camilla: Alright.. We won’t use the Matter-Mana Resonance Disruptor. But, if at any point if we start losing the fight, we fire it off.@Dave:.. Fair enough. But, only if there is no other option.@Camilla: …Alright.@It was clear to everybody that the room was visibly in a bad mood. Camilla decided to take a break, walking away from the main pack.@Dave:...@You:...@Dave: I was probably too harsh on the young lady.#Camilla: Ah, that complicates thing.. But it shouldn’t matter regardless. The Device will be ready by the end of the day.@Dave: Ya going down into the dungeon yourself?@Camilla: I can handle myself Dave, Im not a child anymore.@Dave: Sure doesn’t feel like it.@Camilla: You just say that because you don’t want to feel old.@Dave: Whatever you say kiddo.@Camilla: Kiddo?! I’ll show you kiddo you-@Camilla proceeds to chase around Dave, as he runs, hiding and disappearing.@Camilla: Where did he go.. Aha!@Camilla proceeds to jump into a bush, pulling Dave out.@Camilla: There you go!@Dave: Ya got me there, can’t lie.@The bickering continued, as they settled down.@Camilla: No matter, the red ruby isn’t an issue. I’ll be heading down down on my own.@Dave: At least bring a guard with you, they’re there for a reason.@Camilla: Ah, fine. I’ll take one guard with me.@Dave, being satisfied, walks away. Camilla does too, no doubt to prepare to dive into the depths.",
+            "You: Found this Red Ruby in the dungeons, among a bunch of scattered remains.@Camilla: Lets hope that their ends weren't that gruesome..@Camilla: Come on-@She hops up, extending her hand for you to pass the Red Ruby. You do so, as she inspects the Ruby@Camilla: This.. should suffice, the quality is enough so that resonance scattering isnt an issue.@She places the ruby into the chamber, carefully. As she locks the chamber tight. Turning on several switches, the Red Ruby starts levitating, suspended by some aura.@Camilla: Locking Resonance signature..@Camilla looks at the chamber, manually adjusting knobs and buttons. She presses a button, finished with her adjustments.@Camilla: Dave!@Dave: Yeah?@Dave walks over, having being called. He looks over, at the machine.@Camilla: Rotate this thing for me!@The machine starts whirring louder and louder, as if powering up or charging an external source of storage.@Dave: Where do you want this thing to point at?@Camilla: Just by the forestline!@Dave: Gimme a sec..@Dave gets the lone guardsman from days ago, and they shift it, being careful to not to tilt the device@Dave: Ready on yer say.@Camilla: Capturing mana normalization readings..@Dave: You sure this is safe?@Camilla: Yes.. Well it should be.@Dave: Should be aint exactly a comforting answer now is it?@Camilla: That's the best answer we got!@Camilla: Firing now!@The Red Ruby shines bright, through the chamber's opaque covering, blinding everything for a second. A large beam shot out of the chamber, hitting the treeline in earnestly. Then the beam dissipates, leaving no trace that it was even there.@Dave: All this preparation for that?@Camilla: Give it a second or two.@The chamber starts heating up immensely, as steam leaves the chamber. The Ruby, red hot, exhales hard, as several components of the device starts to whirr. The chamber, once filled with just the crystal, was flooded with ice.@It melts quickly, as the ice is chuted away from the chamber, replaced by more ice. In a sort of recycling system, constantly cooling the Ruby.@Camilla: Watch the trees!@The trees, normal just a second ago, start warping. What once was solid, seemed to be blending together in a kaleidoscope of colors.@Dave: Get back!@Dave: He sets down the weapon, recognising the danger, as he hides behind a piece of rock cover.@Camilla: It's so beautiful..@You find yourself instinctively pulling Camilla back from the impact point, running away from the area.@Camilla: Let me see the implosion!@The impact point blends with what was and what once was. Resonating out from the centre, what seems to be the color of the very space itself gets sucked into a singular point. As trees, ground and anything near it start to vanish, collecting into this singular point.@You: Put your head down!@The Singular point vanishes, before a massive wave of heat is released. The space where Camilla's head used to be at, shot out a large surge of mana, visible even to the naked eye.@The rock visibly heated up,  as it started melting down into its base components, Rock became minerals, quartz, crystals, melting down, separating, before turning into component slurry.@The magic pulse dissipated over distance, as the worst has been weathered by the crew. Camilla looked at you, then at where her head used to be.@Camilla: How did you know?@You: Know what?@Camilla: Know that that reaction was going to happen. Everything should have been in my calculations..@Staying silent, you look at Dave. Then back to Camilla.@You: Not sure myself, but I know these types of explosions, they are always bigger than anticipated.@Camilla: ...@Camilla peaked up looking at the destruction.@Camilla: Thank you, for saving my life. Who knows what might have happened if that wave really did..@Camilla: Hit me...@Dave: That thing is, way too powerful! Any more and we might kill ourselves in the process! Young lady, this is a step too far in the wrong direction!@Camilla: But.. The thing is worth the risk, if we did use it on the abomination we won't even need to fight it!@Dave: And risk us dying because of a freak accident like this? Sorry to say this but, not everybody would appreciate this kind of end!@Camilla: ...@Camilla looks the area of impact, replaced with just air. As if somebody carved up the world and removed it, and left technicolor slurry in its place.@Camilla: Alright.. We won't use the Matter-Mana Resonance Disruptor. But, if at any point if we start losing the fight, we fire it off.@Dave:.. Fair enough. But, only if there is no other option.@Camilla: ...Alright.@It was clear to everybody that the room was visibly in a bad mood. Camilla decided to take a break, walking away from the main pack.@Dave:...@You:...@Dave: I was probably too harsh on the young lady.#Camilla: Ah, that complicates thing.. But it shouldn't matter regardless. The Device will be ready by the end of the day.@Dave: Ya going down into the dungeon yourself?@Camilla: I can handle myself Dave, Im not a child anymore.@Dave: Sure doesn't feel like it.@Camilla: You just say that because you don't want to feel old.@Dave: Whatever you say kiddo.@Camilla: Kiddo?! I'll show you kiddo you-@Camilla proceeds to chase around Dave, as he runs, hiding and disappearing.@Camilla: Where did he go.. Aha!@Camilla proceeds to jump into a bush, pulling Dave out.@Camilla: There you go!@Dave: Ya got me there, can't lie.@The bickering continued, as they settled down.@Camilla: No matter, the red ruby isn't an issue. I'll be heading down down on my own.@Dave: At least bring a guard with you, they're there for a reason.@Camilla: Ah, fine. I'll take one guard with me.@Dave, being satisfied, walks away. Camilla does too, no doubt to prepare to dive into the depths.",
             0, next9, 2);
-        CreateNode("CheckQuest", 7, 4, 1, "Collect Red Ruby");
-        CreateNode("ForceEndQuest", 7, 4, 2, "Collect Red Ruby");
+        CreateNode("CheckQuest", 7, 13, 1, "Collect Red Ruby");
+        CreateNode("ForceEndQuest", 7, 13, 2, "Collect Red Ruby");
         FactoryCreateChoices(7, 14,
             "Agree#Disagree",
-            "You: Probably.. How old is she? Can’t be older than 19..@Dave: She never told her age, did she? She’s around there, too young to be holding the world up by her shoulders@You: Probably feels like she’s the only one capable of doing this work.@Dave: …Yeah@Dave: I should go apologize to them@You: Yeah, you should.@Dave: See ya later, slugger.@#You: No.. You had a fair point, what if it did go out of control?@Dave: I know it was it just..@You: Didn’t feel right?@Dave: Yeah..@You: We all have to make tough choices, in the end we’re left with what we have.@Dave: The dead cannot mourn for the living.@Dave: I should apologize to Camilla..@You:..@Dave: See you later, slugger.@",
+            "You: Probably.. How old is she? Can't be older than 19..@Dave: She never told her age, did she? She's around there, too young to be holding the world up by her shoulders@You: Probably feels like she's the only one capable of doing this work.@Dave: ...Yeah@Dave: I should go apologize to them@You: Yeah, you should.@Dave: See ya later, slugger.@#You: No.. You had a fair point, what if it did go out of control?@Dave: I know it was it just..@You: Didn't feel right?@Dave: Yeah..@You: We all have to make tough choices, in the end we're left with what we have.@Dave: The dead cannot mourn for the living.@Dave: I should apologize to Camilla..@You:..@Dave: See you later, slugger.@",
             0, nullptr, 0);
-        FactoryCreateStory(8, "The sun rises. A red light lingers unnaturally across the wasteland, like the world itself is breaking apart. The ground trembles as you stand, clutching your weapon.@Dave approaches, looking uneasy.@Dave: It’s time, did you get your items ready?@You: Yeah, is Camilla ready?@Dave: Yeah, give her a second, she’s still readying the device.@Out comes Camilla holding her weapon of mass destruction. Her assistants, now readily setting everything up@Camilla: Leyline destabillisation.. It’s starting. Get ready! The device still needs time to prepare, hold off the manifestation!@Camilla starts working together with her assistants, doing last minute checks as soon as possible.@The ground splits open. The corpses of monsters from previous nights merge together, twisting and writhing into a massive Abomination, an amalgamation of dogs’ heads, zombie torsos, skeletal wings, goblin claws, and a gargoyle’s armored face.@");
-        FactoryCreateStory(8, "Camilia: It’s ready! Get back!@You bolted away from the battlefield, just in time to see the laser from the disruptor go off.@Directly hitting the abomination, it shrieked, its core struck. The monster, tried to tear out its own core, from whence it was struck, to no avail.@Spreading out, a crystallisation of the monster itself, It slowly lost its ability to move, ability to even cry out for help. The crystallisation spread into the ground, melting, separating into its parts constituent elements@All of the mana is sucked into an imaginary point, gathering up for a final release. Camellia stares in awe at the phenomenon@");
+        FactoryCreateStory(8, "The sun rises. A red light lingers unnaturally across the wasteland, like the world itself is breaking apart. The ground trembles as you stand, clutching your weapon.@Dave approaches, looking uneasy.@Dave: It's time, did you get your items ready?@You: Yeah, is Camilla ready?@Dave: Yeah, give her a second, she's still readying the device.@Out comes Camilla holding her weapon of mass destruction. Her assistants, now readily setting everything up@Camilla: Leyline destabillisation.. It's starting. Get ready! The device still needs time to prepare, hold off the manifestation!@Camilla starts working together with her assistants, doing last minute checks as soon as possible.@The ground splits open. The corpses of monsters from previous nights merge together, twisting and writhing into a massive Abomination, an amalgamation of dogs' heads, zombie torsos, skeletal wings, goblin claws, and a gargoyle's armored face.@");
+        FactoryCreateStory(8, "Camilia: It's ready! Get back!@You bolted away from the battlefield, just in time to see the laser from the disruptor go off.@Directly hitting the abomination, it shrieked, its core struck. The monster, tried to tear out its own core, from whence it was struck, to no avail.@Spreading out, a crystallisation of the monster itself, It slowly lost its ability to move, ability to even cry out for help. The crystallisation spread into the ground, melting, separating into its parts constituent elements@All of the mana is sucked into an imaginary point, gathering up for a final release. Camellia stares in awe at the phenomenon@");
         FactoryCreateChoices(8, 15, 
             "Red Ruby Extraction Succesfull#Red Ruby Extraction Unsuccesfull",
-            "Just before the implosion happened, Camilia ducked her head behind the rock, grabbing you with her under the cover.@All sound seemed to stop, halting. A large reverberation, felt in every soul. Scattering light shone, radiating everything in a flurry of magic release.@Camilia: Brace yourselves!@The stone visibly melted, , heating up as it turned from a cold grey, to red hot, then black, pink, green, blue. A glitch of the world@Then, it stopped. As if a plug on the world had been placed. Camilia waited for a while, as Dave held his breath.@She looked up, seeing the aftermath. The abomination was gone, eradicated. Nothing was left, as snow began to fall onto the area.@Dave: This didnt happen on our run of it..@Camilla: Is it safe?@You: No idea.@Camilla:...@#Having no one to pull her down, she stared as the implosion occurred. You pulled yourself behind cover as the rush of wild magic hit the surroundings.@It raged like a tempest, striking anything in its path. The abomination was replaced destruction in its pure form. Nothing left to waste, just nothingness.@There you stand, as the shock dies down. The Tempest calms into a wind, then none at all.@You stood up, looking across once was the battlefield. Replaced with something that can be described as in this world. A pure mana slurry, constituent mana flurry.@Camilla stood there, seemingly unaffected by the mana blast.@She fell.@Hitting the floor, like a puppeteer’s doll, strings cut. She laid there on the floor. You rushed over, along with Dave.@Laying her flat on the floor, Dave checked her heartbeat.@Dave: Still Breathing..@Dave let out a sigh, before her assistants usher her over, grabbing her and hauling her off to the carriages to heal.@You: Is she..@Dave: I don't know. It's.. too far to see.@Dave: I don’t know enough about magic to help her, only her assistants do.@You:..@Time passed, blended together. The job was done, what now?@Camilla woke up the next day, she seemed fine, but something was off.@Camilla: Hey.@You: What Happened?@Camilla: Got hit with the residual Mana blast.. My internal mana signature’s disrupted.@You: So..@Camilla: I’ll die.@You:..@Camilla: Not now though, we still have time. I want to at least give the world a positive impact before I go.@You:..@She stayed silent for a while@Camilla: Did we win?@Dave arrived to see the awakening of Camilla@Dave: Yeah.@",
+            "Just before the implosion happened, Camilia ducked her head behind the rock, grabbing you with her under the cover.@All sound seemed to stop, halting. A large reverberation, felt in every soul. Scattering light shone, radiating everything in a flurry of magic release.@Camilia: Brace yourselves!@The stone visibly melted, , heating up as it turned from a cold grey, to red hot, then black, pink, green, blue. A glitch of the world@Then, it stopped. As if a plug on the world had been placed. Camilia waited for a while, as Dave held his breath.@She looked up, seeing the aftermath. The abomination was gone, eradicated. Nothing was left, as snow began to fall onto the area.@Dave: This didnt happen on our run of it..@Camilla: Is it safe?@You: No idea.@Camilla:...@#Having no one to pull her down, she stared as the implosion occurred. You pulled yourself behind cover as the rush of wild magic hit the surroundings.@It raged like a tempest, striking anything in its path. The abomination was replaced destruction in its pure form. Nothing left to waste, just nothingness.@There you stand, as the shock dies down. The Tempest calms into a wind, then none at all.@You stood up, looking across once was the battlefield. Replaced with something that can be described as in this world. A pure mana slurry, constituent mana flurry.@Camilla stood there, seemingly unaffected by the mana blast.@She fell.@Hitting the floor, like a puppeteer's doll, strings cut. She laid there on the floor. You rushed over, along with Dave.@Laying her flat on the floor, Dave checked her heartbeat.@Dave: Still Breathing..@Dave let out a sigh, before her assistants usher her over, grabbing her and hauling her off to the carriages to heal.@You: Is she..@Dave: I don't know. It's.. too far to see.@Dave: I don't know enough about magic to help her, only her assistants do.@You:..@Time passed, blended together. The job was done, what now?@Camilla woke up the next day, she seemed fine, but something was off.@Camilla: Hey.@You: What Happened?@Camilla: Got hit with the residual Mana blast.. My internal mana signature's disrupted.@You: So..@Camilla: I'll die.@You:..@Camilla: Not now though, we still have time. I want to at least give the world a positive impact before I go.@You:..@She stayed silent for a while@Camilla: Did we win?@Dave arrived to see the awakening of Camilla@Dave: Yeah.@",
             -1, nullptr, 0); //change questid to anth other than 0
-        FactoryCreateStory(8, "Camilla: We actually did it.@She stayed silent for a while.@Camilla: Honestly, I didn’t expect to win there. All thanks to you that we won.@Dave: That was one hell of a fight. You gave em hell.@Dave gives you a fistbump@Camilla: Now that its gone, the mana culture of the world can now settle down.@Camilla: I.. would have to ask you though. Since there isn’t much left. Would you, like to come with me? Travel the world, and hopefully rebuilt civilisation. Let’s not repeat the mistakes of the old world.@Dave crosses his arms, looking at you with mixed concern and respect.@Dave:Choice is yours, bud. Ain’t no one gonna make it for ya.");
+        FactoryCreateStory(8, "Camilla: We actually did it.@She stayed silent for a while.@Camilla: Honestly, I didn't expect to win there. All thanks to you that we won.@Dave: That was one hell of a fight. You gave em hell.@Dave gives you a fistbump@Camilla: Now that its gone, the mana culture of the world can now settle down.@Camilla: I.. would have to ask you though. Since there isn't much left. Would you, like to come with me? Travel the world, and hopefully rebuilt civilisation. Let's not repeat the mistakes of the old world.@Dave crosses his arms, looking at you with mixed concern and respect.@Dave:Choice is yours, bud. Ain't no one gonna make it for ya.");
         FactoryCreateChoices(8, 16,
             "You accept Camilla's Offer.#You reject Camilla's Offer.",
-            "Ending A: Rebuilder@You join Camilla and helped to start rebuilding the civilization.@Thus is the story you have chosen. The Last Soldier of the war became the first of a new era.@GAME END: Rebuilding#Ending B: The Wanderer@You step back, crossing your arms@John: That's not the life I want to lead. I appreciate the offer, but I will have to turn you down.@Camilla: Ah, well..: I suppose this is the end of our meeting then.@Dave: Last time we’ll meet ya, before we go to our next destination.@John: Suppose so.@Camilla: We’ll get going then. Will this be the last time I’ll meet you?@John: Let the fates decide on that.@Camilla: Fates..@Camilla: Hah, alright then.@Dave: Have a nice journey, wherever ya end up.@Camilla and Dave walk back to the caravan.@GAME END: Wandering",
+            "Ending A: Rebuilder@You join Camilla and helped to start rebuilding the civilization.@Thus is the story you have chosen. The Last Soldier of the war became the first of a new era.@GAME END: Rebuilding#Ending B: The Wanderer@You step back, crossing your arms@John: That's not the life I want to lead. I appreciate the offer, but I will have to turn you down.@Camilla: Ah, well..: I suppose this is the end of our meeting then.@Dave: Last time we'll meet ya, before we go to our next destination.@John: Suppose so.@Camilla: We'll get going then. Will this be the last time I'll meet you?@John: Let the fates decide on that.@Camilla: Fates..@Camilla: Hah, alright then.@Dave: Have a nice journey, wherever ya end up.@Camilla and Dave walk back to the caravan.@GAME END: Wandering",
             0, nullptr, 0);
 }
 
@@ -215,6 +219,9 @@ enum class StoryAction {
 // --- ShowWave ---
 int Story::ShowWave(int wave, int choiceId)
 {
+
+    bool Questcheck = false;
+
     for (const auto& entry : database)
     {
         if (entry.wave == wave && (choiceId == 0 || entry.choice == choiceId))
@@ -229,7 +236,7 @@ int Story::ShowWave(int wave, int choiceId)
                 {
                     if (!segment.empty())
                     {
-                        std::cout << segment << "\n";
+                        TypeWriter(segment, 5);
                         if (!ss.eof())
                         {
                             std::cout << "Press Enter to continue...\n";
@@ -239,6 +246,7 @@ int Story::ShowWave(int wave, int choiceId)
                 }
             }
 
+        Retrypick:;
             // Choices
             if (!entry.choicetext.empty())
             {
@@ -246,29 +254,21 @@ int Story::ShowWave(int wave, int choiceId)
                 for (size_t i = 0; i < entry.choicetext.size(); i++)
                     std::cout << i + 1 << ". " << entry.choicetext[i] << "\n";
 
+            
 
                 int pick;
                 std::cout << "Enter choice number: ";
                 std::cin >> pick;
+
+                if (pick > entry.choicetext.size()) { system("cls"); goto Retrypick; }
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                QuestHandler(wave, choiceId, pick);
-
-                //Quest Check
-                if (entry.quest != 0) {
-                    for (const auto& quest : QuestDatabase) {
-                        for (const auto& NodeDatabase : NodeDatabase) {
-                            if (quest.GetName() == NodeDatabase.QuestName) {
-                                if (quest.CheckQuestState() != 2) {
-                                    pick = 2; // force second option
-
-                                }
-
-
-                            }
-                        }
-                    }
+                bool QuestCheck = QuestHandler(wave, entry.choice, pick);
+                if (QuestCheck = false) {
+                    pick = entry.results.size();
                 }
+                
 
+       
                 
                 if (pick > 0 && pick <= entry.results.size())
                 {
@@ -279,7 +279,7 @@ int Story::ShowWave(int wave, int choiceId)
                     {
                         if (!segment.empty())
                         {
-                            std::cout << segment << "\n";
+                            TypeWriter(segment, 5);
                             if (!ss.eof())
                             {
                                 std::cout << "Press Enter to continue...\n";
@@ -288,17 +288,24 @@ int Story::ShowWave(int wave, int choiceId)
                         }
                     }
                 }
-            
+                
                 if (entry.choicetext[pick - 1].find("Shop") != std::string::npos)
                 {
                     return 1; // shop triggered
                 }
-            
+                
                 // 👉 Detect if choice opens dungeon
                 if (entry.choicetext[pick - 1].find("Dungeon") != std::string::npos)
                 {
                     return 2; // dungeon triggered
                 }
+
+                if(entry.choicetext[pick - 1].find("GAME END") != std::string::npos)
+                {
+                    return 3; // game end triggered
+				}
+                
+                
             
                 // Move to next choice if available
                 if (pick > 0 && pick <= entry.nextChoices.size())
@@ -319,8 +326,10 @@ void Story::StartQuest(std::string& Name) {
 
     for (int i = 0; i < QuestDatabase.size(); i++) {
         if (QuestDatabase[i].GetName() == Name) {
+
             QuestDatabase[i].ChangeQuestState(1);
-            std::cout << "Quest Activated";
+            std::cout << "Quest Activated \n";
+            return;
         }
     }
 
@@ -371,22 +380,49 @@ void Story::CreateNode(std::string Instructions, int wave, int ChoiceID, int Cho
 
 }
 
-void Story::QuestHandler(int wave, int ChoiceID, int Choice) {
+bool Story::QuestHandler(int wave, int ChoiceID, int Choice) {
     for (int i = 0; i < NodeDatabase.size(); i++) {
         if (NodeDatabase[i].Wave == wave && ChoiceID == NodeDatabase[i].ChoiceID && NodeDatabase[i].Choice == Choice) {
             std::string Instructions;
             Instructions = NodeDatabase[i].Instruction;
             if (Instructions == "StartQuest") {
                 StartQuest(NodeDatabase[i].QuestName);
+                return true;
             }
             else if (Instructions == "CheckQuest") {
                 CompleteQuest(NodeDatabase[i].QuestName);
+                return true;
             }
             else if (Instructions == "ForceEndQuest") {
                 ForceEndQuest(NodeDatabase[i].QuestName);
+                return true;
+            }
+            else if (Instructions == "CheckFlagQuest") {
+                bool Check = QuestFlagCheck(NodeDatabase[i].QuestName, 2);
+                return Check;
             }
         }
     }
 }
 
+bool Story::QuestFlagCheck(std::string Name, int DesiredState) {
+        for (int i = 0; i < QuestDatabase.size(); i++) {
+        if (QuestDatabase[i].GetName() == Name) {
+            if (QuestDatabase[i].CheckQuestState() == DesiredState) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+		return false;
+}
 
+void Story::TypeWriter(const std::string& text, int delay_ms) {
+    for (char c : text) {
+        std::cout << c << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
+    }
+    std::cout << std::endl; // Ensure a newline at the end
+}

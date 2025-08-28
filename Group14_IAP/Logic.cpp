@@ -63,95 +63,81 @@ void Logic::TurnOrder() {
 	Combat CombatHandler;
 	Story story(GameOption.getPlayerInventory());
 	Dungeon dungeon(GameOption.getPlayerDungeon(), GameOption.getPlayerInventory());
-	
-
+	int wave = 0;
+	int choiceId = 0;
 
 	while (GameEndState == false) {
 		
 		
-		story.ShowWave(0, 0);
+		// --- Show the story for this wave ---
+		int status = story.ShowWave(wave, choiceId);
 		GameOption.waitForEnter();
 
-
-		CombatHandler.startCombat('A');
-		
-		cutsceneCombatTutorial(); // cutscene combat
-		GameOption.waitForEnter();
-
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		int status = story.ShowWave(1, 0);
-		if (status == 1) 
-		{ 
-			GameOption.shopOption(GameOption.getPlayerInventory());
-			story.ShowWave(1, 1);
-			status = 0;
-		}
-		CombatHandler.startCombat('B');
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		int status1 = story.ShowWave(2, 0);
-		if (status1 == 1)
+		// --- Handle special return values ---
+		if (status == 1) // Shop
 		{
 			GameOption.shopOption(GameOption.getPlayerInventory());
-			story.ShowWave(2, 71);
-			status1 = 0;
+			choiceId = story.ShowWave(wave, 1);
 		}
-		else if (status1 == 2)
+		if (status == 81)
+		{
+			GameOption.shopOption(GameOption.getPlayerInventory());
+			choiceId = story.ShowWave(wave, 82);
+		}
+		if (status == 9)
+		{
+			GameOption.shopOption(GameOption.getPlayerInventory());
+			choiceId = story.ShowWave(wave, 10);
+		}
+		if (status == 12)
+		{
+			GameOption.shopOption(GameOption.getPlayerInventory());
+			choiceId = story.ShowWave(wave, 12);
+		}
+		else if (status == 2) // Dungeon
 		{
 			cutsceneDungeonTutorial();
 			GameOption.waitForEnter();
 			dungeon.dungeonOption();
-			story.ShowWave(2, 7);
-			status1 = 0;
+			choiceId = story.ShowWave(wave, 7); // resume branch after dungeon
 		}
-		CombatHandler.startCombat('C');
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		int status2 = story.ShowWave(3, 0);
-		if (status2 == 1)
-		{
-			GameOption.shopOption(GameOption.getPlayerInventory());
-			story.ShowWave(3, 82);
-			status2 = 0;
+		else if (status == 3) {
+			GameEndState = true;
+			return;
 		}
-		CombatHandler.startCombat('D');
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		int status3 = story.ShowWave(4, 0);
-		if (status3 == 1)
-		{
-			GameOption.shopOption(GameOption.getPlayerInventory());
-			story.ShowWave(4, 10);
-			status3 = 0;
-		}
-		CombatHandler.startCombat('E');
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		story.ShowWave(5, 0);
-		CombatHandler.startCombat('F');
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		story.ShowWave(6, 0);
-		CombatHandler.startCombat('G');
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		story.ShowWave(7, 0);
-		story.ShowWave(8, 0);
-		GameOption.runMainMenu();
-		CombatHandler.startCombat('H');
-		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-		GlobalOrderSet(GlobalOrderGet() + 1);
 
+		// --- Run combat after each wave ---
+		char combatTag = 'A' + wave; // A, B, C... for each wave
+		//CombatHandler.startCombat(combatTag);
+		//CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+
+		// increment global turn order + move to next wave
+		GlobalOrderSet(GlobalOrderGet() + 1);
+		wave++;
+		//cutscene plays
+		if (combatTag == 'A')
+		{
+			cutsceneCombatTutorial();
+			CombatHandler.startCombat(combatTag);
+			CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+			GlobalOrderSet(GlobalOrderGet() + 1);
+			wave++;
+		}
+		// Example exit condition (adapt as needed)
+		if (wave > 8)
+		{
+			GameOption.runMainMenu();
+			CombatHandler.startCombat('H');
+			CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+			GlobalOrderSet(GlobalOrderGet() + 1);
+			GameEndState = true;
+		}
 	}
-
 }
 
 void Logic::cutsceneCombatTutorial()
 {
-	//Board board;
-	//Entity* Entitylist[20];
-	//board.drawBoard(Entitylist, 20);
+	Option GameOption;
 
 	system("cls");
 	std::cout << "Welcome to the Combat Tutorial!\n";
@@ -171,11 +157,15 @@ void Logic::cutsceneCombatTutorial()
 
 	std::cout << "nearby you and you can choose who to attack! you can do this with A and D keys";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	GameOption.waitForEnter();
 	system("cls");
 
 }
 void Logic::cutsceneInventoryTutorial()
 {
+	Option GameOption;
+
 	system("cls");
 	std::cout << "Welcome to the Inventory Tutorial!\n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
@@ -194,10 +184,14 @@ void Logic::cutsceneInventoryTutorial()
 
 	std::cout << "see, easy right! Now go on and fight youngin'!";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	GameOption.waitForEnter();
 	system("cls");
 }
 void Logic::cutsceneDungeonTutorial()
 {
+	Option GameOption;
+
 	system("cls");
 	std::cout << "The X are random events \n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
@@ -211,6 +205,8 @@ void Logic::cutsceneDungeonTutorial()
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	std::cout << "A red ruby is hidden in one of the X \n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	GameOption.waitForEnter();
 	system("cls");
 }
 
