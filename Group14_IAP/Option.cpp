@@ -226,7 +226,7 @@ void Option::gameStart() const
 
     std::cout << "1. Start Game" << std::endl;
     std::cout << "2. Demo Mode" << std::endl;
-    std::cout << "2. Exit Game" << std::endl;
+    std::cout << "3. Exit Game" << std::endl;
     
 
     int choice;
