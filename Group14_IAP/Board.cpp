@@ -88,7 +88,7 @@ void Board::selectTurretHighlight(int row, int col)
     system("cls");
 
     board[row][col] = 'T';
-    std::cout << "+------------------------------------------------------+ \n";
+    std::cout << "+--------------------------------------------------+\n";
 
     for (int i = 0; i < 20; i++) {
         for (int j = 0; j < 20; j++) {
@@ -103,7 +103,7 @@ void Board::selectTurretHighlight(int row, int col)
         std::cout << '|';
         std::cout << '\n';
     }
-    std::cout << "+------------------------------------------------------+ \n";
+    std::cout << "+--------------------------------------------------+\n";
     board[row][col] = ' ';
 }
 
