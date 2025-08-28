@@ -108,22 +108,21 @@ void Logic::TurnOrder() {
 		
 
 		// --- Run combat after each wave ---
-		char combatTag = 'A' + wave; // A, B, C... for each wave
-		//CombatHandler.startCombat(combatTag);
-		//CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+		char combatTag = 'A' + wave;  // wave=0 -> 'A', wave=1 -> 'B'
 
-		// increment global turn order + move to next wave
-		GlobalOrderSet(GlobalOrderGet() + 1);
-		wave++;
-		//cutscene plays
-		if (combatTag == 'A')
+		// tutorial cutscene for first wave
+		if (wave == 0)
 		{
 			cutsceneCombatTutorial();
-			CombatHandler.startCombat(combatTag);
-			CombatHandler.TurnOrder(GameOption.getPlayerInventory());
-			GlobalOrderSet(GlobalOrderGet() + 1);
-			wave++;
 		}
+
+		// run combat for this wave
+		CombatHandler.startCombat(combatTag);
+		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
+
+		// increment order + wave AFTER combat
+		GlobalOrderSet(GlobalOrderGet() + 1);
+		wave++;
 		// Example exit condition (adapt as needed)
 		if (wave == 8)
 		{
