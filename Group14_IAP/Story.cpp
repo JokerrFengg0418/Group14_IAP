@@ -245,7 +245,8 @@ int Story::ShowWave(int wave, int choiceId)
                         TypeWriter(segment, 5);
                         if (!ss.eof())
                         {
-                            std::numeric_limits<std::streamsize>::max(), '\n';
+                            std::cout << "Press Enter to continue...\n";
+                            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                         }
                     }
                 }
