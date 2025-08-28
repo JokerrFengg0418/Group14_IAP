@@ -125,12 +125,15 @@ void Logic::TurnOrder() {
 			wave++;
 		}
 		// Example exit condition (adapt as needed)
-		if (wave > 7)
+		if (wave == 8)
 		{
-			GameOption.runMainMenu();
 			CombatHandler.startCombat('H');
 			CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 			GlobalOrderSet(GlobalOrderGet() + 1);
+		}
+		if (wave > 8)
+		{
+			GameOption.runMainMenu();
 			GameEndState = true;
 		}
 	}
