@@ -66,9 +66,8 @@ void Logic::TurnOrder() {
 	int wave = 0;
 	int choiceId = 0;
 
-	while (GameEndState == false) {
-		
-		
+	while (GameEndState == false)
+	{
 		// --- Show the story for this wave ---
 		int status = story.ShowWave(wave, choiceId);
 		GameOption.waitForEnter();
@@ -101,36 +100,33 @@ void Logic::TurnOrder() {
 		case 3:
 			GameEndState = true;
 			return;
-			break;
 		default:
 			break;
 		}
-		
 
-		// --- Run combat after each wave ---
+		// --- Run combat for *this* wave ---
 		char combatTag = 'A' + wave;  // wave=0 -> 'A', wave=1 -> 'B'
 
-		// tutorial cutscene for first wave
 		if (wave == 0)
 		{
 			cutsceneCombatTutorial();
 		}
 
-		// run combat for this wave
 		CombatHandler.startCombat(combatTag);
 		CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 
-		// increment order + wave AFTER combat
+		// increment AFTER story+combat finishes
 		GlobalOrderSet(GlobalOrderGet() + 1);
 		wave++;
-		// Example exit condition (adapt as needed)
+
+		// --- Special boss wave exit condition ---
 		if (wave == 8)
 		{
 			CombatHandler.startCombat('H');
 			CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 			GlobalOrderSet(GlobalOrderGet() + 1);
 		}
-		if (wave > 8)
+		else if (wave > 8)
 		{
 			GameOption.runMainMenu();
 			GameEndState = true;
