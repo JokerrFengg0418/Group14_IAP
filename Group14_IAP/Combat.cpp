@@ -414,6 +414,7 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 			int finalDmg = std::max(0, raw - mitigation);
 			std::cout << enemyRef->getTypeName() << " attacks you from range!\n";
 			std::cout << "Current Enemy HP: " << enemyRef->getHealth() << "\n";
+			std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 			if (mitigation > 0) std::cout << "(Your armor reduces damage by " << mitigation << ")\n";
 			player->takeDamage(finalDmg);
 			enemyAttacked = true;
@@ -449,7 +450,7 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 
 				// When inventory closes: restore the board view
 				system("cls");
-				board.drawBoard(List, 20);   // use your board’s draw function signature
+				board.drawBoard(List, 20);   // use your board's draw function signature
 				// then let the user choose again
 				continue;
 			}
@@ -700,9 +701,9 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 
 	while (WinCondition() == 0)
 	{
-		std::cout << "Turn Number: " << firstTurn << "\n";
+		
 		board.drawBoard(List, 20);
-
+		std::cout << "Turn Number: " << firstTurn << "\n";
 
 		for (int i = 0; i < 20; ++i)
 		{
@@ -721,7 +722,7 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 	// Final cleanup AFTER the loop ends
 	for (int i = 0; i < 20; ++i) {
 		if (List[i]) {
-			// If it's an enemy, also remove from board’s internal list.
+			// If it's an enemy, also remove from board's internal list.
 			if (List[i]->getEntityType() == 'E') {
 				board.removeEnemy(List[i]);
 			}

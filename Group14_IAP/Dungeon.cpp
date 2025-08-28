@@ -97,7 +97,7 @@ void Dungeon::dungeonOption() {
             candidates.erase(std::remove(candidates.begin(), candidates.end(), pick), candidates.end());
         }
 
-        // Pick up to 12 distinct combat tiles from remaining X’s
+        // Pick up to 12 distinct combat tiles from remaining X's
         std::shuffle(candidates.begin(), candidates.end(), sRng);
         const int WANT = 12;
         const int take = std::min(WANT, static_cast<int>(candidates.size()));
