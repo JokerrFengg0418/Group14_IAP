@@ -190,7 +190,7 @@ void Story::DatabaseInitialisation()
         FactoryCreateStory(6, "The sun slowly started to set, marking another night to survive. Familiar with this routine, you prepare for battle. Surely enough, you see a hoard of flying grey gargoyles rushing towards you.@");
         FactoryCreateStory(7, "You finally vanquished the gargoyles as you remember the first time you fought these monsters. You feel a sense of pride as you see how far you've come, though that feeling is short-lived as fatigue settles in. You slowly lay yourself down and drift into sleep.@The caravan is back, busier than ever. The device you say from yesterday, was kept, improved upon with a mass of wires going into and out of the main chamber. An extra lens was added inside the machine itself.@Camilla was working on the device, carving intricate patterns into the container. She notices you approaching them, jumping down from her high position, landing with a thump.@Camilla: Did you find the red ruby? I'm almost done on my end, just making sure the device works, that is.@Offer the Red Ruby?");
         
-        CreateNode("CheckQuest", 7, 13, 0, "Collect Red Ruby"); 
+        CreateNode("CheckQuest", 7, 0, 0, "Collect Red Ruby"); 
         int next9[] = { 14 };
         FactoryCreateChoices(7, 13,
             "Yes#No",
