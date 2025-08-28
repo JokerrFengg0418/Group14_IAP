@@ -222,10 +222,11 @@ void Option::gameStart() const
 
     std::cout << "1. Start Game" << std::endl;
     std::cout << "2. Exit Game" << std::endl;
+    
 
     int choice;
     std::cin >> choice;
-
+    system("cls");
     if (choice == 1) {
         Logic logic;
         logic.TurnOrder();
@@ -237,7 +238,6 @@ void Option::gameStart() const
     else {
         std::cout << "Invalid Choice. Try again\n";
     }
-
 }
 
 void Option::clearCin() const {
