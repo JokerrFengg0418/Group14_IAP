@@ -132,9 +132,7 @@ void Logic::TurnOrder() {
 
 void Logic::cutsceneCombatTutorial()
 {
-	//Board board;
-	//Entity* Entitylist[20];
-	//board.drawBoard(Entitylist, 20);
+	Option GameOption;
 
 	system("cls");
 	std::cout << "Welcome to the Combat Tutorial!\n";
@@ -155,11 +153,14 @@ void Logic::cutsceneCombatTutorial()
 	std::cout << "nearby you and you can choose who to attack! you can do this with A and D keys";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
+	GameOption.waitForEnter();
 	system("cls");
 
 }
 void Logic::cutsceneInventoryTutorial()
 {
+	Option GameOption;
+
 	system("cls");
 	std::cout << "Welcome to the Inventory Tutorial!\n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
@@ -178,10 +179,14 @@ void Logic::cutsceneInventoryTutorial()
 
 	std::cout << "see, easy right! Now go on and fight youngin'!";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	GameOption.waitForEnter();
 	system("cls");
 }
 void Logic::cutsceneDungeonTutorial()
 {
+	Option GameOption;
+
 	system("cls");
 	std::cout << "The X are random events \n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
@@ -195,6 +200,8 @@ void Logic::cutsceneDungeonTutorial()
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	std::cout << "A red ruby is hidden in one of the X \n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	GameOption.waitForEnter();
 	system("cls");
 }
 
