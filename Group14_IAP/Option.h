@@ -9,7 +9,7 @@ class Option
 
 private:
     Inventory PlayerInventory;
-    Inventory* PlayerInventoryPointer; // pointer to the player’s inventory
+    Inventory* PlayerInventoryPointer; // pointer to the player's inventory
     bool inventoryOpen;         // track if inventory is open
     bool dungeonOpen;
 

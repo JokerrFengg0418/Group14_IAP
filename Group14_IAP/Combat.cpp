@@ -450,7 +450,7 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 
 				// When inventory closes: restore the board view
 				system("cls");
-				board.drawBoard(List, 20);   // use your board’s draw function signature
+				board.drawBoard(List, 20);   // use your board's draw function signature
 				// then let the user choose again
 				continue;
 			}
@@ -722,7 +722,7 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 	// Final cleanup AFTER the loop ends
 	for (int i = 0; i < 20; ++i) {
 		if (List[i]) {
-			// If it's an enemy, also remove from board’s internal list.
+			// If it's an enemy, also remove from board's internal list.
 			if (List[i]->getEntityType() == 'E') {
 				board.removeEnemy(List[i]);
 			}

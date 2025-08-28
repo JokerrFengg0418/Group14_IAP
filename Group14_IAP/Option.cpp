@@ -118,7 +118,7 @@ void Option::openInventory() {
         // Use the exact DB name for classification
         const std::string nm = item->GetItemWord('N');
 
-        // 1) Explicitly block monster/quest items so no “Equipped …!” ever prints
+        // 1) Explicitly block monster/quest items so no “Equipped ...!” ever prints
         if (PlayerInventory.DrawDatabase('M', nm)) {
             std::cout << "Monster drop items/Quest items cannot be equipped.\n";
             continue;
