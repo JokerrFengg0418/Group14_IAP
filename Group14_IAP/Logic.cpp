@@ -89,6 +89,11 @@ void Logic::TurnOrder() {
 			GameOption.shopOption(GameOption.getPlayerInventory());
 			choiceId = story.ShowWave(wave, 10);
 		}
+		if (status == 12)
+		{
+			GameOption.shopOption(GameOption.getPlayerInventory());
+			choiceId = story.ShowWave(wave, 12);
+		}
 		else if (status == 2) // Dungeon
 		{
 			cutsceneDungeonTutorial();
