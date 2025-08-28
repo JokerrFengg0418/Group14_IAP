@@ -11,9 +11,9 @@ int main() {
 	Logic LogicMain;
 
 	option.gameStart();
-	LogicMain.TurnOrder();
+	
 
 
 	
-
+	return 0;
 }

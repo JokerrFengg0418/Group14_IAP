@@ -1053,6 +1053,7 @@ void Combat::FactoryDestructor(Inventory* playerInv) {
 				const char* drop = lootNameFor(e->getType());
 				if (playerInv && drop && drop[0] != '\0') {
 					playerInv->setInventory(drop, 1);
+					earnGold(10, playerInv);
 					std::cout << "You obtained: " << drop << "!\n";
 				}
 				board.removeEnemy(List[i]);

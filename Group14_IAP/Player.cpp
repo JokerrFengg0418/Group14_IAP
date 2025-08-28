@@ -44,6 +44,7 @@ void Player::takeDamage(int amount)
 
 void Player::move(Entity* list[20]) {
     std::cout << "Use WASD to move\n";
+    std::cout << "Press any key to go into combat\n";
 
     // current position
     int row = getRow();
