@@ -405,6 +405,7 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 			int finalDmg = std::max(0, raw - mitigation);
 			std::cout << enemyRef->getTypeName() << " strikes you in close combat!\n";
 			std::cout << "Current Enemy HP: " << enemyRef->getHealth() << "\n";
+			std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 			if (mitigation > 0) std::cout << "(Your armor reduces damage by " << mitigation << ")\n";
 			player->takeDamage(finalDmg);
 			enemyAttacked = true;

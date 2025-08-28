@@ -174,19 +174,13 @@ void Logic::cutsceneCombatTutorial()
 	std::cout << "Welcome to the Combat Tutorial!\n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
-	std::cout << "Fighting is really easy! Just be within 2 tiles of the enemy\n";
+	std::cout << "To attack, stand within range of the enemy. Weapons have different ranges,\n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
-	std::cout << "In order for you to initiate the attack!\n";
+	std::cout << "and if multiple enemies are nearby, use A and D to cycle targets!\n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
-	std::cout << "Just remember that, different weapons have different ranges!\n";
-	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-
-	std::cout << "You can also, cycle the attack if there are multiple enemies\n";
-	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-
-	std::cout << "nearby you and you can choose who to attack! you can do this with A and D keys";
+	std::cout << "There is other options in the combat sequence that you can also explore!";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
 	GameOption.waitForEnter();
@@ -198,22 +192,20 @@ void Logic::cutsceneInventoryTutorial()
 	Option GameOption;
 
 	system("cls");
+
 	std::cout << "Welcome to the Inventory Tutorial!\n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
-	std::cout << "You can choose to equip, unequip or use an item!\n";
+	std::cout << "You can equip, unequip, or use items.\n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
-	std::cout << "simply type equip [name of equipment/item]\n";
+	std::cout << "Commands:\n";
+	std::cout << " - equip [item]\n";
+	std::cout << " - unequip [weapon/armor]\n";
+	std::cout << " - use [Health Potion]\n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
-	std::cout << "or, unequip[weapon/armor name]\n";
-	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-
-	std::cout << "to use the health potion, use [Health Potion] to heal yourself!\n";
-	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-
-	std::cout << "see, easy right! Now go on and fight youngin'!";
+	std::cout << "That's it! Easy, right? Now go fight, youngin'!\n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
 	GameOption.waitForEnter();
