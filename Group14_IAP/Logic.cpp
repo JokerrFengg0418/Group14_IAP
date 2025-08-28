@@ -125,7 +125,7 @@ void Logic::TurnOrder() {
 			wave++;
 		}
 		// Example exit condition (adapt as needed)
-		if (wave > 8)
+		if (wave > 7)
 		{
 			GameOption.runMainMenu();
 			CombatHandler.startCombat('H');
