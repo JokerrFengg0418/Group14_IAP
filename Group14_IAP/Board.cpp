@@ -116,58 +116,55 @@ void Board::drawBoard(Entity* List[], int size)
         for (int c = 0; c < COLS; ++c)
             board[r][c] = ' ';
 
-    // Place entities on the board using their coordinates
-    if (Player) {
+    // Place Player
+    if (Player && inBounds(Player->getRow(), Player->getCol())) {
         board[Player->getRow()][Player->getCol()] = 'P'; // P = Player
     }
 
-    for (int i = 0; i < 20; i++) {
-
-        if (List[i] != nullptr && List[i]->getEntityType() == 'T') {
+    // Detect Turret from the list
+    Turret = nullptr;
+    for (int i = 0; i < size; i++) {
+        if (List[i] && List[i]->getHealth() > 0 && List[i]->getEntityType() == 'T') {
             Turret = List[i];
+            break;
         }
     }
 
-    if (Turret) {
-        board[Turret->getRow()][Turret->getCol()] = 'T'; // T = Turret
+    // Place Turret
+    if (Turret && inBounds(Turret->getRow(), Turret->getCol())) {
+        board[Turret->getRow()][Turret->getCol()] = 'T';
     }
 
-    // Place enemies
-    for (int i = 0; i < enemyCount; ++i) {
+    // Place Enemies (safer loop)
+    for (int i = 0; i < enemyCount && i < maxEnemies; i++) {
         Entity* e = enemies[i];
         if (!e) continue;
+
         int r = e->getRow();
         int c = e->getCol();
+
         if (!inBounds(r, c)) continue;
 
-        // getTypeName() must return a single-character code for this to print correctly
-        board[r][c] = static_cast<Enemy*>(e)->getTypeName();
-    }
-
-    for (int i = 0; i < 20; i++) {
-        // If the slot is not empty, get its position and character type
-        if (List[i] != nullptr) {
-            int row = List[i]->getRow();
-            int col = List[i]->getCol();
-
-            char type = List[i]->getEntityType();
+        Enemy* enemy = dynamic_cast<Enemy*>(e);
+        if (enemy) {
+            char symbol = enemy->getTypeName(); // ensure getTypeName() returns char
+            board[r][c] = symbol;
         }
     }
 
+    // --- Print Board ---
     std::string Template;
+    Template.append("+---------------------------------------+\n");
 
-    // Print out Board
-    Template.append("+---------------------------------------+ \n");
-
-    for (int i = 0; i < 20; i++) {
-        for (int j = 0; j < 20; j++) {
-            Template.append("|");
-            Template.append(1, board[i][j]);
+    for (int r = 0; r < ROWS; r++) {
+        for (int c = 0; c < COLS; c++) {
+            Template.push_back('|');
+            Template.push_back(board[r][c]);
         }
-        Template.append(1, '|');
-        Template.append(1, '\n');
+        Template.append("|\n");
     }
-    Template.append("+---------------------------------------+ \n");
+
+    Template.append("+---------------------------------------+\n");
     std::cout << Template;
 }
 
@@ -226,6 +223,7 @@ void Board::clearBoard()
     selectedEnemy = nullptr;
     for (int i = 0; i < enemyCount; ++i) enemies[i] = nullptr;
     enemyCount = 0;
+    Turret = nullptr;
 }
 
 // --- Remove enemy reference ---

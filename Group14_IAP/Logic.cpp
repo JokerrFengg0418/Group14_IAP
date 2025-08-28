@@ -96,6 +96,8 @@ void Logic::TurnOrder() {
 			GameOption.waitForEnter();
 			dungeon.dungeonOption();
 			choiceId = story.ShowWave(wave, 7);
+			choiceId = 0;
+			GameOption.waitForEnter();
 			break;
 		case 3:
 			GameEndState = true;
@@ -125,10 +127,10 @@ void Logic::TurnOrder() {
 			CombatHandler.startCombat('H');
 			CombatHandler.TurnOrder(GameOption.getPlayerInventory());
 			GlobalOrderSet(GlobalOrderGet() + 1);
+			wave += 1;
 		}
 		else if (wave > 8)
 		{
-			GameOption.runMainMenu();
 			GameEndState = true;
 		}
 	}

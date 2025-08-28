@@ -308,6 +308,7 @@ void Combat::openInventoryDuringCombatByName(Inventory* inv) {
 			}
 
 			Item* found = inv->FindItemByName(arg);
+			const std::string Item = found->GetItemWord('N');
 			if (!found) {
 				std::cout << "Item not found: " << arg << "\nPress any key to continue...";
 				_getch();
@@ -320,7 +321,7 @@ void Combat::openInventoryDuringCombatByName(Inventory* inv) {
 				continue;
 
 			}
-			if (inv->DrawDatabase('I', arg)) {
+			if (inv->DrawDatabase('I', Item)) {
 				std::cout << "Used item: " << found->GetItemWord('N') << "\n";
 				int cur = found->GetItemValue('V');
 
