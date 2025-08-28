@@ -74,10 +74,20 @@ void Logic::TurnOrder() {
 		GameOption.waitForEnter();
 
 		// --- Handle special return values ---
-		if (status == 1 || status == 81 || status == 9) // Shop
+		if (status == 1) // Shop
 		{
 			GameOption.shopOption(GameOption.getPlayerInventory());
-			choiceId = story.ShowWave(wave, 1); // resume branch after shop
+			choiceId = story.ShowWave(wave, 1);
+		}
+		if (status == 81)
+		{
+			GameOption.shopOption(GameOption.getPlayerInventory());
+			choiceId = story.ShowWave(wave, 82);
+		}
+		if (status == 9)
+		{
+			GameOption.shopOption(GameOption.getPlayerInventory());
+			choiceId = story.ShowWave(wave, 10);
 		}
 		else if (status == 2) // Dungeon
 		{
