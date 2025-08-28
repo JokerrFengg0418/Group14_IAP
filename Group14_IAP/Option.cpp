@@ -72,6 +72,7 @@ void Option::runMainMenu() {
                 PlayerInventoryPointer->setCurrency(
                     PlayerInventoryPointer->getCurrency() + 50000);
                 PlayerInventoryPointer->setInventory("   Broadsword   ", 1);
+                PlayerInventoryPointer->setInventory("    Red Ruby    ", 1);
                 cout << "[Debug] Added 50,000 gold and a Broadsword to your inventory.\n";
             }
             else {
@@ -118,7 +119,7 @@ void Option::openInventory() {
         // Use the exact DB name for classification
         const std::string nm = item->GetItemWord('N');
 
-        // 1) Explicitly block monster/quest items so no “Equipped …!” ever prints
+        // 1) Explicitly block monster/quest items so no “Equipped ...!” ever prints
         if (PlayerInventory.DrawDatabase('M', nm)) {
             std::cout << "Monster drop items/Quest items cannot be equipped.\n";
             continue;
