@@ -136,7 +136,7 @@ void Story::DatabaseInitialisation()
         CreateNode("CheckFlagQuest", 3, 8, 1, "Quest to get 2 Fangs");
         CreateNode("ForceEndQuest", 3, 8, 2, "Quest to get 2 Fangs");
         FactoryCreateQuest("Collect Mana Core", "   Mana Cores   ", 1);
-        CreateNode("StartQuest", 3, 8, -1, "Collect Mana Core");
+        CreateNode("StartQuest", 3, 8, 1, "Collect Mana Core");
         FactoryCreateChoices(3, 81,
             "(Open Shop)",
             "",
