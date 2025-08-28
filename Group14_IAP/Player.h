@@ -6,6 +6,8 @@
 
 class Player : public Entity
 {
+private:
+	bool actedThisTurn = false;
 
 public:
 
@@ -17,6 +19,9 @@ public:
 	void takeDamage(int amount);
 
 	void move(Entity* List[20]);
+
+	void startTurn() { actedThisTurn = false; }
+	bool hasActedThisTurn()const { return actedThisTurn; }
 
 	bool moveDungeon();
 

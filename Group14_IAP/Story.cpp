@@ -63,7 +63,7 @@ void Story::FactoryCreateChoices(int wave, int choice, const std::string& choice
 void Story::DatabaseInitialisation()
 {
         // Wave 0
-        FactoryCreateStory(0, "\nAfter a magical fallout between two major kingdoms, the world is pretty much doomed. You spawn as John, the last soldier from the war that just ended. You claw out of the rocks that buried you and fall onto the floor. Monsters start noticing you. You slowly recover your memory from head concussion. ");
+        FactoryCreateStory(0, "\nAfter a magical fallout between two major kingdoms, the world is pretty much doomed. You spawn as John, the last soldierfrom the war that just ended. You claw out of the rocks that buried you and fall onto the floor. Monsters start noticing you. You slowly recover your memory from head concussion. ");
 
         // Wave 1
         FactoryCreateStory(1, "@After the tough battle, you wandered around to find resources. You found a camp. It's empty. @");
@@ -239,8 +239,7 @@ int Story::ShowWave(int wave, int choiceId)
                         TypeWriter(segment, 5);
                         if (!ss.eof())
                         {
-                            std::cout << "Press Enter to continue...\n";
-                            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                            std::numeric_limits<std::streamsize>::max(), '\n';
                         }
                     }
                 }

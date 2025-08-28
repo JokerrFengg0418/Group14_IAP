@@ -56,8 +56,6 @@ static bool findRandomFreeCellAvoiding(int& outR, int& outC, Entity* list[],
 	return false; // grid full
 }
 
-
-
 // Map enemy type -> drop name (must match your DB exactly)
 static const char* lootNameFor(EnemyType t) {
 	switch (t) {
@@ -191,6 +189,8 @@ static inline std::string toLowerCopy(std::string s) {
 		c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
 	return s;
 }
+
+
 
 // Open inventory while in combat. Returns when user presses E.
 void Combat::openInventoryDuringCombatByName(Inventory* inv) {
@@ -405,6 +405,7 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 			int finalDmg = std::max(0, raw - mitigation);
 			std::cout << enemyRef->getTypeName() << " strikes you in close combat!\n";
 			std::cout << "Current Enemy HP: " << enemyRef->getHealth() << "\n";
+			std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 			if (mitigation > 0) std::cout << "(Your armor reduces damage by " << mitigation << ")\n";
 			player->takeDamage(finalDmg);
 			enemyAttacked = true;
@@ -428,7 +429,6 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 			std::cout << "=== Combat End ===\n";
 			return;
 		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		system("cls");
 		board.drawBoard(List, 20);
 		
@@ -436,6 +436,16 @@ void Combat::attack(Entity* entity1, Inventory* playerInv) {
 
 	// ------------- PLAYER TURN -------------
 	if (entity1->getEntityType() == 'P') {
+
+		if (Player* p = dynamic_cast<Player*>(entity1)) {
+			if (p->hasActedThisTurn()) {
+				// (Optional) brief feedback; or omit entirely if you prefer silent end.
+				// std::cout << "You moved. Turn ends.\n";
+				std::cout << "=== Combat End ===\n";
+				return;
+			}
+		}
+
 		if (!playerInv) { std::cout << "[Combat] Player inventory is null.\n"; std::cout << "=== Combat End ===\n"; return; }
 
 		// Player turn menu
@@ -708,6 +718,12 @@ void Combat::TurnOrder(Inventory* PlayerInventory)
 		for (int i = 0; i < 20; ++i)
 		{
 			if (!List[i]) continue;
+
+			if (List[i]->getEntityType() == 'P') {
+				if (Player* p = dynamic_cast<Player*>(List[i])) {
+					p->startTurn();   // reset before taking input
+				}
+			}
 
 			List[i]->move(List);
 			attack(List[i], PlayerInventory);

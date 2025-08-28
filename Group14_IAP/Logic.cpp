@@ -74,32 +74,68 @@ void Logic::TurnOrder() {
 		GameOption.waitForEnter();
 
 		// --- Handle special return values ---
-		if (status == 1) // Shop
+		switch (status)
 		{
+		case 1:
 			GameOption.shopOption(GameOption.getPlayerInventory());
 			choiceId = story.ShowWave(wave, 1);
-		}
-		if (status == 81)
-		{
+			break;
+		case 81:
 			GameOption.shopOption(GameOption.getPlayerInventory());
 			choiceId = story.ShowWave(wave, 82);
-		}
-		if (status == 9)
-		{
+			break;
+		case 9:
 			GameOption.shopOption(GameOption.getPlayerInventory());
 			choiceId = story.ShowWave(wave, 10);
-		}
-		else if (status == 2) // Dungeon
-		{
+			break;
+		case 12:
+			GameOption.shopOption(GameOption.getPlayerInventory());
+			choiceId = story.ShowWave(wave, 12);
+			break;
+		case 2:
 			cutsceneDungeonTutorial();
 			GameOption.waitForEnter();
 			dungeon.dungeonOption();
-			choiceId = story.ShowWave(wave, 7); // resume branch after dungeon
-		}
-		else if (status == 3) {
+			choiceId = story.ShowWave(wave, 7);
+			break;
+		case 3:
 			GameEndState = true;
 			return;
+			break;
+		default:
+			break;
 		}
+		//if (status == 1) // Shop
+		//{
+		//	GameOption.shopOption(GameOption.getPlayerInventory());
+		//	choiceId = story.ShowWave(wave, 1);
+		//}
+		//if (status == 81)
+		//{
+		//	GameOption.shopOption(GameOption.getPlayerInventory());
+		//	choiceId = story.ShowWave(wave, 82);
+		//}
+		//if (status == 9)
+		//{
+		//	GameOption.shopOption(GameOption.getPlayerInventory());
+		//	choiceId = story.ShowWave(wave, 10);
+		//}
+		//if (status == 12)
+		//{
+		//	GameOption.shopOption(GameOption.getPlayerInventory());
+		//	choiceId = story.ShowWave(wave, 12);
+		//}
+		//else if (status == 2) // Dungeon
+		//{
+		//	cutsceneDungeonTutorial();
+		//	GameOption.waitForEnter();
+		//	dungeon.dungeonOption();
+		//	choiceId = story.ShowWave(wave, 7); // resume branch after dungeon
+		//}
+		//else if (status == 3) {
+		//	GameEndState = true;
+		//	return;
+		//}
 
 		// --- Run combat after each wave ---
 		char combatTag = 'A' + wave; // A, B, C... for each wave
@@ -154,9 +190,7 @@ void Logic::DemoTurnOrder() {
 
 void Logic::cutsceneCombatTutorial()
 {
-	//Board board;
-	//Entity* Entitylist[20];
-	//board.drawBoard(Entitylist, 20);
+	Option GameOption;
 
 	system("cls");
 	std::cout << "Welcome to the Combat Tutorial!\n";
@@ -177,11 +211,14 @@ void Logic::cutsceneCombatTutorial()
 	std::cout << "nearby you and you can choose who to attack! you can do this with A and D keys";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
+	GameOption.waitForEnter();
 	system("cls");
 
 }
 void Logic::cutsceneInventoryTutorial()
 {
+	Option GameOption;
+
 	system("cls");
 	std::cout << "Welcome to the Inventory Tutorial!\n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
@@ -200,10 +237,14 @@ void Logic::cutsceneInventoryTutorial()
 
 	std::cout << "see, easy right! Now go on and fight youngin'!";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	GameOption.waitForEnter();
 	system("cls");
 }
 void Logic::cutsceneDungeonTutorial()
 {
+	Option GameOption;
+
 	system("cls");
 	std::cout << "The X are random events \n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
@@ -217,6 +258,8 @@ void Logic::cutsceneDungeonTutorial()
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	std::cout << "A red ruby is hidden in one of the X \n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+	GameOption.waitForEnter();
 	system("cls");
 }
 

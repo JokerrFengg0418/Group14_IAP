@@ -11,6 +11,7 @@
 Player::Player()
 {
 	Health = 100;
+    actedThisTurn = false;
 	//std::cout << "Player Created \n";
 }
 
@@ -21,6 +22,7 @@ Player::Player(int r, int c, int hp, int dmg)
 	setHealth(hp);   // 
 	setDamage(dmg);  // 
 	setEntityType('P');
+    actedThisTurn = false;
 	//std::cout << "Player Created at (" << r << ", " << c << ")" << ", health: " << getHealth() << ", damage: " << getDamage() << std::endl;
 }
 
@@ -85,6 +87,8 @@ void Player::move(Entity* list[20]) {
     // apply the move
     setRow(newRow);
     setCol(newCol);
+
+    actedThisTurn = true;
 
     // collision: check player vs others (e.g., enemies 'E')
     for (int i = 0; i < 20; ++i) {
